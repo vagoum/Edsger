@@ -11,24 +11,18 @@ let incr_linenum lexbuf =
 
 let digit = ['0'-'9']
 let letter = ['A'-'Z'  'a'-'z']
-let white = [' ' '\t']+
-let newline = 'r' | '\n' | "\r\n"
-let id = ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']
+let white = [' ' '\t' '\r']
+let newline = ['\n']
+let hex = ['a'-'f' 'A'-'F' '0'-'9']
+let id = ['a'-'z' 'A'-'Z' '0'-'9' '_']
 
 
 (* the meat of the lexer *)
-
 rule edsger = parse
-  | white               { edsger lexbuf }
-  | newline             { incr_linenum lexbuf; edsger lexbuf}
 
-(* Single Line comments *)
-  | "//"                { incr_linenum lexbuf; edsger lexbuf }
-
-(* Handle header inclusion *)
   | "#"                 {}
 
-(* Multiline and nested comments *)
+
 
 (* Keywords *)
 
@@ -49,6 +43,28 @@ rule edsger = parse
   | "return"            {}
   | "true"              {}
   | "void"              {}
+
+(* identifiers *)
+
+  | letter id*          {}
+
+(* int constants *)
+
+  | digit+              {}
+
+(* real constants *)
+
+  | digit+ '.' ('e'|'E' ('-'|'+')? digit+)? {}
+
+(* constant chars *)
+
+  | "'" ([^ '\'' '\"'  '\\' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" |  "\\\'" | "\\\"" )) "'" 
+
+(* strings *)
+  | '"' ([^ '\'' '\"'  '\\' '\n' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" |  "\\\'" | "\\\"" ))* '"' 
+
+  
+
 
 (* Operators *)
 
@@ -78,6 +94,8 @@ rule edsger = parse
   | "*="                {}
   | "/="                {}
   | "%="                {}
+
+(* separators *)
   | ";"                 {}
   | "("                 {}
   | ")"                 {}
@@ -86,7 +104,14 @@ rule edsger = parse
   | "{"                 {}
   | "}"                 {}
 
-(* Handle default case *)
+  | white+              { edsger lexbuf }
+  | newline             { incr_linenum lexbuf ; edsger lexbuf}
+
+  | "//" [^ '\n']* "\n" { incr_linenum lexbuf ; edsger lexbuf}
+
+  
+
+
   | _ as c              { Printf.printf "Unrecognized character %c\n" c; }
 
   | eof                 { raise End_of_file }
