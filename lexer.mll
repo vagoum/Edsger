@@ -22,10 +22,7 @@ rule edsger = parse
 
   | "#"                 {}
 
-
-
 (* Keywords *)
-
   | "bool"              {}
   | "break"             {}
   | "byref"             {}
@@ -45,29 +42,21 @@ rule edsger = parse
   | "void"              {}
 
 (* identifiers *)
-
   | letter id*          {}
 
 (* int constants *)
-
   | digit+              {}
 
 (* real constants *)
-
   | digit+ '.' ('e'|'E' ('-'|'+')? digit+)? {}
 
 (* constant chars *)
-
   | "'" ([^ '\'' '\"'  '\\' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" |  "\\\'" | "\\\"" )) "'" 
 
 (* strings *)
   | '"' ([^ '\'' '\"'  '\\' '\n' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" |  "\\\'" | "\\\"" ))* '"' 
 
-  
-
-
 (* Operators *)
-
   | "="                 {}
   | "=="                {}
   | "!="                {}
@@ -108,13 +97,19 @@ rule edsger = parse
   | newline             { incr_linenum lexbuf ; edsger lexbuf}
 
   | "//" [^ '\n']* "\n" { incr_linenum lexbuf ; edsger lexbuf}
-
-  
-
+  | "/*" (_)* "*/*"     { comments  lexbuf } 
 
   | _ as c              { Printf.printf "Unrecognized character %c\n" c; }
 
   | eof                 { raise End_of_file }
+
+and comments =  parse
+  | "*/" { edsger lexbuf }
+  | "\n" { incr_linenum lexbuf; edsger lexbuf }
+  | _    { comments lexbuf }
+  | eof  { }
+
+  
 
 {
 let main () =
