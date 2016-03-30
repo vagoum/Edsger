@@ -2,7 +2,6 @@ Lexer:
 -Error handling for
   1) Multiline unterminated strings
   2) unfinished comments
--support "\xnn" strings where nn = [0-7]hex
 -consider a hashtable for keywords
 -TESTING
 
