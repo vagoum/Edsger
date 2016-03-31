@@ -4,7 +4,7 @@ Lexer: Lexer.ml
 Lexer.ml: Lexer.mll
 	ocamllex Lexer.mll
 
-TESTS := /Users/vagoum/Dropbox/ntua/edsger/tests/*.eds
+TESTS := tests/*.eds
 
 .PHONY: tests
 
