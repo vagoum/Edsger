@@ -7,6 +7,7 @@ Lexer:
 -add support for inclusion
 -more testing for edge cases
 -do a makefile only testing with gnu make syntax (wildcards etc)
+-correct travis integration
 
 Parser:
 implement
