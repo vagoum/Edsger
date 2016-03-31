@@ -3,6 +3,7 @@ Lexer:
   1) Multiline unterminated strings
   2) unfinished comments
 -consider a hashtable for keywords
+-add support for inclusion
 -TESTING
 
 Parser:

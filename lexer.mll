@@ -19,6 +19,7 @@ let id = ['a'-'z' 'A'-'Z' '0'-'9' '_']
 (* the meat of the lexer *)
 rule edsger = parse
 
+(* add file inclusion support *)
   | "#"                 {}
 
 (* Keywords *)
