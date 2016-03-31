@@ -8,11 +8,11 @@ void main ()
     {
 	void move (char * source, char * target)
 	{
-	writeString(”Move from ”);
+	writeString("Move from ");
 	writeString(source);
-	writeString(” to ”);
+	writeString(" to ");
 	writeString(target);
-	writeString(”.\n”);
+	writeString(".\n");
 	}
 
 	if (rings >= 1) {
@@ -22,8 +22,8 @@ void main ()
 	}
     }
 
-	writeString(”Please, give the number of rings: ”);
+	writeString("Please, give the number of rings: ");
 	numberOfRings = readInteger();
-	writeString(”\nHere is the solution:\n\n”);
-	hanoi(”left”, ”right”, ”middle”, numberOfRings);
+	writeString("\nHere is the solution:\n\n");
+	hanoi("left", "right", "middle", numberOfRings);
 }

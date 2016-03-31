@@ -2,9 +2,11 @@ Lexer:
 -Error handling for
   1) Multiline unterminated strings
   2) unfinished comments
+-Better error handling in general
 -consider a hashtable for keywords
 -add support for inclusion
--TESTING
+-more testing for edge cases
+-include automated Makefile testing
 
 Parser:
 implement

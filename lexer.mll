@@ -1,5 +1,6 @@
 {
 open Lexing
+open Printf
 
 let incr_linenum lexbuf =
   let pos = lexbuf.lex_curr_p in
@@ -20,87 +21,87 @@ let id = ['a'-'z' 'A'-'Z' '0'-'9' '_']
 rule edsger = parse
 
 (* add file inclusion support *)
-  | "#"                 {}
+  | "#" ([^ '\n'])* "\n" as includes          {printf "%s" includes ; incr_linenum lexbuf; edsger lexbuf}
 
 (* Keywords *)
-  | "bool"              {}
-  | "break"             {}
-  | "byref"             {}
-  | "char"              {}
-  | "continue"          {}
-  | "delete"            {}
-  | "double"            {}
-  | "else"              {}
-  | "for"               {}
-  | "false"             {}
-  | "if"                {}
-  | "int"               {}
-  | "new"               {}
-  | "NULL"              {}
-  | "return"            {}
-  | "true"              {}
-  | "void"              {}
+  | "bool"
+  | "break"
+  | "byref"
+  | "char"
+  | "continue"
+  | "delete"
+  | "double"
+  | "else"
+  | "for"
+  | "false"
+  | "if"
+  | "int"
+  | "new"
+  | "NULL"
+  | "return"
+  | "true"
+  | "void"    as keyw                           {printf "%s" keyw;edsger lexbuf}
 
 (* identifiers *)
-  | letter id*          {}
+  | letter id* as lelel                         {printf "%s" lelel; edsger  lexbuf }
 
 (* int constants *)
-  | digit+              {}
+  | digit+   as dig                             {let num = int_of_string dig in printf "%d" num; edsger lexbuf}
 
 (* real constants *)
-  | digit+ '.' ('e'|'E' ('-'|'+')? digit+)? {}
+  | digit+ '.' ('e'|'E' ('-'|'+')? digit+)? as real {printf "%s" real; edsger lexbuf}
+
 
 (* constant chars *)
-  | "'" ([^ '\'' '\"'  '\\' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" |
-  "\\\'" | "\\\"" | "\\x ['0'-'7'] hex")) "'"  {} 
+  | "'" ([^ '\'' '\"'  '\\' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" |  "\\\'" | "\\\"" | "\\x ['0'-'7'] hex")) "'"  as cchar {printf "%s" cchar;edsger lexbuf}
 
 (* strings *)
-  | '"' ([^ '\'' '\"'  '\\' '\n' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" |  "\\\'" | "\\\"" | "\\x ['0'-'7'] hex"))* '"' {} 
+  | '"' ([^ '\'' '\"'  '\\' '\n' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" | "\\\'" | "\\\"" | "\\x ['0'-'7'] hex"))* '"' as str { printf "%s" str;edsger lexbuf}
 
-(* Operators *)
-  | "="                 {}
-  | "=="                {}
-  | "!="                {}
-  | ">"                 {}
-  | "<"                 {}
-  | ">="                {}
-  | "<="                {}
-  | "+"                 {}
-  | "-"                 {}
-  | "*"                 {}
-  | "/"                 {}
-  | "%"                 {}
-  | "&"                 {}
-  | "!"                 {}
-  | "&&"                {}
-  | "||"                {}
-  | "?"                 {}
-  | ":"                 {}
-  | ","                 {}
-  | "++"                {}
-  | "--"                {}
-  | "+="                {}
-  | "-="                {}
-  | "*="                {}
-  | "/="                {}
-  | "%="                {}
+(* Symbolic Operators *)
+  | "="
+  | "=="
+  | "!="
+  | ">"
+  | "<"
+  | ">="
+  | "<="
+  | "+"
+  | "-"
+  | "*"
+  | "/"
+  | "%"
+  | "&"
+  | "!"
+  | "&&"
+  | "||"
+  | "?"
+  | ":"
+  | ","
+  | "++"
+  | "--"
+  | "+="
+  | "-="
+  | "*="
+  | "/="
+  | "%="    as symop {Printf.printf "%s" symop; edsger lexbuf}
 
 (* separators *)
-  | ";"                 {}
-  | "("                 {}
-  | ")"                 {}
-  | "["                 {}
-  | "]"                 {}
-  | "{"                 {}
-  | "}"                 {}
+  | ";"
+  | "("
+  | ")"
+  | "["
+  | "]"
+  | "{"
+  | "}"  as sep         {Printf.printf "%c" sep; edsger lexbuf}
 
-  | white+              { edsger lexbuf }
-  | newline             { incr_linenum lexbuf ; edsger lexbuf}
+  | white+  as ig       { Printf.printf "%s" ig;edsger lexbuf }
+  | newline+  as ig     { Printf.printf "%s" ig;incr_linenum lexbuf ; edsger lexbuf}
 
   | "//" [^ '\n']* "\n" { incr_linenum lexbuf ; edsger lexbuf}
-  | "/*" (_)* "*/*"     { comments  lexbuf } 
+  | "/*" (_)* "*/*"     { comments  lexbuf }
 
-  | _ as c              { Printf.printf "Unrecognized character %c\n" c; }
+  | _ as c              { printf "ERROR (%c), \n" c ; edsger lexbuf }
 
   | eof                 { raise End_of_file }
 
@@ -110,7 +111,7 @@ and comments =  parse
   | _    { comments lexbuf }
   | eof  { }
 
-  
+
 
 {
 let main () =
