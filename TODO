@@ -6,7 +6,7 @@ Lexer:
 -consider a hashtable for keywords
 -add support for inclusion
 -more testing for edge cases
--include automated Makefile testing
+-do a makefile only testing with gnu make syntax (wildcards etc)
 
 Parser:
 implement
