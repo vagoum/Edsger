@@ -127,7 +127,7 @@ statement: T_Semicolon {}
         | expression T_Semicolon {}
         | T_Lbrace statement*  T_Rbrace {}
         | T_If  T_Lparen expression T_Rparen statement test3?
-        | test4? T_For  T_Lparen expression? T_Semicolon expression? T_Semicolon expression? T_Rparen statement {}
+        | test4? T_For  T_Lparen expression_list? T_Semicolon expression? T_Semicolon expression? T_Rparen statement {}
         |T_Cont  T_Id? T_Semicolon {}
         |T_Break T_Id? T_Semicolon {}
         |T_Return expression? T_Semicolon {}
