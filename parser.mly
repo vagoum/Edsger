@@ -104,7 +104,7 @@ declator_plus: declator T_Semicolon {}
         | declator T_Comma declator_plus {};
 
 
-        type_i: basic_type T_Mul* {};
+type_i: basic_type T_Mul* {};
 
 basic_type: T_Int  {}
         | T_Char {}
@@ -112,12 +112,14 @@ basic_type: T_Int  {}
         | T_Double {};
 
 
-        declator: T_Id option(test) {};
-        test: T_Lbracket constant_expression T_Rbracket {};
+declator: T_Id option(test) {};
+test: T_Lbracket constant_expression T_Rbracket {};
 
-        function_declation : result_type T_Id T_Lparen parameter_list? T_Rparen T_Semicolon {};
+function_declation : 
+        type_i T_Id T_Lparen parameter_list? T_Rparen T_Semicolon {}
+        |T_Void T_Id T_Lparen parameter_list? T_Rparen T_Semicolon {};
 
-result_type: type_i {}
+result_type: type_i{}
         | T_Void {};
 
 parameter_list: parameter test2* {};
@@ -125,9 +127,10 @@ test2: T_Comma parameter {};
 
 parameter: T_Byref? type_i T_Id {};
 
-function_def: result_type T_Id T_Lparen parameter_list? T_Rparen  T_Lbrace test52* T_Rbrace {};
+function_def:
+        type_i T_Id T_Lparen parameter_list? T_Rparen  T_Lbrace declation* statement* T_Rbrace {};
+        |T_Void T_Id T_Lparen parameter_list? T_Rparen  T_Lbrace declation* statement* T_Rbrace {};
 
-test52: declation? statement* {} ;
 
 statement: T_Semicolon {}
         | expression T_Semicolon {}
