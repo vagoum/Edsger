@@ -1,0 +1,13 @@
+### Starting build.
+# Target: main.ml.depends, tags: { extension:ml, file:main.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep -modules main.ml > main.ml.depends # cached
+# Target: lexer.mll, tags: { extension:mll, file:lexer.mll, lexer, ocaml, ocamllex, quiet }
+/usr/bin/ocamllex -q lexer.mll # cached
+# Target: lexer.ml.depends, tags: { extension:ml, file:lexer.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep -modules lexer.ml > lexer.ml.depends # cached
+# Target: parser.mly.depends, tags: { extension:mly, file:parser.mly, infer, menhir_ocamldep, ocaml, ocamldep, quiet }
+menhir --external-tokens Lexer --raw-depend --ocamldep '/usr/bin/ocamldep -modules' parser.mly > parser.mly.depends
++ menhir --external-tokens Lexer --raw-depend --ocamldep '/usr/bin/ocamldep -modules' parser.mly > parser.mly.depends
+File "parser.mly", line 72, characters 7-12:
+Warning: the token T_Eof is unused.
+# Compilation unsuccessful.
