@@ -5,6 +5,15 @@
   with Parsing.Parse_error ->
     Printf.eprintf "smth";
     exit 1*)
+let main = 
+let lexbuf = Lexing.from_channel stdin in
+try
+ Parser.program Lexer.lexer lexbuf
+with
+| Failure msg -> print_endline ("Failure in " ^ msg)
+| Parser.Error -> print_endline "Parse error"
+| End_of_file ->
+ print_endline "Parse error: unexpected end of string"
 (*
 open Core.Std
 open Lexer
