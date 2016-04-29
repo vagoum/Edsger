@@ -13,6 +13,3 @@ tests: Lexer
 
 clean:
 	rm *.cmi *.cmo lexer.ml Lexer tests/*.out
-
-
-

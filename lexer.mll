@@ -1,5 +1,6 @@
 {
 open Lexing
+open Parser
 open Printf
 
 let incr_linenum lexbuf =
@@ -18,110 +19,95 @@ let hex = ['a'-'f' 'A'-'F' '0'-'9']
 let id = ['a'-'z' 'A'-'Z' '0'-'9' '_']
 
 (* the meat of the lexer *)
-rule edsger = parse
+rule lexer = parse
 
 (* add file inclusion support *)
-  | "#" ([^ '\n'])* "\n" as includes          {printf "%s" includes ; incr_linenum lexbuf; edsger lexbuf}
+  | "#" ([^ '\n'])* "\n" as includes          {incr_linenum lexbuf; lexer lexbuf}
 
 (* Keywords *)
-  | "bool"
-  | "break"
-  | "byref"
-  | "char"
-  | "continue"
-  | "delete"
-  | "double"
-  | "else"
-  | "for"
-  | "false"
-  | "if"
-  | "int"
-  | "new"
-  | "NULL"
-  | "return"
-  | "true"
-  | "void"    as keyw                           {printf "%s" keyw;edsger lexbuf}
+  | "bool"     {T_Bool}
+  | "break"    {T_Break}
+  | "byref"    {T_Byref}
+  | "char"     {T_Char}
+  | "continue" {T_Cont}
+  | "delete"   {T_Del}
+  | "double"   {T_Double}
+  | "else"     {T_Else}
+  | "for"      {T_For}
+  | "false"    {T_False}
+  | "if"       {T_If}
+  | "int"      {T_Int}
+  | "new"      {T_New}
+  | "NULL"     {T_Null}
+  | "return"   {T_Return}
+  | "true"     {T_True}
+  | "void"     {T_Void}
 
 (* identifiers *)
-  | letter id* as lelel                         {printf "%s" lelel; edsger  lexbuf }
+  | letter id* as ident      {T_Id(ident)}
 
 (* int constants *)
-  | digit+   as dig                             {let num = int_of_string dig in printf "%d" num; edsger lexbuf}
+  | digit+ as digs {T_Const_Int(digs)}
 
 (* real constants *)
-  | digit+ '.' ('e'|'E' ('-'|'+')? digit+)? as real {printf "%s" real; edsger lexbuf}
-
+  | digit+ '.' ('e'|'E' ('-'|'+')? digit+)? as real {T_Const_Real(real)}
 
 (* constant chars *)
-  | "'" ([^ '\'' '\"'  '\\' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" |  "\\\'" | "\\\"" | "\\x ['0'-'7'] hex")) "'"  as cchar {printf "%s" cchar;edsger lexbuf}
+  | "'" ([^ '\'' '\"'  '\\' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" |  "\\\'" | "\\\"" | "\\x ['0'-'7'] hex")) "'"  as cchar {T_Const_Char(cchar)}
 
 (* strings *)
-  | '"' ([^ '\'' '\"'  '\\' '\n' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" | "\\\'" | "\\\"" | "\\x ['0'-'7'] hex"))* '"' as str { printf "%s" str;edsger lexbuf}
+  | '"' ([^ '\'' '\"'  '\\' '\n' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" | "\\\'" | "\\\"" | "\\x ['0'-'7'] hex"))* '"' as str { T_Const_String(str) }
 
 (* Symbolic Operators *)
-  | "="
-  | "=="
-  | "!="
-  | ">"
-  | "<"
-  | ">="
-  | "<="
-  | "+"
-  | "-"
-  | "*"
-  | "/"
-  | "%"
-  | "&"
-  | "!"
-  | "&&"
-  | "||"
-  | "?"
-  | ":"
-  | ","
-  | "++"
-  | "--"
-  | "+="
-  | "-="
-  | "*="
-  | "/="
-  | "%="    as symop {Printf.printf "%s" symop; edsger lexbuf}
+  | "="  as eq   {T_Eq(eq)}
+  | "=="    {T_Equal}
+  | "!="    {T_Neq}
+  | ">"     {T_Gr}
+  | "<"     {T_Le}
+  | ">="    {T_Geq}
+  | "<="    {T_Leq}
+  | "+"     {T_Add}
+  | "-"     {T_Sub}
+  | "*"     {T_Mul}
+  | "/"     {T_Div}
+  | "%"     {T_Mod}
+  | "&"     {T_Amp}
+  | "!"     {T_Not}
+  | "&&"    {T_And}
+  | "||"    {T_Or}
+  | "?"     {T_Terfirst}
+  | ":"     {T_Tersecon}
+  | ","     {T_Comma}
+  | "++"    {T_Incr}
+  | "--"    {T_Decr}
+  | "+=" as eq {T_Eq(eq)}
+  | "-=" as eq {T_Eq(eq)}
+  | "*=" as eq {T_Eq(eq)}
+  | "/=" as eq {T_Eq(eq)}
+  | "%=" as eq {T_Eq(eq)}
 
 (* separators *)
-  | ";"
-  | "("
-  | ")"
-  | "["
-  | "]"
-  | "{"
-  | "}"  as sep         {Printf.printf "%c" sep; edsger lexbuf}
+  | ";"     {T_Semicolon}
+  | "("     {T_Lparen}
+  | ")"     {T_Rparen}
+  | "["     {T_Lbracket}
+  | "]"     {T_Rbracket}
+  | "{"     {T_Lbrace}
+  | "}"     {T_Rbrace}
 
-  | white+  as ig       { Printf.printf "%s" ig;edsger lexbuf }
-  | newline+  as ig     { Printf.printf "%s" ig;incr_linenum lexbuf ; edsger lexbuf}
+  | white+         { lexer lexbuf }
+  | newline+ { incr_linenum lexbuf ; lexer lexbuf}
 
-  | "//" [^ '\n']* "\n" { incr_linenum lexbuf ; edsger lexbuf}
+  | "//" [^ '\n']* "\n" { incr_linenum lexbuf ; lexer lexbuf}
   | "/*" (_)* "*/*"     { comments  lexbuf }
 
-  | _ as c              { printf "ERROR (%c), \n" c ; edsger lexbuf }
+  | _ as c              { printf "ERROR (%c), \n" c ; lexer lexbuf }
 
-  | eof                 { raise End_of_file }
+  | eof                 { T_Eof }
 
 and comments =  parse
-  | "*/" { edsger lexbuf }
-  | "\n" { incr_linenum lexbuf; edsger lexbuf }
+  | "*/" { lexer lexbuf }
+  | "\n" { incr_linenum lexbuf; lexer lexbuf }
   | _    { comments lexbuf }
   | eof  { }
 
-
-
-{
-let main () =
-  let cin =
-    if Array.length Sys.argv > 1
-    then open_in Sys.argv.(1)
-    else stdin
-  in
-  let lexbuf = Lexing.from_channel cin in
-  try edsger lexbuf
-  with End_of_file -> ()
-  let _ = Printexc.print main ()
-}

@@ -7,7 +7,10 @@ Lexer:
 -add support for inclusion
 -more testing for edge cases
 -do a makefile only testing with gnu make syntax (wildcards etc)
--fix travis integration (sudo: required)
 
 Parser:
+-create hashtable for keywords (T_Id(id), T_Keyw(id))
+implement
+
+Semantic analysis:
 implement
