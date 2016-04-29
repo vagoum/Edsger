@@ -1817,27 +1817,27 @@ let
 
   | 44 ->
 # 83 "lexer.mll"
-            (T_Plus_Eq(eq))
+            (T_PlusEq)
 # 1822 "lexer.ml"
 
   | 45 ->
 # 84 "lexer.mll"
-            (T_Minus_Eq(eq))
+            (T_Minus_eq)
 # 1827 "lexer.ml"
 
   | 46 ->
 # 85 "lexer.mll"
-            (T_Dot_Eq(eq))
+            (T_Dot_eq)
 # 1832 "lexer.ml"
 
   | 47 ->
 # 86 "lexer.mll"
-            (T_Div_Eq(eq))
+            (T_Div_eq)
 # 1837 "lexer.ml"
 
   | 48 ->
 # 87 "lexer.mll"
-            (T_Mod_Eq(eq))
+            (T_Mod_eq)
 # 1842 "lexer.ml"
 
   | 49 ->
@@ -1934,7 +1934,7 @@ and __ocaml_lex_comments_rec lexbuf __ocaml_lex_state =
 
   | 3 ->
 # 112 "lexer.mll"
-         ( )
+         ( T_Eof)
 # 1939 "lexer.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 

@@ -1,8 +1,8 @@
-(*%{
-        void yyerror (const char *msh);
+%{
+        open Lexing
 %}
-*)
-(*Keyword tokens*)
+
+(* Keyword tokens *)
 
 %token T_Bool
 %token T_Break
@@ -53,11 +53,11 @@
 %token T_Comma
 %token T_Incr
 %token T_Decr
-%token <string> T_Plus_Eq
-%token <string> T_Minus_Eq
-%token <string> T_Dot_Eq
-%token <string> T_Div_Eq
-%token <string> T_Mod_Eq
+%token T_PlusEq
+%token T_Minus_eq
+%token T_Dot_eq
+%token T_Div_eq
+%token T_Mod_eq
 
 
 
@@ -81,15 +81,15 @@
 %nonassoc T_Gr T_Le T_Leq T_Geq T_Equal T_Neq
 %left T_And T_Or 
 %nonassoc T_Quest T_Colon
-%right T_Eq T_Plus_Eq T_Minus_Eq T_Dot_Eq T_Div_Eq T_Mod_Eq 
+%right T_Eq T_Plus_eq T_Minus_eq T_Dot_eq T_Div_eq T_Mod_eq 
 
 %%
 
-program: declation_plus {}
+program: declation+ {}
 
-declation_plus: declation {}
+(*declation_plus: declation {}
         | declation_plus {}
-
+*)
 declation: variable_declation {}
         | function_declation {}
         | function_def {}
@@ -157,7 +157,7 @@ expression: T_Id {}
         |T_Del expression {}
 test8:  T_Lbracket expression T_Rbracket {}
 
-expression_list: expression_list test9* {}
+expression_list: expression test9* {}
 test9: T_Comma expression {}
 
 constant_expression:expression {}
@@ -188,8 +188,8 @@ unary_assig: T_Incr {}
         |T_Decr {}
 
 binary_assig: T_Eq {}
-        | T_Plus_Eq {}
-        | T_Minus_Eq {}
-        | T_Dot_Eq {}
-        | T_Div_Eq {}
-        | T_Mod_Eq {}
+        | T_PlusEq {}
+        | T_Minus_eq {}
+        | T_Dot_eq {}
+        | T_Div_eq {}
+        | T_Mod_eq {}

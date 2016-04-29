@@ -80,11 +80,11 @@ rule lexer = parse
   | ","     {T_Comma}
   | "++"    {T_Incr}
   | "--"    {T_Decr}
-  | "+="    {T_Plus_Eq(eq)}
-  | "-="    {T_Minus_Eq(eq)}
-  | "*="    {T_Dot_Eq(eq)}
-  | "/="    {T_Div_Eq(eq)}
-  | "%="    {T_Mod_Eq(eq)}
+  | "+="    {T_PlusEq}
+  | "-="    {T_Minus_eq}
+  | "*="    {T_Dot_eq}
+  | "/="    {T_Div_eq}
+  | "%="    {T_Mod_eq}
 
 (* separators *)
   | ";"     {T_Semicolon}
@@ -109,5 +109,5 @@ and comments =  parse
   | "*/" { lexer lexbuf }
   | "\n" { incr_linenum lexbuf; lexer lexbuf }
   | _    { comments lexbuf }
-  | eof  { }
+  | eof  { T_Eof}
 

@@ -1,3 +1,5 @@
+all: 
+	corebuild -use-menhir -tag thread -use-ocamlfind  -pkg core main.native  
 Lexer: Lexer.ml
 	ocamlc lexer.ml -o Lexer
 
