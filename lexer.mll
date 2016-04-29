@@ -59,7 +59,7 @@ rule lexer = parse
   | '"' ([^ '\'' '\"'  '\\' '\n' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" | "\\\'" | "\\\"" | "\\x ['0'-'7'] hex"))* '"' as str { T_Const_String(str) }
 
 (* Symbolic Operators *)
-  | "="  as eq   {T_Eq(eq)}
+  | "="     {T_Eq}
   | "=="    {T_Equal}
   | "!="    {T_Neq}
   | ">"     {T_Gr}
@@ -75,16 +75,16 @@ rule lexer = parse
   | "!"     {T_Not}
   | "&&"    {T_And}
   | "||"    {T_Or}
-  | "?"     {T_Terfirst}
-  | ":"     {T_Tersecon}
+  | "?"     {T_Quest}
+  | ":"     {T_Colon}
   | ","     {T_Comma}
   | "++"    {T_Incr}
   | "--"    {T_Decr}
-  | "+=" as eq {T_Eq(eq)}
-  | "-=" as eq {T_Eq(eq)}
-  | "*=" as eq {T_Eq(eq)}
-  | "/=" as eq {T_Eq(eq)}
-  | "%=" as eq {T_Eq(eq)}
+  | "+="    {T_Plus_Eq(eq)}
+  | "-="    {T_Minus_Eq(eq)}
+  | "*="    {T_Dot_Eq(eq)}
+  | "/="    {T_Div_Eq(eq)}
+  | "%="    {T_Mod_Eq(eq)}
 
 (* separators *)
   | ";"     {T_Semicolon}
