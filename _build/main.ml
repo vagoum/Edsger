@@ -1,10 +1,10 @@
-let main =
+(*let main =
   try
     Parser.program Lexer.lexer (Lexing.from_channel stdin);
     exit 0
   with Parsing.Parse_error ->
     Printf.eprintf "smth";
-    exit 1
+    exit 1*)
 (*
 open Core.Std
 open Lexer
@@ -36,3 +36,4 @@ let loop filename () =
   lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = filename };
   parse_and_print lexbuf;
   In_channel.close inx*)
+        

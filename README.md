@@ -3,9 +3,9 @@ A compiler for the [Edsger](http://courses.softlab.ntua.gr/compilers/2016a/edsge
 
 Testing
 ------------------
-*Compile and test the code
+*Compile the code
 ``` sh
-make tests
+make all
 ```
 
 

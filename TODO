@@ -10,7 +10,6 @@ Lexer:
 
 Parser:
 -create hashtable for keywords (T_Id(id), T_Keyw(id))
-implement
 
 Semantic analysis:
 implement
