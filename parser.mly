@@ -23,8 +23,8 @@
 %token T_Void
 
 %token <string> T_Id
-%token <string> T_Const_Int
-%token  <string> T_Const_Real
+%token <int> T_Const_Int
+%token <float> T_Const_Real
 %token <string> T_Const_Char
 %token <string> T_Const_String
 
