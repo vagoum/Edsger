@@ -1,5 +1,9 @@
 %{
         open Lexing
+        open Symbol
+        open Types
+        open Ast
+        open Error
 %}
 
 (* Keyword tokens *)
@@ -89,7 +93,7 @@
 
 %%
 
-program: declation+ T_Eof {};
+program: declation+ T_Eof {ignore(initSymbolTable 256 ); ignore(openScope()); ignore(is_main()); ast_tree := Some $1};
 
 (*declation_plus: declation {}
         | declation_plus {}
@@ -155,11 +159,35 @@ expression: T_Id {}
         |T_Const_String {}
         |T_Id  T_Lparen expression_list? T_Rparen {}
         |expression T_Lbracket expression T_Rbracket {}
-        |unary_operator expression {}
-        |expression binary_operator expression {}
-        |unary_assig expression {}
-        |expression unary_assig {}
-        |expression binary_assig expression {}
+        |T_Amp expression {}
+        |T_Mul expression {}
+        |T_Add expression {}
+        |T_Sub expression {}
+        |T_Not expression {}
+        |expression T_Mul expression {}
+        |expression T_Div expression {}
+        |expression T_Mod expression {}
+        |expression T_Add expression {}
+        |expression T_Sub expression {}
+        |expression T_Le expression {}
+        |expression T_Leq expression {}
+        |expression T_Gr expression {}
+        |expression T_Geq expression {}
+        |expression T_Equal expression {}
+        |expression T_Neq expression {}
+        |expression T_And expression {}
+        |expression T_Or expression {}
+        |expression T_Comma expression {}
+        |T_Incr expression {}
+        |T_Decr expression {}
+        |expression T_Incr {}
+        |expression T_Decr {}
+        |expression T_Eq expression {}
+        |expression T_PlusEq expression {}
+        |expression T_Minus_eq expression {}
+        |expression T_Dot_eq expression {}
+        |expression T_Div_eq expression {}
+        |expression T_Mod_eq expression {}
         |T_Lparen type_i T_Rparen expression {}
         |expression T_Quest expression T_Colon expression {}
         |T_New type_i  test8? {}
@@ -171,34 +199,3 @@ test9: T_Comma expression {};
 
 constant_expression:expression {};
 
-unary_operator: T_Amp {}
-        | T_Mul {}
-        | T_Add {}
-        | T_Sub {}
-        | T_Not {};
-
-
-binary_operator: T_Mul {}
-        |T_Div {}
-        |T_Mod {}
-        |T_Add {}
-        |T_Sub {}
-        |T_Le {}
-        |T_Leq {}
-        |T_Gr {}
-        |T_Geq {}
-        |T_Equal {}
-        |T_Neq {}
-        |T_And {}
-        |T_Or {}
-        |T_Comma {};
-
-unary_assig: T_Incr {}
-        |T_Decr {};
-
-binary_assig: T_Eq {}
-        | T_PlusEq {}
-        | T_Minus_eq {}
-        | T_Dot_eq {}
-        | T_Div_eq {}
-        | T_Mod_eq {};

@@ -47,10 +47,11 @@ rule lexer = parse
   | letter id* as ident      {T_Id(ident)}
 
 (* int constants *)
-  | digit+ as digs {T_Const_Int(digs)}
+  | digit+ as digs {T_Const_Int(int_of_string digs)}
 
 (* real constants *)
-  | digit+ '.' ('e'|'E' ('-'|'+')? digit+)? as real {T_Const_Real(real)}
+  | digit+ '.' ('e'|'E' ('-'|'+')? digit+)? as real {T_Const_Real(float_of_string real)}
+  | digit+ '.' digit+ as real {T_Const_Real(float_of_string real)}
 
 (* constant chars *)
   | "'" ([^ '\'' '\"'  '\\' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" |  "\\\'" | "\\\"" | "\\x ['0'-'7'] hex")) "'"  as cchar {T_Const_Char(cchar)}
