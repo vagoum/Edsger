@@ -15,23 +15,42 @@ and ast_stmt = Expr of ast_expr option
              | SBreak of string option
              | SCont of string option
 
-and ast_expr = Enum of int
+and ast_expr = Eint of int
+             | Ereal of float
+             | Echar of char
              | Eid of string
+             | Estring of string
              | Ebool of bool
+             | ENull
+             | EAmber of ast_expr
+             | EPointer of ast_expr
+             | EUnAdd of ast_expr 
+             | EUnMinus of ast_expr
              | Eplus of ast_expr * ast_expr
              | Eminus of ast_expr * ast_expr
              | Ediv of ast_expr * ast_expr
              | Emult of ast_expr * ast_expr
+             | Emod of ast_expr * ast_expr
              | Eand of ast_expr * ast_expr
              | Eor of ast_expr * ast_expr
              | Elt of ast_expr * ast_expr
+             | Elte of ast_expr * ast_expr
              | Egt of ast_expr * ast_expr
+             | Egte of ast_expr * ast_expr
              | Eeq of ast_expr * ast_expr
              | Eneq of ast_expr * ast_expr
              | Enot of ast_expr
-             | Eunary of ast_expr
+             | EPlusPlus of ast_expr*prec
+             | EMinusMinus of ast_expr*prec
+             | EPlusEq of ast_expr*ast_expr 
+             | EMinusEq of ast_expr*ast_expr 
+             | EDotEq of ast_expr*ast_expr 
+             | EModEq of ast_expr*ast_expr 
+             | ENew
+             | EDel
              | Eapp of string * ast_expr list
-
+     and prec = PRE
+                | AFTER;;
 let ast_tree = ref None
 
 (* Pretty Prints the AST *)

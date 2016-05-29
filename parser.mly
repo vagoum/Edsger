@@ -150,25 +150,25 @@ test4: T_Id T_Colon {};
 
 expression: T_Id {}
         | T_Lparen expression T_Rparen  {}
-        |T_True {}
-        |T_False {}
-        |T_Null {}
-        |T_Const_Char {}
-        |T_Const_Int {}
-        |T_Const_Real {}
-        |T_Const_String {}
+        |T_True {Ebool true}
+        |T_False {Ebool false}
+        |T_Null {ENull}
+        |T_Const_Char {Echar $1}
+        |T_Const_Int {Eint $1}
+        |T_Const_Real {Ereal $1}
+        |T_Const_String {Estring $1}
         |T_Id  T_Lparen expression_list? T_Rparen {}
         |expression T_Lbracket expression T_Rbracket {}
-        |T_Amp expression {}
-        |T_Mul expression {}
-        |T_Add expression {}
-        |T_Sub expression {}
-        |T_Not expression {}
-        |expression T_Mul expression {}
-        |expression T_Div expression {}
-        |expression T_Mod expression {}
-        |expression T_Add expression {}
-        |expression T_Sub expression {}
+        |T_Amp expression {EAmber $2}
+        |T_Mul expression {EPointer $2}
+        |T_Add expression {EUnAdd $2}
+        |T_Sub expression {EUnMinus $2}
+        |T_Not expression {Enot $2}
+        |expression T_Mul expression {Emult ($1,$3)}
+        |expression T_Div expression {Ediv ($1,$3)}
+        |expression T_Mod expression {Emod ($1,$3)}
+        |expression T_Add expression {Eplus ($1,$3)}
+        |expression T_Sub expression {Eminus ($1,$3)}
         |expression T_Le expression {}
         |expression T_Leq expression {}
         |expression T_Gr expression {}
@@ -178,10 +178,10 @@ expression: T_Id {}
         |expression T_And expression {}
         |expression T_Or expression {}
         |expression T_Comma expression {}
-        |T_Incr expression {}
-        |T_Decr expression {}
-        |expression T_Incr {}
-        |expression T_Decr {}
+        |T_Incr expression {EPlusPlus ($2,PRE)}
+        |T_Decr expression {EMinusMinus ($2,PRE)}
+        |expression T_Incr {EPlusPlus ($2,AFTER)}
+        |expression T_Decr {EMinusMinus ($2,AFTER)}
         |expression T_Eq expression {}
         |expression T_PlusEq expression {}
         |expression T_Minus_eq expression {}
