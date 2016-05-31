@@ -24,7 +24,6 @@ let is_main() = try lookupEntry (make_id "main") LOOKUP_CURRENT_SCOPE true with 
 
 
 
-
 let rec check ast =
   match ast with
   | None      -> raise (Terminate "AST is empty")
@@ -36,34 +35,19 @@ and check_program defs =
 
 and check_fun_def def funs =
   match def with
-  | Fundef (name, params, vars, stmts) ->
-    let funs' = (name, List.length params) :: funs in
-    let env = (List.map param_name params) @ vars in
-    List.iter (fun stmt -> check_stmt stmt funs env) stmts;
-    funs'
+  | FunDef (en, param,smth) -> 
+                  check_stmt smth 
+  | FunDecl e | VarDecl e ->  ();;
 
-and param_name param =
-  match param with
-  | Param name -> name
-  | ParamByRef name -> name
-
-and check_stmt tree funs env =
+and check_stmt tree=
   match tree with
-  | Sprint expr -> check_expr expr funs env
-  | Slet (var, expr) -> (try let _ = List.find (fun elem -> elem = var) env in ()
-                         with Not_found -> raise (Terminate ("Unbound variable " ^ var)));
-                        check_expr expr funs env
-  | Sbegin stmts     -> List.iter (fun stmt -> check_stmt stmt funs env) stmts
-  | Sfor (var, expr1, expr2, stmt) -> check_expr expr1 funs env;
-                                      check_expr expr2 funs env;
-                                      check_stmt stmt funs env
-  | Swhile (expr, stmt)            -> check_expr expr funs env;
-                                      check_stmt stmt funs env
-  | Sif (expr, stmt, maybe_stmt)   -> check_expr expr funs env;
+  | SExpr (e) -> may check_expr e ; 
+  | Sif (expr, stmt, maybe_stmt)   -> check_expr expr ;;
+                                      check_is_bool expr;;
                                       check_stmt stmt funs env;
                                       (match maybe_stmt with
                                        | None -> ()
-                                       | Some else_stmt -> check_stmt else_stmt funs env)
+                                       | Some else_stmt -> check_stmt else_stmt )
   | Sreturn expr -> check_expr expr funs env
 
 and check_expr tree funs env =

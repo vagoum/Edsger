@@ -151,7 +151,10 @@ test2: T_Comma parameter {$2};
 
 parameter: T_Byref? type_i T_Id {if is_some $1 then (PASS_BY_REFERENCE,$2,$3) else (PASS_BY_VALUE ,$2,$3)};
 
-function_def: function_declation1 T_Lbrace  declation* statement* cScope T_Rbrace {Fundef ($1,$4,$5)};
+function_def: function_declation1 T_Lbrace  declation* statement* cScope T_Rbrace {
+        ignore(check_return());
+        
+        Fundef ($1,$4,$5)};
 
 statement: T_Semicolon {SExpr None}
         | expression T_Semicolon {SExpr (Some $1)}
