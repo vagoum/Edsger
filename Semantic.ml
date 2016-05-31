@@ -1,8 +1,29 @@
 open Ast
 open Format
 open List
+open Error
 
 exception Terminate of string
+
+(*Lets make some symatics *)
+let nested_loops = ref 0
+let infun = ref 0
+
+
+let is_main() = try lookupEntry (make_id "main") LOOKUP_CURRENT_SCOPE true with Not_found-> error "incorect program";;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 let rec check ast =
   match ast with

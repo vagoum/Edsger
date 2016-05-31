@@ -4,6 +4,12 @@
         open Types
         open Ast
         open Error
+
+
+
+        let get_first (x,_,_) =x ;;
+        let get_second (_,x,_)=x;;
+        let get_third (_,_,x)=x;;
 %}
 
 (* Keyword tokens *)
@@ -98,58 +104,69 @@ program: declation+ T_Eof {ignore(initSymbolTable 256 ); ignore(openScope()); ig
 (*declation_plus: declation {}
         | declation_plus {}
 *)
-declation: variable_declation {}
-        | function_declation {}
-        | function_def {};
+oScope :  {ignore(openScope();)}
+cScope :  {ignore(closeScope();)}
+inFun : {ignore(infun := !infun +1)}
+outFun : {ignore(infun := !infun -1)}
+inLoop : {ignore(nested_loops := !nested_loops +1)}
+outLoop : {ignore(nested_loops := !nested_loops -1)}
 
-variable_declation: type_i declator_plus {};
+declation: variable_declation {VarDecl $1} (*maybe it will replaced with empty later*)
+        | function_declation {FunDecl $1}
+        | function_def {FunDef $1};
 
-declator_plus: declator T_Semicolon {}
-        | declator T_Comma declator_plus {};
+variable_declation: type_i declator_plus {map (fun x -> newVariable (id_make x) $1 true) $2};
 
-
-type_i: basic_type T_Mul* {};
-
-basic_type: T_Int  {}
-        | T_Char {}
-        | T_Bool {}
-        | T_Double {};
+declator_plus: declator T_Semicolon {[$1]}
+        | declator T_Comma declator_plus {$1::$3};
 
 
-declator: T_Id test? {};
+type_i: basic_type T_Mul* {if $2 = [] then $1 else fold_left (fun x->fun y-> Type_pointer x ) $1 $2};
+
+basic_type: T_Int  {TYPE_int}
+        | T_Char {TYPE_char}
+        | T_Bool {TYPE_bool}
+        | T_Double {TYPE_double};
+
+
+declator: T_Id test? {$1}; (* need to add intalization variable*)
 test: T_Lbracket constant_expression T_Rbracket {};
 
-function_declation : 
-        type_i T_Id T_Lparen parameter_list? T_Rparen T_Semicolon {}
-        |T_Void T_Id T_Lparen parameter_list? T_Rparen T_Semicolon {};
+fuction_declation:  fuction_declation1 cScope T_Semicolon {$1};
+function_declation1 : 
+        oScope type_i T_Id T_Lparen parameter_list? T_Rparen{
+        let e= newFuction (id_make $2) true in  
+                may (List.iter (fun x-> newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  )) $4 ;  
+                endFuctionHeader e $1 ; 
+                e}
+        | oScope T_Void T_Id T_Lparen parameter_list? T_Rparen{
+        let e= newFuction (id_make $2) true in 
+                 may (List.iter (fun x-> newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  )) $4 ;  
+                 endFuctionHeader e TYPE_none; 
+                 e }
 
-result_type: type_i{}
-        | T_Void {};
 
-parameter_list: parameter test2* {};
-test2: T_Comma parameter {};
+parameter_list: parameter test2* {$2 @ [$1]};
+test2: T_Comma parameter {$2};
 
-parameter: T_Byref? type_i T_Id {};
+parameter: T_Byref? type_i T_Id {if is_some $1 then (PASS_BY_REFERENCE,$2,$3) else (PASS_BY_VALUE ,$2,$3)};
 
-function_def:
-        type_i T_Id T_Lparen parameter_list? T_Rparen  T_Lbrace declation* statement* T_Rbrace {};
-        |T_Void T_Id T_Lparen parameter_list? T_Rparen  T_Lbrace declation* statement* T_Rbrace {};
-
+function_def: function_declation1 T_Lbrace  declation* statement* cScope T_Rbrace {Fundef ($1,$4,$5)};
 
 statement: T_Semicolon {SExpr None}
         | expression T_Semicolon {SExpr (Some $1)}
-        | T_Lbrace statement*  T_Rbrace {SNewBlock $2}
+        | T_Lbrace oScope statement* cScope  T_Rbrace {SNewBlock $2}
         | T_If  T_Lparen expression T_Rparen statement test3? {Sif ($3,$5,$6)}
-        | test4? T_For  T_Lparen expression_list? T_Semicolon expression_list? T_Semicolon expression_list? T_Rparen statement {Sfor ($1,$4,$6,$8,$10)}
-        |T_Cont  T_Id? T_Semicolon {SCont $2}
-        |T_Break T_Id? T_Semicolon {SBreak $2}
+        | test4? T_For  T_Lparen expression_list? T_Semicolon expression_list? T_Semicolon expression_list? T_Rparen inLoop statement outLoop {Sfor ($1,$4,$6,$8,$10)}
+        |T_Cont  T_Id? T_Semicolon {if nested_loops =0 then error "No continue in Loop"; SCont $2 else SCont $2}
+        |T_Break T_Id? T_Semicolon {if nested_loops = 0 then error "No break in loop" ; SBreak $2  else SBreak $2}
         |T_Return expression? T_Semicolon {Sreturn $2};
 
 test3: T_Else statement{$2};
-test4: T_Id T_Colon {};
+test4: T_Id T_Colon {$1};
 
-expression: T_Id {}
-        | T_Lparen expression T_Rparen  {}
+expression: T_Id {Eid $1}
+        | T_Lparen expression T_Rparen  {$2}
         |T_True {Ebool true}
         |T_False {Ebool false}
         |T_Null {ENull}
@@ -157,8 +174,8 @@ expression: T_Id {}
         |T_Const_Int {Eint $1}
         |T_Const_Real {Ereal $1}
         |T_Const_String {Estring $1}
-        |T_Id  T_Lparen expression_list? T_Rparen {}
-        |expression T_Lbracket expression T_Rbracket {}
+        |T_Id  T_Lparen expression_list? T_Rparen {ENull} (* FIX THIS*)
+        |expression T_Lbracket oScope expression cScope T_Rbracket {ENull} (* Fix this*)
         |T_Amp expression {EAmber $2}
         |T_Mul expression {EPointer $2}
         |T_Add expression {EUnAdd $2}
@@ -188,14 +205,14 @@ expression: T_Id {}
         |expression T_Dot_eq expression {EDotEq ($1,$3)}
         |expression T_Div_eq expression {EDivEq ($1,$3)}
         |expression T_Mod_eq expression {EModEq ($1,$3)}
-        |T_Lparen type_i T_Rparen expression {}
-        |expression T_Quest expression T_Colon expression {}
-        |T_New type_i  test8? {Enew}
-        |T_Del expression {EDel};
-test8:  T_Lbracket expression T_Rbracket {};
+        |T_Lparen type_i T_Rparen expression {ECast ($2,$4)}
+        |expression T_Quest expression T_Colon expression {EQuestT ($1,$3,$5)}
+        |T_New type_i  test8? {Enew ($2,$3)}
+        |T_Del expression {EDel $2};
+test8:  T_Lbracket oScope expression cScope T_Rbracket {$2};
 
-expression_list: expression test9* {};
-test9: T_Comma expression {};
+expression_list: expression test9* {[$1] @ $2};
+test9: T_Comma expression {$2};
 
-constant_expression:expression {};
+constant_expression:expression {$1};
 

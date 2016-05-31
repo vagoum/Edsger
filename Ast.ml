@@ -5,9 +5,9 @@ type ast_program = ast_fun_def list
 and ast_decl = VarDecl of ast_var_decl
               | FunDecl of ast_fun_decl
               | FunDef of ast_fun_def
-and ast_var_decl = 
-and ast_fun_decl =
-and ast_fun_def = Fundef of string * ast_param list * string list * ast_stmt list
+and ast_var_decl = entry list
+and ast_fun_decl = entry
+and ast_fun_def = Fundef of ast_fun_decl *ast_decl list * ast_stmt list
 
 and ast_param = Param of string*typ
               | ParamByRef of string*typ
@@ -54,8 +54,10 @@ and ast_expr = Eint of int
              | EDivEq of ast_expr*ast_expr 
              | EDotEq of ast_expr*ast_expr 
              | EModEq of ast_expr*ast_expr 
-             | ENew
-             | EDel
+             | ENew of typ*ast_expr option
+             | EDel of ast_expr
+             | ECast of typ*ast_expr 
+             | EQuestT of ast_expr* ast_expr * ast_expr 
              | Eapp of string * ast_expr list
      and prec = PRE
                 | AFTER;;
