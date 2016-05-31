@@ -93,7 +93,7 @@
 
 %%
 
-program: declation+ T_Eof {ignore(initSymbolTable 256 ); ignore(openScope()); ignore(is_main()); ast_tree := Some $1};
+program: declation+ T_Eof {ignore(initSymbolTable 256 ); ignore(openScope()); ignore(is_main()); ast_tree := $1};
 
 (*declation_plus: declation {}
         | declation_plus {}
@@ -116,7 +116,7 @@ basic_type: T_Int  {}
         | T_Double {};
 
 
-declator: T_Id option(test) {};
+declator: T_Id test? {};
 test: T_Lbracket constant_expression T_Rbracket {};
 
 function_declation : 
@@ -136,16 +136,16 @@ function_def:
         |T_Void T_Id T_Lparen parameter_list? T_Rparen  T_Lbrace declation* statement* T_Rbrace {};
 
 
-statement: T_Semicolon {}
-        | expression T_Semicolon {}
-        | T_Lbrace statement*  T_Rbrace {}
-        | T_If  T_Lparen expression T_Rparen statement test3?
-        | test4? T_For  T_Lparen expression_list? T_Semicolon expression? T_Semicolon expression? T_Rparen statement {}
-        |T_Cont  T_Id? T_Semicolon {}
-        |T_Break T_Id? T_Semicolon {}
-        |T_Return expression? T_Semicolon {};
+statement: T_Semicolon {SExpr None}
+        | expression T_Semicolon {SExpr (Some $1)}
+        | T_Lbrace statement*  T_Rbrace {SNewBlock $2}
+        | T_If  T_Lparen expression T_Rparen statement test3? {Sif ($3,$5,$6)}
+        | test4? T_For  T_Lparen expression_list? T_Semicolon expression_list? T_Semicolon expression_list? T_Rparen statement {Sfor ($1,$4,$6,$8,$10)}
+        |T_Cont  T_Id? T_Semicolon {SCont $2}
+        |T_Break T_Id? T_Semicolon {SBreak $2}
+        |T_Return expression? T_Semicolon {Sreturn $2};
 
-test3: T_Else statement{};
+test3: T_Else statement{$2};
 test4: T_Id T_Colon {};
 
 expression: T_Id {}
@@ -169,29 +169,29 @@ expression: T_Id {}
         |expression T_Mod expression {Emod ($1,$3)}
         |expression T_Add expression {Eplus ($1,$3)}
         |expression T_Sub expression {Eminus ($1,$3)}
-        |expression T_Le expression {}
-        |expression T_Leq expression {}
-        |expression T_Gr expression {}
-        |expression T_Geq expression {}
-        |expression T_Equal expression {}
-        |expression T_Neq expression {}
-        |expression T_And expression {}
-        |expression T_Or expression {}
-        |expression T_Comma expression {}
+        |expression T_Le expression {Elt ($1,$3)}
+        |expression T_Leq expression {Elte ($1,$3)}
+        |expression T_Gr expression {Egt ($1,$3)}
+        |expression T_Geq expression {Egte ($1,$3)}
+        |expression T_Equal expression {Eeq ($1,$3)}
+        |expression T_Neq expression {Eneq ($1,$3)}
+        |expression T_And expression {Eand ($1,$3)}
+        |expression T_Or expression {Eor ($1,$3)}
+        |expression T_Comma expression {Ecomma ($1,$3)}
         |T_Incr expression {EPlusPlus ($2,PRE)}
         |T_Decr expression {EMinusMinus ($2,PRE)}
         |expression T_Incr {EPlusPlus ($2,AFTER)}
         |expression T_Decr {EMinusMinus ($2,AFTER)}
-        |expression T_Eq expression {}
-        |expression T_PlusEq expression {}
-        |expression T_Minus_eq expression {}
-        |expression T_Dot_eq expression {}
-        |expression T_Div_eq expression {}
-        |expression T_Mod_eq expression {}
+        |expression T_Eq expression {EAssignEq ($1,$3)}
+        |expression T_PlusEq expression {EPlusEq ($1,$3)}
+        |expression T_Minus_eq expression {EMinusEq ($1,$3)}
+        |expression T_Dot_eq expression {EDotEq ($1,$3)}
+        |expression T_Div_eq expression {EDivEq ($1,$3)}
+        |expression T_Mod_eq expression {EModEq ($1,$3)}
         |T_Lparen type_i T_Rparen expression {}
         |expression T_Quest expression T_Colon expression {}
-        |T_New type_i  test8? {}
-        |T_Del expression {};
+        |T_New type_i  test8? {Enew}
+        |T_Del expression {EDel};
 test8:  T_Lbracket expression T_Rbracket {};
 
 expression_list: expression test9* {};

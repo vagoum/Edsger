@@ -2,14 +2,19 @@ open Format
 
 type ast_program = ast_fun_def list
 
+and ast_decl = VarDecl of ast_var_decl
+              | FunDecl of ast_fun_decl
+              | FunDef of ast_fun_def
+and ast_var_decl = 
+and ast_fun_decl =
 and ast_fun_def = Fundef of string * ast_param list * string list * ast_stmt list
 
 and ast_param = Param of string*typ
               | ParamByRef of string*typ
 
-and ast_stmt = Expr of ast_expr option
+and ast_stmt = SExpr of ast_expr option
              | SNewblock of ast_stmt list
-             | Sfor of string option *ast_expr list* ast_expr list* ast_expr list* ast_stmt
+             | Sfor of string option *ast_expr list option* ast_expr list option* ast_expr list option* ast_stmt
              | Sif of ast_expr * ast_stmt * ast_stmt option
              | Sreturn of ast_expr option
              | SBreak of string option
@@ -33,6 +38,7 @@ and ast_expr = Eint of int
              | Emod of ast_expr * ast_expr
              | Eand of ast_expr * ast_expr
              | Eor of ast_expr * ast_expr
+             | Ecomma of ast_expr * ast_expr
              | Elt of ast_expr * ast_expr
              | Elte of ast_expr * ast_expr
              | Egt of ast_expr * ast_expr
@@ -42,8 +48,10 @@ and ast_expr = Eint of int
              | Enot of ast_expr
              | EPlusPlus of ast_expr*prec
              | EMinusMinus of ast_expr*prec
+             | EAssignEq of ast_expr*ast_expr 
              | EPlusEq of ast_expr*ast_expr 
              | EMinusEq of ast_expr*ast_expr 
+             | EDivEq of ast_expr*ast_expr 
              | EDotEq of ast_expr*ast_expr 
              | EModEq of ast_expr*ast_expr 
              | ENew
