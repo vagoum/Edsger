@@ -1,0 +1,7 @@
+corebuild -use-menhir -tag thread -use-ocamlfind -pkg core main.native 
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -o lexer.cmo lexer.ml
++ ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -o lexer.cmo lexer.ml
+File "lexer.mll", line 57, characters 144-149:
+Error: This expression has type bytes but an expression was expected of type
+         char
+Command exited with code 2.

@@ -37,7 +37,7 @@
 %token <string> T_Id
 %token <int> T_Const_Int
 %token <float> T_Const_Real
-%token <char> T_Const_Char
+%token <string> T_Const_Char
 %token <string> T_Const_String
 
 (*Operators tokens*)

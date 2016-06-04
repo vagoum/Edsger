@@ -12,4 +12,7 @@ Parser:
 -create hashtable for keywords (T_Id(id), T_Keyw(id))
 
 Semantic analysis:
-implement
+Implement
+
+Code Generation:
+Implement
