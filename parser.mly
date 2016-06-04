@@ -4,6 +4,7 @@
         open Types
         open Ast
         open Error
+        open Semantic
 
 
 
@@ -99,7 +100,7 @@
 
 %%
 
-program: declation+ T_Eof {ignore(initSymbolTable 256 ); ignore(openScope()); ignore(is_main()); ast_tree := $1;};
+program: declation+ T_Eof {ignore(initSymbolTable 256 ); ignore(openScope()); ignore(is_main()); ast_tree := $1;check $1;
 
 (*declation_plus: declation {}
         | declation_plus {}
@@ -129,8 +130,8 @@ basic_type: T_Int  {TYPE_int}
         | T_Double {TYPE_double};
 
 
-declator: T_Id test? {$1}; (* need to add intalization variable*)
-test: T_Lbracket constant_expression T_Rbracket {};
+declator: T_Id test? { Option.map (fun x=> if get_type $2 = get_entry_type (lookupEntry (make_id $1) LOOKUP_ALL_SCOPES true) then () else error "constant intialization type error"; ) $2 ;$1}; (*check if intialization type is correct*)
+test: T_Lbracket constant_expression T_Rbracket {$2};
 
 fuction_declation:  fuction_declation1 cScope T_Semicolon {$1};
 function_declation1 : 
@@ -158,9 +159,9 @@ function_def: function_declation1 T_Lbrace  declation* statement* cScope T_Rbrac
 
 statement: T_Semicolon {SExpr None}
         | expression T_Semicolon {SExpr (Some $1)}
-        | T_Lbrace oScope statement* cScope  T_Rbrace {SNewBlock $2}
+        | T_Lbrace oScope statement* cScope  T_Rbrace {ignore (List.map check_expr $2);SNewBlock $2}
         | T_If  T_Lparen expression T_Rparen statement test3? {Sif ($3,$5,$6)}
-        | test4? T_For  T_Lparen expression_list? T_Semicolon expression_list? T_Semicolon expression_list? T_Rparen inLoop statement outLoop {Sfor ($1,$4,$6,$8,$10)}
+        | test4? T_For  T_Lparen expression_list? T_Semicolon expression_list? T_Semicolon expression_list? T_Rparen inLoop statement outLoop {;Sfor ($1,$4,$6,$8,$10)}
         |T_Cont  T_Id? T_Semicolon {if nested_loops =0 then error "No continue in Loop"; SCont $2 else SCont $2}
         |T_Break T_Id? T_Semicolon {if nested_loops = 0 then error "No break in loop" ; SBreak $2  else SBreak $2}
         |T_Return expression? T_Semicolon {Sreturn $2};
@@ -214,8 +215,8 @@ expression: T_Id {Eid $1}
         |T_Del expression {EDel $2};
 test8:  T_Lbracket oScope expression cScope T_Rbracket {$2};
 
-expression_list: expression test9* {[$1] @ $2};
-test9: T_Comma expression {$2};
+expression_list: expression test9* {check_expr $1;[$1] @ $2};
+test9: T_Comma expression {check_expr $2 ;$2};
 
 constant_expression:expression {$1};
 
