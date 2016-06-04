@@ -1,7 +1,8 @@
 .PHONY: clean distclean pack count
 
 
-default2 : corebuild -use-menhir -tag thread -use-ocamlfind -pkg core main.native 
+default2 : 
+	corebuild -use-menhir -tag thread -use-ocamlfind -pkg core main.native 
 
 # OS type: Linux/Win DJGPP
 ifdef OS

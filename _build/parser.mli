@@ -48,7 +48,7 @@ type token =
   | T_Const_String of (string)
   | T_Const_Real of (float)
   | T_Const_Int of (int)
-  | T_Const_Char of (string)
+  | T_Const_Char of (char)
   | T_Comma
   | T_Colon
   | T_Char

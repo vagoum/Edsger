@@ -5,7 +5,8 @@
         open Ast
         open Error
         open Semantic
-
+        open Identifier
+        open Option
 
 
         let get_first (x,_,_) =x ;;
@@ -36,7 +37,7 @@
 %token <string> T_Id
 %token <int> T_Const_Int
 %token <float> T_Const_Real
-%token <string> T_Const_Char
+%token <char> T_Const_Char
 %token <string> T_Const_String
 
 (*Operators tokens*)
@@ -100,7 +101,7 @@
 
 %%
 
-program: declation+ T_Eof {ignore(initSymbolTable 256 ); ignore(openScope()); ignore(is_main()); ast_tree := $1;check $1;
+program: declation+ T_Eof {ignore(initSymbolTable 256 ); ignore(openScope()); ignore(is_main()); ast_tree := $1;check (Some $1);}
 
 (*declation_plus: declation {}
         | declation_plus {}
@@ -113,16 +114,16 @@ inLoop : {ignore(nested_loops := !nested_loops +1)}
 outLoop : {ignore(nested_loops := !nested_loops -1)}
 
 declation: variable_declation {VarDecl $1} (*maybe it will replaced with empty later*)
-        | function_declation {FunDecl $1}
+        | fuction_declation {FunDecl $1}
         | function_def {FunDef $1};
 
-variable_declation: type_i declator_plus {map (fun x -> newVariable (id_make x) $1 true) $2};
+        variable_declation: type_i declator_plus {List.map (fun x -> newVariable (id_make x) $1 true) $2};
 
 declator_plus: declator T_Semicolon {[$1]}
         | declator T_Comma declator_plus {$1::$3};
 
 
-type_i: basic_type T_Mul* {if $2 = [] then $1 else fold_left (fun x->fun y-> Type_pointer x ) $1 $2};
+type_i: basic_type T_Mul* {if $2 = [] then $1 else List.fold_left (fun x->fun y-> TYPE_pointer x ) $1 $2};
 
 basic_type: T_Int  {TYPE_int}
         | T_Char {TYPE_char}
@@ -130,40 +131,40 @@ basic_type: T_Int  {TYPE_int}
         | T_Double {TYPE_double};
 
 
-declator: T_Id test? { Option.map (fun x=> if get_type $2 = get_entry_type (lookupEntry (make_id $1) LOOKUP_ALL_SCOPES true) then () else error "constant intialization type error"; ) $2 ;$1}; (*check if intialization type is correct*)
+declator: T_Id test? { ignore (Option.map (fun x -> (if (get_type x) = (get_entry_type (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true)) then () else error "constant intialization type error"; )) $2) ;$1}; (*check if intialization type is correct*)
 test: T_Lbracket constant_expression T_Rbracket {$2};
 
-fuction_declation:  fuction_declation1 cScope T_Semicolon {$1};
+fuction_declation:  function_declation1 cScope T_Semicolon {$1};
 function_declation1 : 
         oScope type_i T_Id T_Lparen parameter_list? T_Rparen{
-        let e= newFuction (id_make $2) true in  
-                may (List.iter (fun x-> newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  )) $4 ;  
-                endFuctionHeader e $1 ; 
+        let e= newFunction (id_make $3) true in  
+                may (List.iter (fun x-> ignore(newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $5 ;  
+                endFunctionHeader e $2 ; 
                 e}
         | oScope T_Void T_Id T_Lparen parameter_list? T_Rparen{
-        let e= newFuction (id_make $2) true in 
-                 may (List.iter (fun x-> newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  )) $4 ;  
-                 endFuctionHeader e TYPE_none; 
+        let e= newFunction (id_make $3) true in 
+                 may (List.iter (fun x-> ignore (newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $5 ;  
+                 endFunctionHeader e TYPE_none; 
                  e }
 
 
-parameter_list: parameter test2* {$2 @ [$1]};
+        parameter_list: parameter test2* {[$1] @$2};
 test2: T_Comma parameter {$2};
 
 parameter: T_Byref? type_i T_Id {if is_some $1 then (PASS_BY_REFERENCE,$2,$3) else (PASS_BY_VALUE ,$2,$3)};
 
 function_def: function_declation1 T_Lbrace  declation* statement* cScope T_Rbrace {
-        ignore(check_return());
         
-        Fundef ($1,$4,$5)};
+        
+        ($1,$3,$4)};
 
 statement: T_Semicolon {SExpr None}
         | expression T_Semicolon {SExpr (Some $1)}
-        | T_Lbrace oScope statement* cScope  T_Rbrace {ignore (List.map check_expr $2);SNewBlock $2}
+        | T_Lbrace oScope statement* cScope  T_Rbrace {SNewblock $3}
         | T_If  T_Lparen expression T_Rparen statement test3? {Sif ($3,$5,$6)}
-        | test4? T_For  T_Lparen expression_list? T_Semicolon expression_list? T_Semicolon expression_list? T_Rparen inLoop statement outLoop {;Sfor ($1,$4,$6,$8,$10)}
-        |T_Cont  T_Id? T_Semicolon {if nested_loops =0 then error "No continue in Loop"; SCont $2 else SCont $2}
-        |T_Break T_Id? T_Semicolon {if nested_loops = 0 then error "No break in loop" ; SBreak $2  else SBreak $2}
+        | test4? T_For  T_Lparen expression_list? T_Semicolon expression_list? T_Semicolon expression_list? T_Rparen inLoop statement outLoop {Sfor ($1,$4,$6,$8,$11)}
+        |T_Cont  T_Id? T_Semicolon {if !nested_loops =0 then (error "No continue in Loop"; SCont $2) else SCont $2}
+        |T_Break T_Id? T_Semicolon {if !nested_loops = 0 then (error "No break in loop" ; SBreak $2)  else SBreak $2}
         |T_Return expression? T_Semicolon {Sreturn $2};
 
 test3: T_Else statement{$2};
@@ -201,8 +202,8 @@ expression: T_Id {Eid $1}
         |expression T_Comma expression {Ecomma ($1,$3)}
         |T_Incr expression {EPlusPlus ($2,PRE)}
         |T_Decr expression {EMinusMinus ($2,PRE)}
-        |expression T_Incr {EPlusPlus ($2,AFTER)}
-        |expression T_Decr {EMinusMinus ($2,AFTER)}
+        |expression T_Incr {EPlusPlus ($1,AFTER)}
+        |expression T_Decr {EMinusMinus ($1,AFTER)}
         |expression T_Eq expression {EAssignEq ($1,$3)}
         |expression T_PlusEq expression {EPlusEq ($1,$3)}
         |expression T_Minus_eq expression {EMinusEq ($1,$3)}
@@ -211,9 +212,9 @@ expression: T_Id {Eid $1}
         |expression T_Mod_eq expression {EModEq ($1,$3)}
         |T_Lparen type_i T_Rparen expression {ECast ($2,$4)}
         |expression T_Quest expression T_Colon expression {EQuestT ($1,$3,$5)}
-        |T_New type_i  test8? {Enew ($2,$3)}
+        |T_New type_i  test8? {ENew ($2,$3)}
         |T_Del expression {EDel $2};
-test8:  T_Lbracket oScope expression cScope T_Rbracket {$2};
+test8:  T_Lbracket oScope expression cScope T_Rbracket {$3};
 
 expression_list: expression test9* {check_expr $1;[$1] @ $2};
 test9: T_Comma expression {check_expr $2 ;$2};

@@ -1,5 +1,17 @@
 %{
         open Lexing
+        open Symbol
+        open Types
+        open Ast
+        open Error
+        open Semantic
+        open Identifier
+        open Option
+
+
+        let get_first (x,_,_) =x ;;
+        let get_second (_,x,_)=x;;
+        let get_third (_,_,x)=x;;
 %}
 
 (* Keyword tokens *)
@@ -25,7 +37,7 @@
 %token <string> T_Id
 %token <int> T_Const_Int
 %token <float> T_Const_Real
-%token <string> T_Const_Char
+%token <char> T_Const_Char
 %token <string> T_Const_String
 
 (*Operators tokens*)
@@ -89,116 +101,123 @@
 
 %%
 
-program: declation+ T_Eof {};
+program: declation+ T_Eof {ignore(initSymbolTable 256 ); ignore(openScope()); ignore(is_main()); ast_tree := $1;check (Some $1);}
 
 (*declation_plus: declation {}
         | declation_plus {}
 *)
-declation: variable_declation {}
-        | function_declation {}
-        | function_def {};
+oScope :  {ignore(openScope();)}
+cScope :  {ignore(closeScope();)}
+inFun : {ignore(infun := !infun +1)}
+outFun : {ignore(infun := !infun -1)}
+inLoop : {ignore(nested_loops := !nested_loops +1)}
+outLoop : {ignore(nested_loops := !nested_loops -1)}
 
-variable_declation: type_i declator_plus {};
+declation: variable_declation {VarDecl $1} (*maybe it will replaced with empty later*)
+        | fuction_declation {FunDecl $1}
+        | function_def {FunDef $1};
 
-declator_plus: declator T_Semicolon {}
-        | declator T_Comma declator_plus {};
+        variable_declation: type_i declator_plus {List.map (fun x -> newVariable (id_make x) $1 true) $2};
 
-
-type_i: basic_type T_Mul* {};
-
-basic_type: T_Int  {}
-        | T_Char {}
-        | T_Bool {}
-        | T_Double {};
-
-
-declator: T_Id option(test) {};
-test: T_Lbracket constant_expression T_Rbracket {};
-
-function_declation : 
-        type_i T_Id T_Lparen parameter_list? T_Rparen T_Semicolon {}
-        |T_Void T_Id T_Lparen parameter_list? T_Rparen T_Semicolon {};
-
-result_type: type_i{}
-        | T_Void {};
-
-parameter_list: parameter test2* {};
-test2: T_Comma parameter {};
-
-parameter: T_Byref? type_i T_Id {};
-
-function_def:
-        type_i T_Id T_Lparen parameter_list? T_Rparen  T_Lbrace declation* statement* T_Rbrace {};
-        |T_Void T_Id T_Lparen parameter_list? T_Rparen  T_Lbrace declation* statement* T_Rbrace {};
+declator_plus: declator T_Semicolon {[$1]}
+        | declator T_Comma declator_plus {$1::$3};
 
 
-statement: T_Semicolon {}
-        | expression T_Semicolon {}
-        | T_Lbrace statement*  T_Rbrace {}
-        | T_If  T_Lparen expression T_Rparen statement test3?
-        | test4? T_For  T_Lparen expression_list? T_Semicolon expression? T_Semicolon expression? T_Rparen statement {}
-        |T_Cont  T_Id? T_Semicolon {}
-        |T_Break T_Id? T_Semicolon {}
-        |T_Return expression? T_Semicolon {};
+type_i: basic_type T_Mul* {if $2 = [] then $1 else List.fold_left (fun x->fun y-> TYPE_pointer x ) $1 $2};
 
-test3: T_Else statement{};
-test4: T_Id T_Colon {};
-
-expression: T_Id {}
-        | T_Lparen expression T_Rparen  {}
-        |T_True {}
-        |T_False {}
-        |T_Null {}
-        |T_Const_Char {}
-        |T_Const_Int {}
-        |T_Const_Real {}
-        |T_Const_String {}
-        |T_Id  T_Lparen expression_list? T_Rparen {}
-        |expression T_Lbracket expression T_Rbracket {}
-        |unary_operator expression {}
-        |expression binary_operator expression {}
-        |unary_assig expression {}
-        |expression unary_assig {}
-        |expression binary_assig expression {}
-        |T_Lparen type_i T_Rparen expression {}
-        |expression T_Quest expression T_Colon expression {}
-        |T_New type_i  test8? {}
-        |T_Del expression {};
-test8:  T_Lbracket expression T_Rbracket {};
-
-expression_list: expression test9* {};
-test9: T_Comma expression {};
-
-constant_expression:expression {};
-
-unary_operator: T_Amp {}
-        | T_Mul {}
-        | T_Add {}
-        | T_Sub {}
-        | T_Not {};
+basic_type: T_Int  {TYPE_int}
+        | T_Char {TYPE_char}
+        | T_Bool {TYPE_bool}
+        | T_Double {TYPE_double};
 
 
-binary_operator: T_Mul {}
-        |T_Div {}
-        |T_Mod {}
-        |T_Add {}
-        |T_Sub {}
-        |T_Le {}
-        |T_Leq {}
-        |T_Gr {}
-        |T_Geq {}
-        |T_Equal {}
-        |T_Neq {}
-        |T_And {}
-        |T_Or {}
-        |T_Comma {};
+declator: T_Id test? { ignore (Option.map (fun x -> (if (get_type x) = (get_entry_type (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true)) then () else error "constant intialization type error"; )) $2) ;$1}; (*check if intialization type is correct*)
+test: T_Lbracket constant_expression T_Rbracket {$2};
 
-unary_assig: T_Incr {}
-        |T_Decr {};
+fuction_declation:  function_declation1 cScope T_Semicolon {$1};
+function_declation1 : 
+        oScope type_i T_Id T_Lparen parameter_list? T_Rparen{
+        let e= newFunction (id_make $3) true in  
+                may (List.iter (fun x-> ignore(newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $5 ;  
+                endFunctionHeader e $2 ; 
+                e}
+        | oScope T_Void T_Id T_Lparen parameter_list? T_Rparen{
+        let e= newFunction (id_make $3) true in 
+                 may (List.iter (fun x-> ignore (newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $5 ;  
+                 endFunctionHeader e TYPE_none; 
+                 e }
 
-binary_assig: T_Eq {}
-        | T_PlusEq {}
-        | T_Minus_eq {}
-        | T_Dot_eq {}
-        | T_Div_eq {}
-        | T_Mod_eq {};
+
+        parameter_list: parameter test2* {[$1] @$2};
+test2: T_Comma parameter {$2};
+
+parameter: T_Byref? type_i T_Id {if is_some $1 then (PASS_BY_REFERENCE,$2,$3) else (PASS_BY_VALUE ,$2,$3)};
+
+function_def: function_declation1 T_Lbrace  declation* statement* cScope T_Rbrace {
+        
+        
+        ($1,$3,$4)};
+
+statement: T_Semicolon {SExpr None}
+        | expression T_Semicolon {SExpr (Some $1)}
+        | T_Lbrace oScope statement* cScope  T_Rbrace {SNewblock $3}
+        | T_If  T_Lparen expression T_Rparen statement test3? {Sif ($3,$5,$6)}
+        | test4? T_For  T_Lparen expression_list? T_Semicolon expression_list? T_Semicolon expression_list? T_Rparen inLoop statement outLoop {Sfor ($1,$4,$6,$8,$11)}
+        |T_Cont  T_Id? T_Semicolon {if !nested_loops =0 then (error "No continue in Loop"; SCont $2) else SCont $2}
+        |T_Break T_Id? T_Semicolon {if !nested_loops = 0 then (error "No break in loop" ; SBreak $2)  else SBreak $2}
+        |T_Return expression? T_Semicolon {Sreturn $2};
+
+test3: T_Else statement{$2};
+test4: T_Id T_Colon {$1};
+
+expression: T_Id {Eid $1}
+        | T_Lparen expression T_Rparen  {$2}
+        |T_True {Ebool true}
+        |T_False {Ebool false}
+        |T_Null {ENull}
+        |T_Const_Char {Echar $1}
+        |T_Const_Int {Eint $1}
+        |T_Const_Real {Ereal $1}
+        |T_Const_String {Estring $1}
+        |T_Id  T_Lparen expression_list? T_Rparen {ENull} (* FIX THIS*)
+        |expression T_Lbracket oScope expression cScope T_Rbracket {ENull} (* Fix this*)
+        |T_Amp expression {EAmber $2}
+        |T_Mul expression {EPointer $2}
+        |T_Add expression {EUnAdd $2}
+        |T_Sub expression {EUnMinus $2}
+        |T_Not expression {Enot $2}
+        |expression T_Mul expression {Emult ($1,$3)}
+        |expression T_Div expression {Ediv ($1,$3)}
+        |expression T_Mod expression {Emod ($1,$3)}
+        |expression T_Add expression {Eplus ($1,$3)}
+        |expression T_Sub expression {Eminus ($1,$3)}
+        |expression T_Le expression {Elt ($1,$3)}
+        |expression T_Leq expression {Elte ($1,$3)}
+        |expression T_Gr expression {Egt ($1,$3)}
+        |expression T_Geq expression {Egte ($1,$3)}
+        |expression T_Equal expression {Eeq ($1,$3)}
+        |expression T_Neq expression {Eneq ($1,$3)}
+        |expression T_And expression {Eand ($1,$3)}
+        |expression T_Or expression {Eor ($1,$3)}
+        |expression T_Comma expression {Ecomma ($1,$3)}
+        |T_Incr expression {EPlusPlus ($2,PRE)}
+        |T_Decr expression {EMinusMinus ($2,PRE)}
+        |expression T_Incr {EPlusPlus ($1,AFTER)}
+        |expression T_Decr {EMinusMinus ($1,AFTER)}
+        |expression T_Eq expression {EAssignEq ($1,$3)}
+        |expression T_PlusEq expression {EPlusEq ($1,$3)}
+        |expression T_Minus_eq expression {EMinusEq ($1,$3)}
+        |expression T_Dot_eq expression {EDotEq ($1,$3)}
+        |expression T_Div_eq expression {EDivEq ($1,$3)}
+        |expression T_Mod_eq expression {EModEq ($1,$3)}
+        |T_Lparen type_i T_Rparen expression {ECast ($2,$4)}
+        |expression T_Quest expression T_Colon expression {EQuestT ($1,$3,$5)}
+        |T_New type_i  test8? {ENew ($2,$3)}
+        |T_Del expression {EDel $2};
+test8:  T_Lbracket oScope expression cScope T_Rbracket {$3};
+
+expression_list: expression test9* {check_expr $1;[$1] @ $2};
+test9: T_Comma expression {check_expr $2 ;$2};
+
+constant_expression:expression {$1};
+
