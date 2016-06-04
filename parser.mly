@@ -99,7 +99,7 @@
 
 %%
 
-program: declation+ T_Eof {ignore(initSymbolTable 256 ); ignore(openScope()); ignore(is_main()); ast_tree := $1};
+program: declation+ T_Eof {ignore(initSymbolTable 256 ); ignore(openScope()); ignore(is_main()); ast_tree := $1;};
 
 (*declation_plus: declation {}
         | declation_plus {}

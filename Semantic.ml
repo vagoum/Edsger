@@ -2,6 +2,7 @@ open Ast
 open Format
 open List
 open Error
+open Symbol
 
 exception Terminate of string
 
@@ -16,11 +17,48 @@ let is_main() = try lookupEntry (make_id "main") LOOKUP_CURRENT_SCOPE true with 
 
 
 
-
-
-
-
-
+let get_entry_type enry = match enry.entry_info with
+|ENTRY_variable x -> x.variable_type
+|ENTRY_function x -> x.function_result
+|ENTRY_parameter x -> x.parameter_type
+|ENTRY_temporary x -> x.temporary_type
+(*this is more like a type checker*)
+let rec get_type expr = match expr with
+        | Eid x ->  get_entry_type (lookupEntry (make_id x) LOOKUP_ALL_SCOPES true with Not_found -> error "Cant found indetifier")
+        |Ebool _ -> TYPE_bool
+        |Echar _ -> TYPE_char
+        |Eint _ -> TYPE_int
+        |Ereal _ -> TYPE_double
+        |Estring x ->TYPE_array(TYPE_char,String.length x)
+        |Enull -> TYPE_none
+        |EAmber x -> get_type x
+        |EPointer x | EUnAdd x | EUnMinus x |Enot -> get_type x
+        | Emult (x,y) | Ediv (x,y) |Eplus (x,y) | Eminus (x,y) -> (match (get_type x,get_type y) with | (TYPE_Pointer x1,TYPE_int) -> TYPE_Pointer
+        | (TYPE_int,x1) -> x1
+        | (x1,TYPE_int) ->x1
+        | _ ->TYPE_none (*I shall add something for char + char etc*)
+        ) 
+        | EAssignEq (x,y) | EPlusEq (x,y) |EMinusEq (x,y) | EDotEq (x,y) |EDivEq (x,y) -> (match (get_type x,get_type y) with 
+        | (TYPE_Pointer x1,TYPE_int) -> TYPE_Pointer
+        | (x,_) -> x (*need to check later*)
+        | _ ->TYPE_none (*I shall add something for char + char etc*)
+        ) 
+        |E_Mod (x,y) |EModEq-> (match (get_type x,get_type y) with 
+                | (TYPE_int,TYPE_int) ->  TYPE_int 
+                | _ -> TYPE_none
+        )
+        | Elt (x,y) | Elte (x,y) | Egt (x,y) | Egte (x,y) | Eeq (x,y) | Eneq (x,y) -> (match (get_type x,get_type y) with 
+        | (TYPE_int,TYPE_int) | (TYPE_int,TYPE_double) | (TYPE_double,TYPE_int) | (TYPE_double ,TYPE_double) -> TYPE_bool
+        | _ ->TYPE_none)
+        | Eand (x,y) | Eor (x,y) -> (match (get_type x,get_type y) with
+        | (TYPE_bool ,TYPE_bool)) ->TYPE_bool 
+        | _ -> TYPE_none 
+        |Ecomma (x,y) -> get_type y (*need fix*)
+        |EplusPlus (x,_) | EMinusMinus (x,_) -> if (get_type x) = TYPE_int then TYPE_int else TYPE_none 
+        | ECast (x,y) -> if cast_allow x (get_type y) then x else get_type y
+        | EQuestT (x,y,z)-> if (get_type x = TYPE_bool) then (if equalType (get_type y) (get_type z) then get_type y else TYPE_none ) else TYPE_none
+        | Enew (x,_) -> x
+        | EDel -> TYPE_none
 
 
 
@@ -35,8 +73,8 @@ and check_program defs =
 
 and check_fun_def def funs =
   match def with
-  | FunDef (en, param,smth) -> 
-                  check_stmt smth 
+  | FunDef (entry, param,smth) -> 
+                  check_stmt entry smth
   | FunDecl e | VarDecl e ->  ();;
 
 and check_stmt tree=
