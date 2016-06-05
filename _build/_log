@@ -8,11 +8,11 @@ ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules lexer.ml > lex
 # Target: parser.mly.depends, tags: { bin_annot, debug, extension:mly, file:parser.mly, infer, menhir_ocamldep, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
 menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' parser.mly > parser.mly.depends
 + menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' parser.mly > parser.mly.depends
-File "parser.mly", line 113, characters 0-5:
+File "parser.mly", line 115, characters 0-5:
 Warning: symbol inFun is unreachable from any of the start symbol(s).
-File "parser.mly", line 114, characters 0-6:
+File "parser.mly", line 116, characters 0-6:
 Warning: symbol outFun is unreachable from any of the start symbol(s).
-File "parser.mly", line 110, characters 0-6:
+File "parser.mly", line 112, characters 0-6:
 Warning: symbol test64 is unreachable from any of the start symbol(s).
 # Target: Ast.ml.depends, tags: { bin_annot, debug, extension:ml, file:Ast.ml, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
 ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Ast.ml > Ast.ml.depends # cached
@@ -45,24 +45,24 @@ ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -
 # Target: parser.mly, tags: { bin_annot, byte, compile, debug, extension:ml, extension:mly, file:parser.ml, file:parser.mly, infer, menhir, ocaml, package(core), parser, ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
 menhir --ocamlc 'ocamlfind ocamlc -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx '\''ppx-jane -as-ppx'\''' --infer parser.mly
 + menhir --ocamlc 'ocamlfind ocamlc -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx '\''ppx-jane -as-ppx'\''' --infer parser.mly
-File "parser.mly", line 113, characters 0-5:
+File "parser.mly", line 115, characters 0-5:
 Warning: symbol inFun is unreachable from any of the start symbol(s).
-File "parser.mly", line 114, characters 0-6:
+File "parser.mly", line 116, characters 0-6:
 Warning: symbol outFun is unreachable from any of the start symbol(s).
-File "parser.mly", line 110, characters 0-6:
+File "parser.mly", line 112, characters 0-6:
 Warning: symbol test64 is unreachable from any of the start symbol(s).
-File "parser.mly", line 93, characters 0-5:
+File "parser.mly", line 95, characters 0-5:
 Warning: the precedence level assigned to T_New is never useful.
-File "parser.mly", line 90, characters 0-9:
+File "parser.mly", line 92, characters 0-9:
 Warning: the precedence level assigned to T_Rbracket is never useful.
-Warning: 36 states have shift/reduce conflicts.
+Warning: 40 states have shift/reduce conflicts.
 Warning: one state has reduce/reduce conflicts.
-Warning: 129 shift/reduce conflicts were arbitrarily resolved.
+Warning: 149 shift/reduce conflicts were arbitrarily resolved.
 Warning: 2 reduce/reduce conflicts were arbitrarily resolved.
 # Target: parser.mli.depends, tags: { bin_annot, debug, extension:mli, file:parser.mli, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
-ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules parser.mli > parser.mli.depends
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules parser.mli > parser.mli.depends # cached
 # Target: parser.cmi, tags: { bin_annot, byte, compile, debug, extension:mli, file:parser.mli, interf, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
-ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o parser.cmi parser.mli
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o parser.cmi parser.mli # cached
 # Target: lexer.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:lexer.cmo, file:lexer.ml, implem, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
 ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o lexer.cmo lexer.ml # cached
 # Target: main.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
@@ -102,7 +102,7 @@ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot
 # Target: parser.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:parser.cmx, file:parser.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
 ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o parser.cmx parser.ml
 + ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o parser.cmx parser.ml
-File "parser.ml", line 5466, characters 109-110:
+File "parser.ml", line 5517, characters 109-110:
 Warning 27: unused variable y.
 # Target: lexer.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:lexer.cmx, file:lexer.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
 ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o lexer.cmx lexer.ml

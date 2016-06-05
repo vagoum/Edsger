@@ -10,7 +10,9 @@
 
 
         let get_first (x,_,_) =x ;;
+        let get_first2 (x,_) =x ;;
         let get_second (_,x,_)=x;;
+        let get_second2 (_,x)=x;;
         let get_third (_,_,x)=x;;
 %}
 
@@ -119,7 +121,9 @@ declation: function_def {FunDef $1};
         | variable_declation {VarDecl $1} (*maybe it will replaced with empty later*)
         | fuction_declation {FunDecl $1}
 
-        variable_declation: type_i declator_plus {List.map (fun x -> newVariable (id_make x) $1 true) $2};
+        variable_declation: type_i declator_plus {List.map (fun x -> 
+                let typeA = if is_some (get_second2(x)) then TYPE_array ($1,0) else $1 in (* later 0-> lenth,doesnt needed for semantics yet*)
+                newVariable (id_make (get_first2 x)) typeA true) $2};
 
 declator_plus: declator T_Semicolon {[$1]}
         | declator T_Comma declator_plus {$1::$3};
@@ -133,7 +137,7 @@ basic_type: T_Int  {TYPE_int}
         | T_Double {TYPE_double};
 
 
-declator: T_Id test? { ignore (Option.map (fun x -> (if (get_type x) = (get_entry_type (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true)) then () else error "constant intialization type error"; )) $2) ;$1}; (*check if intialization type is correct*)
+        declator: T_Id test? { ($1,$2)}; (*check if intialization type is correct*)
 test: T_Lbracket constant_expression T_Rbracket {$2};
 
 fuction_declation:  function_declation1  T_Semicolon {$1};
@@ -155,10 +159,10 @@ test2: T_Comma parameter {$2};
 
 parameter: T_Byref? type_i T_Id {if is_some $1 then (PASS_BY_REFERENCE,$2,$3) else (PASS_BY_VALUE ,$2,$3)};
 
-function_def: function_declation1 T_Lbrace oScope declation* statement* cScope T_Rbrace {
+function_def:oScope function_declation1 T_Lbrace  declation* statement* cScope T_Rbrace {
         
         
-        ($1,$4,$5)};
+        ($2,$4,$5)};
 
 statement: T_Semicolon {SExpr None}
         | expression T_Semicolon {SExpr (Some $1)}
