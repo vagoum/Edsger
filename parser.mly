@@ -101,8 +101,9 @@
 
 %%
 
-program: declation+ T_Eof {ignore(initSymbolTable 256 ); ignore(openScope()); ignore(is_main()); ast_tree := $1;check (Some $1);}
+program: initialization declation+ T_Eof { ignore(is_main()); ast_tree := $2;check (Some $2);}
 
+initialization: {ignore(initSymbolTable 256); ignore (openScope ());}
 (*declation_plus: declation {}
         | declation_plus {}
 *)
@@ -175,7 +176,7 @@ expression: T_Id {Eid $1}
         |T_True {Ebool true}
         |T_False {Ebool false}
         |T_Null {ENull}
-        |T_Const_Char {Echar $1}
+        |T_Const_Char {Estring $1}
         |T_Const_Int {Eint $1}
         |T_Const_Real {Ereal $1}
         |T_Const_String {Estring $1}

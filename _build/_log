@@ -1,49 +1,112 @@
 ### Starting build.
-# Target: main.ml.depends, tags: { bin_annot, debug, extension:ml, file:main.ml, ocaml, ocamldep, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamldep -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -modules main.ml > main.ml.depends # cached
-# Target: lexer.mll, tags: { bin_annot, debug, extension:mll, file:lexer.mll, lexer, ocaml, ocamllex, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-/usr/local/bin/ocamllex.opt -q lexer.mll # cached
-# Target: lexer.ml.depends, tags: { bin_annot, debug, extension:ml, file:lexer.ml, ocaml, ocamldep, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamldep -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -modules lexer.ml > lexer.ml.depends # cached
-# Target: parser.mly.depends, tags: { bin_annot, debug, extension:mly, file:parser.mly, infer, menhir_ocamldep, ocaml, ocamldep, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' parser.mly > parser.mly.depends # cached
-# Target: Ast.ml.depends, tags: { bin_annot, debug, extension:ml, file:Ast.ml, ocaml, ocamldep, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamldep -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -modules Ast.ml > Ast.ml.depends # cached
-# Target: Symbol.mli.depends, tags: { bin_annot, debug, extension:mli, file:Symbol.mli, ocaml, ocamldep, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamldep -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -modules Symbol.mli > Symbol.mli.depends # cached
-# Target: Identifier.mli.depends, tags: { bin_annot, debug, extension:mli, file:Identifier.mli, ocaml, ocamldep, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamldep -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -modules Identifier.mli > Identifier.mli.depends # cached
-# Target: Identifier.cmi, tags: { bin_annot, byte, compile, debug, extension:mli, file:Identifier.mli, interf, ocaml, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -o Identifier.cmi Identifier.mli # cached
-# Target: Types.mli.depends, tags: { bin_annot, debug, extension:mli, file:Types.mli, ocaml, ocamldep, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamldep -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -modules Types.mli > Types.mli.depends # cached
-# Target: Types.cmi, tags: { bin_annot, byte, compile, debug, extension:mli, file:Types.mli, interf, ocaml, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -o Types.cmi Types.mli # cached
-# Target: Symbol.cmi, tags: { bin_annot, byte, compile, debug, extension:mli, file:Symbol.mli, interf, ocaml, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -o Symbol.cmi Symbol.mli # cached
-# Target: Ast.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Ast.cmo, file:Ast.ml, implem, ocaml, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -o Ast.cmo Ast.ml # cached
-# Target: Error.mli.depends, tags: { bin_annot, debug, extension:mli, file:Error.mli, ocaml, ocamldep, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamldep -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -modules Error.mli > Error.mli.depends # cached
-# Target: Error.cmi, tags: { bin_annot, byte, compile, debug, extension:mli, file:Error.mli, interf, ocaml, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -o Error.cmi Error.mli # cached
-# Target: Option.ml.depends, tags: { bin_annot, debug, extension:ml, file:Option.ml, ocaml, ocamldep, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamldep -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -modules Option.ml > Option.ml.depends # cached
-# Target: Option.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Option.cmo, file:Option.ml, implem, ocaml, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -o Option.cmo Option.ml # cached
-# Target: Semantic.ml.depends, tags: { bin_annot, debug, extension:ml, file:Semantic.ml, ocaml, ocamldep, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamldep -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -modules Semantic.ml > Semantic.ml.depends # cached
-# Target: Semantic.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Semantic.cmo, file:Semantic.ml, implem, ocaml, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -o Semantic.cmo Semantic.ml # cached
-# Target: parser.mly, tags: { bin_annot, byte, compile, debug, extension:ml, extension:mly, file:parser.ml, file:parser.mly, infer, menhir, ocaml, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), parser, quiet, short_paths, syntax(camlp4o), thread }
-menhir --ocamlc 'ocamlfind ocamlc -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax' --infer parser.mly
-+ menhir --ocamlc 'ocamlfind ocamlc -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -syntax camlp4o -package core -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax' --infer parser.mly
-File "parser.mly", line 111, characters 0-5:
+# Target: main.ml.depends, tags: { bin_annot, debug, extension:ml, file:main.ml, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules main.ml > main.ml.depends # cached
+# Target: lexer.mll, tags: { bin_annot, debug, extension:mll, file:lexer.mll, lexer, ocaml, ocamllex, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+/usr/bin/ocamllex -q lexer.mll # cached
+# Target: lexer.ml.depends, tags: { bin_annot, debug, extension:ml, file:lexer.ml, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules lexer.ml > lexer.ml.depends # cached
+# Target: parser.mly.depends, tags: { bin_annot, debug, extension:mly, file:parser.mly, infer, menhir_ocamldep, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' parser.mly > parser.mly.depends
++ menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' parser.mly > parser.mly.depends
+File "parser.mly", line 112, characters 0-5:
 Warning: symbol inFun is unreachable from any of the start symbol(s).
-File "parser.mly", line 112, characters 0-6:
+File "parser.mly", line 113, characters 0-6:
 Warning: symbol outFun is unreachable from any of the start symbol(s).
-File "parser.mly", line 178, characters 29-31:
-Error: This expression has type bytes but an expression was expected of type
-         char
-Command exited with code 1.
-# Compilation unsuccessful.
+# Target: Ast.ml.depends, tags: { bin_annot, debug, extension:ml, file:Ast.ml, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Ast.ml > Ast.ml.depends # cached
+# Target: Symbol.mli.depends, tags: { bin_annot, debug, extension:mli, file:Symbol.mli, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Symbol.mli > Symbol.mli.depends # cached
+# Target: Identifier.mli.depends, tags: { bin_annot, debug, extension:mli, file:Identifier.mli, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Identifier.mli > Identifier.mli.depends # cached
+# Target: Identifier.cmi, tags: { bin_annot, byte, compile, debug, extension:mli, file:Identifier.mli, interf, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Identifier.cmi Identifier.mli # cached
+# Target: Types.mli.depends, tags: { bin_annot, debug, extension:mli, file:Types.mli, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Types.mli > Types.mli.depends # cached
+# Target: Types.cmi, tags: { bin_annot, byte, compile, debug, extension:mli, file:Types.mli, interf, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Types.cmi Types.mli # cached
+# Target: Symbol.cmi, tags: { bin_annot, byte, compile, debug, extension:mli, file:Symbol.mli, interf, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Symbol.cmi Symbol.mli # cached
+# Target: Ast.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Ast.cmo, file:Ast.ml, implem, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Ast.cmo Ast.ml # cached
+# Target: Error.mli.depends, tags: { bin_annot, debug, extension:mli, file:Error.mli, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Error.mli > Error.mli.depends # cached
+# Target: Error.cmi, tags: { bin_annot, byte, compile, debug, extension:mli, file:Error.mli, interf, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Error.cmi Error.mli # cached
+# Target: Option.ml.depends, tags: { bin_annot, debug, extension:ml, file:Option.ml, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Option.ml > Option.ml.depends # cached
+# Target: Option.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Option.cmo, file:Option.ml, implem, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Option.cmo Option.ml # cached
+# Target: Semantic.ml.depends, tags: { bin_annot, debug, extension:ml, file:Semantic.ml, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Semantic.ml > Semantic.ml.depends # cached
+# Target: Semantic.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Semantic.cmo, file:Semantic.ml, implem, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Semantic.cmo Semantic.ml # cached
+# Target: parser.mly, tags: { bin_annot, byte, compile, debug, extension:ml, extension:mly, file:parser.ml, file:parser.mly, infer, menhir, ocaml, package(core), parser, ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+menhir --ocamlc 'ocamlfind ocamlc -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx '\''ppx-jane -as-ppx'\''' --infer parser.mly
++ menhir --ocamlc 'ocamlfind ocamlc -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx '\''ppx-jane -as-ppx'\''' --infer parser.mly
+File "parser.mly", line 112, characters 0-5:
+Warning: symbol inFun is unreachable from any of the start symbol(s).
+File "parser.mly", line 113, characters 0-6:
+Warning: symbol outFun is unreachable from any of the start symbol(s).
+File "parser.mly", line 93, characters 0-5:
+Warning: the precedence level assigned to T_New is never useful.
+File "parser.mly", line 90, characters 0-9:
+Warning: the precedence level assigned to T_Rbracket is never useful.
+Warning: 40 states have shift/reduce conflicts.
+Warning: one state has reduce/reduce conflicts.
+Warning: 145 shift/reduce conflicts were arbitrarily resolved.
+Warning: 2 reduce/reduce conflicts were arbitrarily resolved.
+# Target: parser.mli.depends, tags: { bin_annot, debug, extension:mli, file:parser.mli, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules parser.mli > parser.mli.depends
+# Target: parser.cmi, tags: { bin_annot, byte, compile, debug, extension:mli, file:parser.mli, interf, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o parser.cmi parser.mli
+# Target: lexer.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:lexer.cmo, file:lexer.ml, implem, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o lexer.cmo lexer.ml # cached
+# Target: main.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o main.cmo main.ml # cached
+# Target: parser.ml.depends, tags: { bin_annot, debug, extension:ml, file:parser.ml, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules parser.ml > parser.ml.depends
+# Target: Symbol.ml.depends, tags: { bin_annot, debug, extension:ml, file:Symbol.ml, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Symbol.ml > Symbol.ml.depends # cached
+# Target: Error.ml.depends, tags: { bin_annot, debug, extension:ml, file:Error.ml, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Error.ml > Error.ml.depends # cached
+# Target: Error.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Error.cmx, file:Error.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Error.cmx Error.ml # cached
+# Target: Identifier.ml.depends, tags: { bin_annot, debug, extension:ml, file:Identifier.ml, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Identifier.ml > Identifier.ml.depends # cached
+# Target: Hashcons.ml.depends, tags: { bin_annot, debug, extension:ml, file:Hashcons.ml, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Hashcons.ml > Hashcons.ml.depends # cached
+# Target: Hashcons.mli.depends, tags: { bin_annot, debug, extension:mli, file:Hashcons.mli, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Hashcons.mli > Hashcons.mli.depends # cached
+# Target: Hashcons.cmi, tags: { bin_annot, byte, compile, debug, extension:mli, file:Hashcons.mli, interf, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Hashcons.cmi Hashcons.mli # cached
+# Target: Hashcons.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Hashcons.cmx, file:Hashcons.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Hashcons.cmx Hashcons.ml # cached
+# Target: Identifier.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Identifier.cmx, file:Identifier.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Identifier.cmx Identifier.ml # cached
+# Target: Types.ml.depends, tags: { bin_annot, debug, extension:ml, file:Types.ml, ocaml, ocamldep, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Types.ml > Types.ml.depends # cached
+# Target: Types.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Types.cmx, file:Types.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Types.cmx Types.ml # cached
+# Target: Symbol.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Symbol.cmx, file:Symbol.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Symbol.cmx Symbol.ml # cached
+# Target: Ast.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Ast.cmx, file:Ast.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Ast.cmx Ast.ml # cached
+# Target: Option.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Option.cmx, file:Option.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Option.cmx Option.ml # cached
+# Target: Semantic.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Semantic.cmx, file:Semantic.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Semantic.cmx Semantic.ml # cached
+# Target: parser.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:parser.cmx, file:parser.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o parser.cmx parser.ml
++ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o parser.cmx parser.ml
+File "parser.ml", line 2051, characters 109-110:
+Warning 27: unused variable y.
+# Target: lexer.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:lexer.cmx, file:lexer.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o lexer.cmx lexer.ml
++ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o lexer.cmx lexer.ml
+File "lexer.mll", line 25, characters 28-36:
+Warning 26: unused variable includes.
+# Target: main.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:main.cmx, file:main.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o main.cmx main.ml
+# Target: main.native, tags: { bin_annot, debug, dont_link_with, extension:native, file:main.native, link, native, ocaml, package(core), ppx(ppx-jane -as-ppx), program, quiet, short_paths, thread }
+ocamlfind ocamlopt -linkpkg -g -thread -package core Error.cmx Hashcons.cmx Identifier.cmx Types.cmx Symbol.cmx Ast.cmx Option.cmx Semantic.cmx parser.cmx lexer.cmx main.cmx -o main.native
+# Compilation successful.
