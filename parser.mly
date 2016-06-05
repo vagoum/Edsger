@@ -94,12 +94,12 @@
 %left T_Amp 
 %left T_New 
 %left T_Del 
+%right T_Eq T_PlusEq T_Minus_eq T_Dot_eq T_Div_eq T_Mod_eq 
 %left T_Mul T_Mod T_Div
 %left T_Add T_Sub
 %nonassoc T_Gr T_Le T_Leq T_Geq T_Equal T_Neq
 %left T_And T_Or 
 %nonassoc T_Quest T_Colon
-%right T_Eq T_PlusEq T_Minus_eq T_Dot_eq T_Div_eq T_Mod_eq 
 
 %%
 
@@ -140,15 +140,17 @@ basic_type: T_Int  {TYPE_int}
         declator: T_Id test? { ($1,$2)}; (*check if intialization type is correct*)
 test: T_Lbracket constant_expression T_Rbracket {$2};
 
-fuction_declation:  function_declation1  T_Semicolon {$1};
+fuction_declation:  function_declation1  T_Semicolon cScope {$1};
 function_declation1 : 
         type_i T_Id T_Lparen parameter_list? T_Rparen{
         let e= newFunction (id_make $2) true in  
+        let _ = openScope() in
                 may (List.iter (fun x-> ignore(newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $4 ;  
                 endFunctionHeader e $1 ; 
                 e}
         |  T_Void T_Id T_Lparen parameter_list? T_Rparen{
         let e= newFunction (id_make $2) true in 
+        let _ = openScope() in
                  may (List.iter (fun x-> ignore (newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $4 ;  
                  endFunctionHeader e TYPE_none; 
                  e }
@@ -159,10 +161,10 @@ test2: T_Comma parameter {$2};
 
 parameter: T_Byref? type_i T_Id {if is_some $1 then (PASS_BY_REFERENCE,$2,$3) else (PASS_BY_VALUE ,$2,$3)};
 
-function_def: function_declation1 T_Lbrace oScope  declation* statement* cScope T_Rbrace {
+function_def: function_declation1 T_Lbrace oScope  declation* statement* cScope T_Rbrace cScope{
         
         
-        ($2,$4,$5)};
+        ($1,$4,$5)};
 
 statement: T_Semicolon {SExpr None}
         | expression T_Semicolon {SExpr (Some $1)}
@@ -175,8 +177,8 @@ statement: T_Semicolon {SExpr None}
 
 test3: T_Else statement{$2};
 test4: T_Id T_Colon {$1};
-
-expression: T_Id {Eid $1}
+expression: expression1 {ignore(get_type $1);$1}
+expression1: T_Id {Eid $1}
         | T_Lparen expression T_Rparen  {$2}
         |T_True {Ebool true}
         |T_False {Ebool false}
