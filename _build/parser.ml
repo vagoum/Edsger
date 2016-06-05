@@ -219,7 +219,7 @@ let rec _menhir_goto_option_expression_list_ : _menhir_env -> 'ttv_tail -> _menh
             let ((_menhir_stack, _menhir_s, (_1 : (string))), _, (_3 : (Ast.ast_expr list option))) = _menhir_stack in
             let _4 = () in
             let _2 = () in
-            let _v : (Ast.ast_expr) =                                                   (ENull) in
+            let _v : (Ast.ast_expr) =                                                                  (Eid _1) in
             _menhir_goto_expression1 _menhir_env _menhir_stack _menhir_s _v
         | _ ->
             assert (not _menhir_env._menhir_error);

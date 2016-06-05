@@ -196,7 +196,7 @@ expression1: T_Id {Eid $1}
         |T_Const_Int {Eint $1}
         |T_Const_Real {Ereal $1}
         |T_Const_String {Estring $1}
-        |T_Id  T_Lparen expression_list? T_Rparen {ENull} (* FIX THIS*)
+        |T_Id  T_Lparen expression_list? T_Rparen %prec T_Rparen {Eid $1} (* FIX THIS insert check for parametreces*)
         |expression T_Lbracket oScope expression cScope T_Rbracket {ENull} (* Fix this*)
         |T_Amp expression {EAmber $2}
         |T_Mul expression {EPointer $2}

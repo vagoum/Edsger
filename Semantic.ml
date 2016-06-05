@@ -17,7 +17,10 @@ let has_return = ref false
 let is_main() = try ignore (lookupEntry (id_make "main") LOOKUP_CURRENT_SCOPE true )with Not_found-> error "incorect program";;
 
 
-let cast_allow x y = true;; (*cast*)
+let cast_allow x y = match (get_type x, get_type y) with 
+| (TYPE_double ,TYPE_int), (TYPE_int,TYPE_double) -> true
+| (y1,y2) ->if equalType y1 y2 then true else false;
+| _ -> false;; (*cast*)
 
 
 let get_entry_type enry = match enry.entry_info with

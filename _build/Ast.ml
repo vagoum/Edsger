@@ -61,6 +61,7 @@ and ast_expr = Eint of int
              | ECast of typ*ast_expr 
              | EQuestT of ast_expr* ast_expr * ast_expr 
              | Eapp of string * ast_expr list
+             | ECall of string * ast_expr list option
      and prec = PRE
                 | AFTER;;
 let ast_tree : ast_program ref = ref [];
