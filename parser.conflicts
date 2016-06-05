@@ -1,22 +1,91 @@
 
-** Conflict (shift/reduce) in state 140.
-** Token involved: T_Else
+** Conflict (shift/reduce) in state 208.
+** Tokens involved: T_Int T_Double T_Char T_Bool
+** The following explanations concentrate on token T_Int.
 ** This state is reached from program after reading:
 
-result_type T_Id T_Lparen option(parameter_list) T_Rparen T_Lbrace list(declation) T_If T_Lparen expression T_Rparen T_If T_Lparen expression T_Rparen statement 
+initialization declation 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
-function_def 
-result_type T_Id T_Lparen option(parameter_list) T_Rparen T_Lbrace list(declation) list(statement) T_Rbrace 
-                                                                                   statement list(statement) 
-                                                                                   (?)
+initialization nonempty_list(declation) T_Eof 
+               declation nonempty_list(declation) 
+                         declation 
+                         (?)
 
-** In state 140, looking ahead at T_Else, reducing production
+** In state 208, looking ahead at T_Int, shifting is permitted
+** because of the following sub-derivation:
+
+variable_declation 
+type_i declator_plus 
+basic_type list(T_Mul) 
+. T_Int 
+
+** In state 208, looking ahead at T_Int, reducing production
+** oScope -> 
+** is permitted because of the following sub-derivation:
+
+fuction_declation 
+function_declation1 cScope T_Semicolon 
+oScope type_i T_Id T_Lparen option(parameter_list) T_Rparen // lookahead token appears because type_i can begin with T_Int
+. 
+
+** Conflict (shift/reduce) in state 204.
+** Tokens involved: T_Int T_Double T_Char T_Bool
+** The following explanations concentrate on token T_Int.
+** This state is reached from program after reading:
+
+initialization function_declation1 T_Lbrace declation 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               function_def 
+               function_declation1 T_Lbrace list(declation) list(statement) cScope T_Rbrace 
+                                            declation list(declation) 
+                                                      declation list(declation) 
+                                                      (?)
+
+** In state 204, looking ahead at T_Int, shifting is permitted
+** because of the following sub-derivation:
+
+variable_declation 
+type_i declator_plus 
+basic_type list(T_Mul) 
+. T_Int 
+
+** In state 204, looking ahead at T_Int, reducing production
+** oScope -> 
+** is permitted because of the following sub-derivation:
+
+fuction_declation 
+function_declation1 cScope T_Semicolon 
+oScope type_i T_Id T_Lparen option(parameter_list) T_Rparen // lookahead token appears because type_i can begin with T_Int
+. 
+
+** Conflict (shift/reduce) in state 176.
+** Token involved: T_Else
+** This state is reached from program after reading:
+
+initialization function_declation1 T_Lbrace list(declation) T_If T_Lparen expression T_Rparen T_If T_Lparen expression T_Rparen statement 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               function_def 
+               function_declation1 T_Lbrace list(declation) list(statement) cScope T_Rbrace 
+                                                            statement list(statement) 
+                                                            (?)
+
+** In state 176, looking ahead at T_Else, reducing production
 ** option(test3) -> 
 ** is permitted because of the following sub-derivation:
 
@@ -24,7 +93,7 @@ T_If T_Lparen expression T_Rparen statement option(test3) // lookahead token app
                                   T_If T_Lparen expression T_Rparen statement option(test3) // lookahead token is inherited
                                                                               . 
 
-** In state 140, looking ahead at T_Else, shifting is permitted
+** In state 176, looking ahead at T_Else, shifting is permitted
 ** because of the following sub-derivation:
 
 T_If T_Lparen expression T_Rparen statement option(test3) 
@@ -32,38 +101,176 @@ T_If T_Lparen expression T_Rparen statement option(test3)
                                                                               test3 
                                                                               . T_Else statement 
 
-** Conflict (shift/reduce) in state 84.
-** Token involved: T_Mul
+** Conflict (shift/reduce) in state 153.
+** Tokens involved: T_Int T_Double T_Char T_Bool
+** The following explanations concentrate on token T_Int.
 ** This state is reached from program after reading:
 
-type_i T_Id T_Lbracket T_New basic_type T_Mul 
+initialization function_declation1 T_Lbrace 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               function_def 
+               function_declation1 T_Lbrace list(declation) list(statement) cScope T_Rbrace 
+                                            declation list(declation) 
+                                            (?)
+
+** In state 153, looking ahead at T_Int, shifting is permitted
+** because of the following sub-derivation:
+
 variable_declation 
 type_i declator_plus 
-       declator T_Semicolon 
-       T_Id option(test) 
-            test 
-            T_Lbracket constant_expression T_Rbracket 
-                       expression 
-                       (?)
+basic_type list(T_Mul) 
+. T_Int 
 
-** In state 84, looking ahead at T_Mul, reducing production
+** In state 153, looking ahead at T_Int, reducing production
+** oScope -> 
+** is permitted because of the following sub-derivation:
+
+fuction_declation 
+function_declation1 cScope T_Semicolon 
+oScope type_i T_Id T_Lparen option(parameter_list) T_Rparen // lookahead token appears because type_i can begin with T_Int
+. 
+
+** Conflict (shift/reduce) in state 116.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket T_Sub expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 116, looking ahead at T_Comma, reducing production
+** expression -> T_Sub expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+T_Sub expression . 
+
+** In state 116, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+T_Sub expression 
+      expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 115.
+** Tokens involved: T_Sub T_Quest T_PlusEq T_Or T_Neq T_Mul T_Mod_eq T_Mod T_Minus_eq T_Leq T_Le T_Lbracket T_Incr T_Gr T_Geq T_Equal T_Eq T_Dot_eq T_Div_eq T_Div T_Decr T_Comma T_And T_Add
+** The following explanations concentrate on token T_Sub.
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket T_Not expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 115, looking ahead at T_Sub, reducing production
+** expression -> T_Not expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Sub expression // lookahead token appears
+T_Not expression . 
+
+** In state 115, looking ahead at T_Sub, shifting is permitted
+** because of the following sub-derivation:
+
+T_Not expression 
+      expression . T_Sub expression 
+
+** Conflict (shift/reduce) in state 109.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket T_Mul expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 109, looking ahead at T_Comma, reducing production
+** expression -> T_Mul expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+T_Mul expression . 
+
+** In state 109, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+T_Mul expression 
+      expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 106.
+** Token involved: T_Mul
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket T_New basic_type T_Mul 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 106, looking ahead at T_Mul, reducing production
 ** list(T_Mul) -> 
 ** is permitted because of the following sub-derivation:
 
-expression binary_operator expression // lookahead token appears because binary_operator can begin with T_Mul
+expression T_Mul expression // lookahead token appears
 T_New type_i option(test8) // lookahead token is inherited because option(test8) can vanish
       basic_type list(T_Mul) // lookahead token is inherited
                  T_Mul list(T_Mul) // lookahead token is inherited
                        . 
 
-** In state 84, looking ahead at T_Mul, shifting is permitted
+** In state 106, looking ahead at T_Mul, shifting is permitted
 ** because of the following sub-derivation:
 
 T_New type_i option(test8) 
@@ -71,398 +278,1112 @@ T_New type_i option(test8)
                  T_Mul list(T_Mul) 
                        . T_Mul list(T_Mul) 
 
-** Conflict (shift/reduce) in state 83.
+** Conflict (shift/reduce) in state 105.
 ** Token involved: T_Mul
 ** This state is reached from program after reading:
 
-type_i T_Id T_Lbracket T_New basic_type 
+initialization type_i T_Id T_Lbracket T_New basic_type 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
-variable_declation 
-type_i declator_plus 
-       declator T_Semicolon 
-       T_Id option(test) 
-            test 
-            T_Lbracket constant_expression T_Rbracket 
-                       expression 
-                       (?)
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
 
-** In state 83, looking ahead at T_Mul, reducing production
+** In state 105, looking ahead at T_Mul, reducing production
 ** list(T_Mul) -> 
 ** is permitted because of the following sub-derivation:
 
-expression binary_operator expression // lookahead token appears because binary_operator can begin with T_Mul
+expression T_Mul expression // lookahead token appears
 T_New type_i option(test8) // lookahead token is inherited because option(test8) can vanish
       basic_type list(T_Mul) // lookahead token is inherited
                  . 
 
-** In state 83, looking ahead at T_Mul, shifting is permitted
+** In state 105, looking ahead at T_Mul, shifting is permitted
 ** because of the following sub-derivation:
 
 T_New type_i option(test8) 
       basic_type list(T_Mul) 
                  . T_Mul list(T_Mul) 
 
-** Conflict (shift/reduce) in state 80.
-** Tokens involved: T_Sub T_Quest T_PlusEq T_Or T_Neq T_Mul T_Mod_eq T_Mod T_Minus_eq T_Leq T_Le T_Lbrace T_Incr T_Gr T_Geq T_Equal T_Eq T_Dot_eq T_Div_eq T_Div T_Decr T_Comma T_And T_Add
+** Conflict (shift/reduce) in state 102.
+** Tokens involved: T_Sub T_Quest T_PlusEq T_Or T_Neq T_Mul T_Mod_eq T_Mod T_Minus_eq T_Leq T_Le T_Lbracket T_Incr T_Gr T_Geq T_Equal T_Eq T_Dot_eq T_Div_eq T_Div T_Decr T_Comma T_And T_Add
 ** The following explanations concentrate on token T_Sub.
 ** This state is reached from program after reading:
 
-type_i T_Id T_Lbracket T_Lparen type_i T_Rparen expression 
+initialization type_i T_Id T_Lbracket T_Lparen type_i T_Rparen expression 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
-variable_declation 
-type_i declator_plus 
-       declator T_Semicolon 
-       T_Id option(test) 
-            test 
-            T_Lbracket constant_expression T_Rbracket 
-                       expression 
-                       (?)
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
 
-** In state 80, looking ahead at T_Sub, shifting is permitted
+** In state 102, looking ahead at T_Sub, shifting is permitted
 ** because of the following sub-derivation:
 
 T_Lparen type_i T_Rparen expression 
-                         expression binary_operator expression 
-                                    . T_Sub 
+                         expression . T_Sub expression 
 
-** In state 80, looking ahead at T_Sub, reducing production
+** In state 102, looking ahead at T_Sub, reducing production
 ** expression -> T_Lparen type_i T_Rparen expression 
 ** is permitted because of the following sub-derivation:
 
-expression binary_operator expression // lookahead token appears because binary_operator can begin with T_Sub
+expression T_Sub expression // lookahead token appears
 T_Lparen type_i T_Rparen expression . 
 
-** Conflict (shift/reduce) in state 73.
+** Conflict (shift/reduce) in state 99.
 ** Token involved: T_Comma
 ** This state is reached from program after reading:
 
-type_i T_Id T_Lbracket T_Id T_Lparen expression T_Comma expression 
+initialization type_i T_Id T_Lbracket T_Incr expression 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
-variable_declation 
-type_i declator_plus 
-       declator T_Semicolon 
-       T_Id option(test) 
-            test 
-            T_Lbracket constant_expression T_Rbracket 
-                       expression 
-                       T_Id T_Lparen option(expression_list) T_Rparen 
-                                     expression_list 
-                                     expression list(test9) 
-                                                (?)
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
 
-** In state 73, looking ahead at T_Comma, shifting is permitted
+** In state 99, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+T_Incr expression 
+       expression . T_Comma expression 
+
+** In state 99, looking ahead at T_Comma, reducing production
+** expression -> T_Incr expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+T_Incr expression . 
+
+** Conflict (shift/reduce) in state 96.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket T_Id T_Lparen expression test9 T_Comma expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      T_Id T_Lparen option(expression_list) T_Rparen 
+                                                    expression_list 
+                                                    expression list(test9) 
+                                                               test9 list(test9) 
+                                                                     (?)
+
+** In state 96, looking ahead at T_Comma, shifting is permitted
 ** because of the following sub-derivation:
 
 test9 list(test9) 
 T_Comma expression 
-        expression binary_operator expression 
-                   . T_Comma 
+        expression . T_Comma expression 
 
-** In state 73, looking ahead at T_Comma, reducing production
+** In state 96, looking ahead at T_Comma, reducing production
 ** test9 -> T_Comma expression 
 ** is permitted because of the following sub-derivation:
 
 test9 list(test9) // lookahead token appears because list(test9) can begin with T_Comma
 T_Comma expression . 
 
-** Conflict (shift/reduce) in state 72.
-** Tokens involved: T_True T_Sub T_Null T_Not T_New T_Mul T_Lparen T_Incr T_Id T_False T_Del T_Decr T_Const_String T_Const_Real T_Const_Int T_Const_Char T_Amp T_Add
-** The following explanations concentrate on token T_True.
+** Conflict (shift/reduce/reduce) in state 93.
+** Tokens involved: T_Sub T_Semicolon T_Rparen T_Quest T_PlusEq T_Or T_Neq T_Mul T_Mod_eq T_Mod T_Minus_eq T_Leq T_Le T_Lbracket T_Incr T_Gr T_Geq T_Equal T_Eq T_Dot_eq T_Div_eq T_Div T_Decr T_Comma T_And T_Add
+** The following explanations concentrate on token T_Comma.
 ** This state is reached from program after reading:
 
-type_i T_Id T_Lbracket T_Id T_Lparen expression T_Comma 
+initialization type_i T_Id T_Lbracket T_Id T_Lparen expression T_Comma expression 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
-variable_declation 
-type_i declator_plus 
-       declator T_Semicolon 
-       T_Id option(test) 
-            test 
-            T_Lbracket constant_expression T_Rbracket 
-                       expression 
-                       T_Id T_Lparen option(expression_list) T_Rparen 
-                                     expression_list 
-                                     (?)
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      T_Id T_Lparen option(expression_list) T_Rparen 
+                                                    expression_list 
+                                                    (?)
 
-** In state 72, looking ahead at T_True, reducing production
-** binary_operator -> T_Comma 
-** is permitted because of the following sub-derivation:
-
-expression list(test9) 
-expression binary_operator expression // lookahead token appears because expression can begin with T_True
-           T_Comma . 
-
-** In state 72, looking ahead at T_True, shifting is permitted
+** In state 93, looking ahead at T_Comma, shifting is permitted
 ** because of the following sub-derivation:
 
 expression list(test9) 
-           test9 list(test9) 
-           T_Comma expression 
-                   . T_True 
+expression T_Comma expression 
+                   expression . T_Comma expression 
 
-** Conflict (shift/reduce) in state 67.
-** Tokens involved: T_Lbrace T_Comma
-** The following explanations concentrate on token T_Lbrace.
+** In state 93, looking ahead at T_Comma, reducing production
+** expression -> expression T_Comma expression 
+** is permitted because of the following sub-derivation:
+
+expression list(test9) // lookahead token appears because list(test9) can begin with T_Comma
+expression T_Comma expression . 
+
+** In state 93, looking ahead at T_Comma, reducing production
+** test9 -> T_Comma expression 
+** is permitted because of the following sub-derivation:
+
+expression list(test9) 
+           test9 list(test9) // lookahead token appears because list(test9) can begin with T_Comma
+           T_Comma expression . 
+
+** Conflict (shift/reduce) in state 87.
+** Token involved: T_Comma
 ** This state is reached from program after reading:
 
-type_i T_Id T_Lbracket T_Del expression 
+initialization type_i T_Id T_Lbracket T_Del expression 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
-variable_declation 
-type_i declator_plus 
-       declator T_Semicolon 
-       T_Id option(test) 
-            test 
-            T_Lbracket constant_expression T_Rbracket 
-                       expression 
-                       (?)
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
 
-** In state 67, looking ahead at T_Lbrace, shifting is permitted
+** In state 87, looking ahead at T_Comma, shifting is permitted
 ** because of the following sub-derivation:
 
 T_Del expression 
-      expression . T_Lbrace expression T_Rbrace 
+      expression . T_Comma expression 
 
-** In state 67, looking ahead at T_Lbrace, reducing production
+** In state 87, looking ahead at T_Comma, reducing production
 ** expression -> T_Del expression 
 ** is permitted because of the following sub-derivation:
 
-expression T_Lbrace expression T_Rbrace // lookahead token appears
+expression T_Comma expression // lookahead token appears
 T_Del expression . 
 
-** Conflict (shift/reduce) in state 66.
-** Tokens involved: T_Sub T_Quest T_PlusEq T_Or T_Neq T_Mul T_Mod_eq T_Mod T_Minus_eq T_Leq T_Le T_Lbrace T_Incr T_Gr T_Geq T_Equal T_Eq T_Dot_eq T_Div_eq T_Div T_Decr T_Comma T_And T_Add
-** The following explanations concentrate on token T_Sub.
+** Conflict (shift/reduce) in state 86.
+** Token involved: T_Comma
 ** This state is reached from program after reading:
 
-type_i T_Id T_Lbracket unary_operator expression 
+initialization type_i T_Id T_Lbracket T_Decr expression 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
-variable_declation 
-type_i declator_plus 
-       declator T_Semicolon 
-       T_Id option(test) 
-            test 
-            T_Lbracket constant_expression T_Rbracket 
-                       expression 
-                       (?)
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
 
-** In state 66, looking ahead at T_Sub, shifting is permitted
+** In state 86, looking ahead at T_Comma, shifting is permitted
 ** because of the following sub-derivation:
 
-unary_operator expression 
-               expression binary_operator expression 
-                          . T_Sub 
+T_Decr expression 
+       expression . T_Comma expression 
 
-** In state 66, looking ahead at T_Sub, reducing production
-** expression -> unary_operator expression 
+** In state 86, looking ahead at T_Comma, reducing production
+** expression -> T_Decr expression 
 ** is permitted because of the following sub-derivation:
 
-expression binary_operator expression // lookahead token appears because binary_operator can begin with T_Sub
-unary_operator expression . 
+expression T_Comma expression // lookahead token appears
+T_Decr expression . 
 
-** Conflict (shift/reduce) in state 65.
-** Tokens involved: T_Lbrace T_Comma
-** The following explanations concentrate on token T_Lbrace.
+** Conflict (shift/reduce) in state 85.
+** Token involved: T_Comma
 ** This state is reached from program after reading:
 
-type_i T_Id T_Lbracket expression T_Quest expression T_Colon expression 
+initialization type_i T_Id T_Lbracket T_Amp expression 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
-variable_declation 
-type_i declator_plus 
-       declator T_Semicolon 
-       T_Id option(test) 
-            test 
-            T_Lbracket constant_expression T_Rbracket 
-                       expression 
-                       (?)
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
 
-** In state 65, looking ahead at T_Lbrace, shifting is permitted
+** In state 85, looking ahead at T_Comma, reducing production
+** expression -> T_Amp expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+T_Amp expression . 
+
+** In state 85, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+T_Amp expression 
+      expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 84.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Quest expression T_Colon expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 84, looking ahead at T_Comma, shifting is permitted
 ** because of the following sub-derivation:
 
 expression T_Quest expression T_Colon expression 
-                                      expression . T_Lbrace expression T_Rbrace 
+                                      expression . T_Comma expression 
 
-** In state 65, looking ahead at T_Lbrace, reducing production
+** In state 84, looking ahead at T_Comma, reducing production
 ** expression -> expression T_Quest expression T_Colon expression 
 ** is permitted because of the following sub-derivation:
 
-expression T_Lbrace expression T_Rbrace // lookahead token appears
+expression T_Comma expression // lookahead token appears
 expression T_Quest expression T_Colon expression . 
 
-** Conflict (shift/reduce) in state 63.
-** Tokens involved: T_Sub T_Quest T_PlusEq T_Or T_Neq T_Mul T_Mod_eq T_Mod T_Minus_eq T_Leq T_Le T_Lbrace T_Incr T_Gr T_Geq T_Equal T_Eq T_Dot_eq T_Div_eq T_Div T_Decr T_Comma T_And T_Add
-** The following explanations concentrate on token T_Sub.
+** Conflict (shift/reduce) in state 79.
+** Token involved: T_Comma
 ** This state is reached from program after reading:
 
-type_i T_Id T_Lbracket expression binary_assig expression 
+initialization type_i T_Id T_Lbracket expression T_Div expression 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
-variable_declation 
-type_i declator_plus 
-       declator T_Semicolon 
-       T_Id option(test) 
-            test 
-            T_Lbracket constant_expression T_Rbracket 
-                       expression 
-                       (?)
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
 
-** In state 63, looking ahead at T_Sub, shifting is permitted
-** because of the following sub-derivation:
-
-expression binary_assig expression 
-                        expression binary_operator expression 
-                                   . T_Sub 
-
-** In state 63, looking ahead at T_Sub, reducing production
-** expression -> expression binary_assig expression 
+** In state 79, looking ahead at T_Comma, reducing production
+** expression -> expression T_Div expression 
 ** is permitted because of the following sub-derivation:
 
-expression binary_operator expression // lookahead token appears because binary_operator can begin with T_Sub
-expression binary_assig expression . 
+expression T_Comma expression // lookahead token appears
+expression T_Div expression . 
+
+** In state 79, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Div expression 
+                 expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 73.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Mod expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 73, looking ahead at T_Comma, reducing production
+** expression -> expression T_Mod expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Mod expression . 
+
+** In state 73, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Mod expression 
+                 expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 71.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Add expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 71, looking ahead at T_Comma, reducing production
+** expression -> expression T_Add expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Add expression . 
+
+** In state 71, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Add expression 
+                 expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 69.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Equal expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 69, looking ahead at T_Comma, reducing production
+** expression -> expression T_Equal expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Equal expression . 
+
+** In state 69, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Equal expression 
+                   expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 67.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Geq expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 67, looking ahead at T_Comma, reducing production
+** expression -> expression T_Geq expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Geq expression . 
+
+** In state 67, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Geq expression 
+                 expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 65.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Gr expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 65, looking ahead at T_Comma, reducing production
+** expression -> expression T_Gr expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Gr expression . 
+
+** In state 65, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Gr expression 
+                expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 63.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Le expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 63, looking ahead at T_Comma, reducing production
+** expression -> expression T_Le expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Le expression . 
+
+** In state 63, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Le expression 
+                expression . T_Comma expression 
 
 ** Conflict (shift/reduce) in state 61.
-** Tokens involved: T_Sub T_Quest T_PlusEq T_Or T_Neq T_Mul T_Mod_eq T_Mod T_Minus_eq T_Leq T_Le T_Lbrace T_Incr T_Gr T_Geq T_Equal T_Eq T_Dot_eq T_Div_eq T_Div T_Decr T_Comma T_And T_Add
-** The following explanations concentrate on token T_Sub.
+** Token involved: T_Comma
 ** This state is reached from program after reading:
 
-type_i T_Id T_Lbracket expression binary_operator expression 
+initialization type_i T_Id T_Lbracket expression T_Leq expression 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
-variable_declation 
-type_i declator_plus 
-       declator T_Semicolon 
-       T_Id option(test) 
-            test 
-            T_Lbracket constant_expression T_Rbracket 
-                       expression 
-                       (?)
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
 
-** In state 61, looking ahead at T_Sub, shifting is permitted
-** because of the following sub-derivation:
-
-expression binary_operator expression 
-                           expression binary_operator expression 
-                                      . T_Sub 
-
-** In state 61, looking ahead at T_Sub, reducing production
-** expression -> expression binary_operator expression 
+** In state 61, looking ahead at T_Comma, reducing production
+** expression -> expression T_Leq expression 
 ** is permitted because of the following sub-derivation:
 
-expression binary_operator expression // lookahead token appears because binary_operator can begin with T_Sub
-expression binary_operator expression . 
+expression T_Comma expression // lookahead token appears
+expression T_Leq expression . 
+
+** In state 61, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Leq expression 
+                 expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 59.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Mul expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 59, looking ahead at T_Comma, reducing production
+** expression -> expression T_Mul expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Mul expression . 
+
+** In state 59, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Mul expression 
+                 expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 57.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_And expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 57, looking ahead at T_Comma, reducing production
+** expression -> expression T_And expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_And expression . 
+
+** In state 57, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_And expression 
+                 expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 55.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Neq expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 55, looking ahead at T_Comma, reducing production
+** expression -> expression T_Neq expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Neq expression . 
+
+** In state 55, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Neq expression 
+                 expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 53.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Or expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 53, looking ahead at T_Comma, reducing production
+** expression -> expression T_Or expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Or expression . 
+
+** In state 53, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Or expression 
+                expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 51.
+** Tokens involved: T_Sub T_Quest T_PlusEq T_Or T_Neq T_Mul T_Mod_eq T_Mod T_Minus_eq T_Leq T_Le T_Lbracket T_Incr T_Gr T_Geq T_Equal T_Eq T_Dot_eq T_Div_eq T_Div T_Decr T_Comma T_And T_Add
+** The following explanations concentrate on token T_Sub.
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Comma expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 51, looking ahead at T_Sub, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Comma expression 
+                   expression . T_Sub expression 
+
+** In state 51, looking ahead at T_Sub, reducing production
+** expression -> expression T_Comma expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Sub expression // lookahead token appears
+expression T_Comma expression . 
+
+** Conflict (shift/reduce) in state 49.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Div_eq expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 49, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Div_eq expression 
+                    expression . T_Comma expression 
+
+** In state 49, looking ahead at T_Comma, reducing production
+** expression -> expression T_Div_eq expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Div_eq expression . 
+
+** Conflict (shift/reduce) in state 47.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Dot_eq expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 47, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Dot_eq expression 
+                    expression . T_Comma expression 
+
+** In state 47, looking ahead at T_Comma, reducing production
+** expression -> expression T_Dot_eq expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Dot_eq expression . 
+
+** Conflict (shift/reduce) in state 45.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Eq expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 45, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Eq expression 
+                expression . T_Comma expression 
+
+** In state 45, looking ahead at T_Comma, reducing production
+** expression -> expression T_Eq expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Eq expression . 
+
+** Conflict (shift/reduce) in state 43.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Minus_eq expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 43, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Minus_eq expression 
+                      expression . T_Comma expression 
+
+** In state 43, looking ahead at T_Comma, reducing production
+** expression -> expression T_Minus_eq expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Minus_eq expression . 
+
+** Conflict (shift/reduce) in state 41.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Mod_eq expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 41, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Mod_eq expression 
+                    expression . T_Comma expression 
+
+** In state 41, looking ahead at T_Comma, reducing production
+** expression -> expression T_Mod_eq expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Mod_eq expression . 
+
+** Conflict (shift/reduce) in state 39.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_PlusEq expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 39, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_PlusEq expression 
+                    expression . T_Comma expression 
+
+** In state 39, looking ahead at T_Comma, reducing production
+** expression -> expression T_PlusEq expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_PlusEq expression . 
+
+** Conflict (shift/reduce) in state 37.
+** Token involved: T_Comma
+** This state is reached from program after reading:
+
+initialization type_i T_Id T_Lbracket expression T_Sub expression 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
+
+** In state 37, looking ahead at T_Comma, reducing production
+** expression -> expression T_Sub expression 
+** is permitted because of the following sub-derivation:
+
+expression T_Comma expression // lookahead token appears
+expression T_Sub expression . 
+
+** In state 37, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+expression T_Sub expression 
+                 expression . T_Comma expression 
 
 ** Conflict (shift/reduce) in state 33.
-** Tokens involved: T_Sub T_Quest T_PlusEq T_Or T_Neq T_Mul T_Mod_eq T_Mod T_Minus_eq T_Leq T_Le T_Lbrace T_Incr T_Gr T_Geq T_Equal T_Eq T_Dot_eq T_Div_eq T_Div T_Decr T_Comma T_And T_Add
-** The following explanations concentrate on token T_Sub.
+** Token involved: T_Comma
 ** This state is reached from program after reading:
 
-type_i T_Id T_Lbracket unary_assig expression 
+initialization type_i T_Id T_Lbracket T_Add expression 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
-variable_declation 
-type_i declator_plus 
-       declator T_Semicolon 
-       T_Id option(test) 
-            test 
-            T_Lbracket constant_expression T_Rbracket 
-                       expression 
-                       (?)
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
 
-** In state 33, looking ahead at T_Sub, shifting is permitted
-** because of the following sub-derivation:
-
-unary_assig expression 
-            expression binary_operator expression 
-                       . T_Sub 
-
-** In state 33, looking ahead at T_Sub, reducing production
-** expression -> unary_assig expression 
+** In state 33, looking ahead at T_Comma, reducing production
+** expression -> T_Add expression 
 ** is permitted because of the following sub-derivation:
 
-expression binary_operator expression // lookahead token appears because binary_operator can begin with T_Sub
-unary_assig expression . 
+expression T_Comma expression // lookahead token appears
+T_Add expression . 
 
-** Conflict (shift/reduce) in state 7.
-** Token involved: T_Id
+** In state 33, looking ahead at T_Comma, shifting is permitted
+** because of the following sub-derivation:
+
+T_Add expression 
+      expression . T_Comma expression 
+
+** Conflict (shift/reduce) in state 16.
+** Token involved: T_Lbracket
 ** This state is reached from program after reading:
 
-type_i 
+initialization type_i T_Id T_Lbracket T_New type_i 
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
 program 
-nonempty_list(declation) T_Eof 
-declation 
-(?)
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               variable_declation 
+               type_i declator_plus 
+                      declator T_Semicolon 
+                      T_Id option(test) 
+                           test 
+                           T_Lbracket constant_expression T_Rbracket 
+                                      expression 
+                                      (?)
 
-** In state 7, looking ahead at T_Id, shifting is permitted
+** In state 16, looking ahead at T_Lbracket, reducing production
+** option(test8) -> 
+** is permitted because of the following sub-derivation:
+
+expression T_Lbracket oScope expression cScope T_Rbracket // lookahead token appears
+T_New type_i option(test8) // lookahead token is inherited
+             . 
+
+** In state 16, looking ahead at T_Lbracket, shifting is permitted
+** because of the following sub-derivation:
+
+T_New type_i option(test8) 
+             test8 
+             . T_Lbracket oScope expression cScope T_Rbracket 
+
+** Conflict (shift/reduce) in state 2.
+** Tokens involved: T_Int T_Double T_Char T_Bool
+** The following explanations concentrate on token T_Int.
+** This state is reached from program after reading:
+
+initialization 
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+program 
+initialization nonempty_list(declation) T_Eof 
+               declation 
+               (?)
+
+** In state 2, looking ahead at T_Int, shifting is permitted
 ** because of the following sub-derivation:
 
 variable_declation 
 type_i declator_plus 
-       declator T_Semicolon 
-       . T_Id option(test) 
+basic_type list(T_Mul) 
+. T_Int 
 
-** In state 7, looking ahead at T_Id, reducing production
-** result_type -> type_i 
+** In state 2, looking ahead at T_Int, reducing production
+** oScope -> 
 ** is permitted because of the following sub-derivation:
 
-function_declation 
-result_type T_Id T_Lparen option(parameter_list) T_Rparen T_Semicolon // lookahead token appears
-type_i . 
+fuction_declation 
+function_declation1 cScope T_Semicolon 
+oScope type_i T_Id T_Lparen option(parameter_list) T_Rparen // lookahead token appears because type_i can begin with T_Int
+. 

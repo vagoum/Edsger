@@ -107,6 +107,7 @@ initialization: {ignore(initSymbolTable 256); ignore (openScope ());}
 (*declation_plus: declation {}
         | declation_plus {}
 *)
+test64: {error "test";}
 oScope :  {ignore(openScope();)}
 cScope :  {ignore(closeScope();)}
 inFun : {ignore(infun := !infun +1)}
@@ -114,9 +115,9 @@ outFun : {ignore(infun := !infun -1)}
 inLoop : {ignore(nested_loops := !nested_loops +1)}
 outLoop : {ignore(nested_loops := !nested_loops -1)}
 
-declation: variable_declation {VarDecl $1} (*maybe it will replaced with empty later*)
+declation: function_def {FunDef $1};
+        | variable_declation {VarDecl $1} (*maybe it will replaced with empty later*)
         | fuction_declation {FunDecl $1}
-        | function_def {FunDef $1};
 
         variable_declation: type_i declator_plus {List.map (fun x -> newVariable (id_make x) $1 true) $2};
 
@@ -135,16 +136,16 @@ basic_type: T_Int  {TYPE_int}
 declator: T_Id test? { ignore (Option.map (fun x -> (if (get_type x) = (get_entry_type (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true)) then () else error "constant intialization type error"; )) $2) ;$1}; (*check if intialization type is correct*)
 test: T_Lbracket constant_expression T_Rbracket {$2};
 
-fuction_declation:  function_declation1 cScope T_Semicolon {$1};
+fuction_declation:  function_declation1  T_Semicolon {$1};
 function_declation1 : 
-        oScope type_i T_Id T_Lparen parameter_list? T_Rparen{
-        let e= newFunction (id_make $3) true in  
-                may (List.iter (fun x-> ignore(newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $5 ;  
-                endFunctionHeader e $2 ; 
+        type_i T_Id T_Lparen parameter_list? T_Rparen{
+        let e= newFunction (id_make $2) true in  
+                may (List.iter (fun x-> ignore(newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $4 ;  
+                endFunctionHeader e $1 ; 
                 e}
-        | oScope T_Void T_Id T_Lparen parameter_list? T_Rparen{
-        let e= newFunction (id_make $3) true in 
-                 may (List.iter (fun x-> ignore (newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $5 ;  
+        |  T_Void T_Id T_Lparen parameter_list? T_Rparen{
+        let e= newFunction (id_make $2) true in 
+                 may (List.iter (fun x-> ignore (newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $4 ;  
                  endFunctionHeader e TYPE_none; 
                  e }
 
@@ -154,10 +155,10 @@ test2: T_Comma parameter {$2};
 
 parameter: T_Byref? type_i T_Id {if is_some $1 then (PASS_BY_REFERENCE,$2,$3) else (PASS_BY_VALUE ,$2,$3)};
 
-function_def: function_declation1 T_Lbrace  declation* statement* cScope T_Rbrace {
+function_def: function_declation1 T_Lbrace oScope declation* statement* cScope T_Rbrace {
         
         
-        ($1,$3,$4)};
+        ($1,$4,$5)};
 
 statement: T_Semicolon {SExpr None}
         | expression T_Semicolon {SExpr (Some $1)}
