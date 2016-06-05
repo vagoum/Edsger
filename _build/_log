@@ -44,21 +44,21 @@ File "Semantic.ml", line 20, characters 15-16:
 Warning 27: unused variable x.
 File "Semantic.ml", line 20, characters 17-18:
 Warning 27: unused variable y.
-File "Semantic.ml", line 59, characters 17-18:
+File "Semantic.ml", line 60, characters 17-18:
 Warning 27: unused variable x.
 File "Semantic.ml", line 47, characters 10-11:
 Warning 11: this match case is unused.
-File "Semantic.ml", line 79, characters 19-24:
+File "Semantic.ml", line 80, characters 19-24:
 Warning 27: unused variable param.
-File "Semantic.ml", line 85, characters 12-14:
-Warning 27: unused variable e1.
 File "Semantic.ml", line 86, characters 12-14:
+Warning 27: unused variable e1.
+File "Semantic.ml", line 87, characters 12-14:
 Warning 27: unused variable e2.
-File "Semantic.ml", line 91, characters 9-13:
+File "Semantic.ml", line 92, characters 9-13:
 Warning 27: unused variable expr.
-File "Semantic.ml", line 96, characters 18-22:
+File "Semantic.ml", line 97, characters 18-22:
 Warning 27: unused variable expr.
-File "Semantic.ml", line 99, characters 16-17:
+File "Semantic.ml", line 100, characters 16-17:
 Warning 27: unused variable e.
 # Target: parser.mly, tags: { bin_annot, byte, compile, debug, extension:ml, extension:mly, file:parser.ml, file:parser.mly, infer, menhir, ocaml, package(core), parser, ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
 menhir --ocamlc 'ocamlfind ocamlc -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx '\''ppx-jane -as-ppx'\''' --infer parser.mly # cached
@@ -111,21 +111,21 @@ File "Semantic.ml", line 20, characters 15-16:
 Warning 27: unused variable x.
 File "Semantic.ml", line 20, characters 17-18:
 Warning 27: unused variable y.
-File "Semantic.ml", line 59, characters 17-18:
+File "Semantic.ml", line 60, characters 17-18:
 Warning 27: unused variable x.
 File "Semantic.ml", line 47, characters 10-11:
 Warning 11: this match case is unused.
-File "Semantic.ml", line 79, characters 19-24:
+File "Semantic.ml", line 80, characters 19-24:
 Warning 27: unused variable param.
-File "Semantic.ml", line 85, characters 12-14:
-Warning 27: unused variable e1.
 File "Semantic.ml", line 86, characters 12-14:
+Warning 27: unused variable e1.
+File "Semantic.ml", line 87, characters 12-14:
 Warning 27: unused variable e2.
-File "Semantic.ml", line 91, characters 9-13:
+File "Semantic.ml", line 92, characters 9-13:
 Warning 27: unused variable expr.
-File "Semantic.ml", line 96, characters 18-22:
+File "Semantic.ml", line 97, characters 18-22:
 Warning 27: unused variable expr.
-File "Semantic.ml", line 99, characters 16-17:
+File "Semantic.ml", line 100, characters 16-17:
 Warning 27: unused variable e.
 # Target: parser.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:parser.cmx, file:parser.ml, implem, native, ocaml, package(core), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
 ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o parser.cmx parser.ml # cached

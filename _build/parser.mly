@@ -89,17 +89,26 @@
 %start program
 %type<unit> program
 
-%nonassoc T_Lbracket T_Rbracket 
-%nonassoc T_Incr T_Decr 
-%left T_Amp 
-%left T_New 
-%left T_Del 
+
+
+
+
+
+%nonassoc T_Colon
+
 %right T_Eq T_PlusEq T_Minus_eq T_Dot_eq T_Div_eq T_Mod_eq 
-%left T_Mul T_Mod T_Div
-%left T_Add T_Sub
+%nonassoc T_Quest
+%left T_Or
+%left T_And 
 %nonassoc T_Gr T_Le T_Leq T_Geq T_Equal T_Neq
-%left T_And T_Or 
-%nonassoc T_Quest T_Colon
+%left T_Add T_Sub
+%left T_Mul T_Mod T_Div
+%left T_Del 
+%left T_New 
+%left T_Amp 
+%nonassoc T_Incr T_Decr 
+%nonassoc T_Lbracket T_Rbracket  T_Lparen T_Rparen
+
 
 %%
 
@@ -203,7 +212,7 @@ expression1: T_Id {Eid $1}
         |expression T_Leq expression {Elte ($1,$3)}
         |expression T_Gr expression {Egt ($1,$3)}
         |expression T_Geq expression {Egte ($1,$3)}
-        |expression T_Equal expression {Eeq ($1,$3)}
+        |expression T_Equal  expression {Eeq ($1,$3)}
         |expression T_Neq expression {Eneq ($1,$3)}
         |expression T_And expression {Eand ($1,$3)}
         |expression T_Or expression {Eor ($1,$3)}

@@ -48,15 +48,16 @@ let rec get_type expr = match expr with
         ) 
         |Emod (x,y) |EModEq (x,y)-> (match (get_type x,get_type y) with 
                 | (TYPE_int,TYPE_int) ->  TYPE_int 
-                | _ -> error "Mod needs integer and integer" ; TYPE_none
+                | _ -> Types.print_type (get_type x);Types.print_type (get_type y);error "Mod needs integer and integer" ; TYPE_none
         )
         | Elt (x,y) | Elte (x,y) | Egt (x,y) | Egte (x,y) | Eeq (x,y) | Eneq (x,y) -> (match (get_type x,get_type y) with 
-        | (TYPE_int,TYPE_int) | (TYPE_int,TYPE_double) | (TYPE_double,TYPE_int) | (TYPE_double ,TYPE_double) -> TYPE_bool
+        | (TYPE_int,TYPE_int) | (TYPE_int,TYPE_double) | (TYPE_double,TYPE_int) | (TYPE_double ,TYPE_double) | (TYPE_bool ,TYPE_bool)  -> TYPE_bool
+        | (TYPE_array (x,_), TYPE_array (y,_) ) | (TYPE_pointer x,TYPE_pointer y)-> if equalType x y then TYPE_bool else TYPE_none  
         | _ ->error "sigkrisi xriazete arithmous";TYPE_none)
         | Eand (x,y) | Eor (x,y) -> (match (get_type x,get_type y) with
         | (TYPE_bool ,TYPE_bool) ->TYPE_bool 
-        | _ -> error "type missimatch on boolean action" ; TYPE_none )
-        |Ecomma (x,y) -> get_type y (*need fix*)
+        | _ -> print_type (get_type x); print_type (get_type y);error "type missimatch on boolean action" ; TYPE_none )
+        |Ecomma (x,y) -> get_type y
         |EPlusPlus (x,_) | EMinusMinus (x,_) -> if (get_type x) = TYPE_int then TYPE_int else (error "++ -- needs integer"; TYPE_none) 
         | ECast (x,y) -> if cast_allow x (get_type y) then x else get_type y
         | EQuestT (x,y,z)-> if (get_type x = TYPE_bool) then (if equalType (get_type y) (get_type z) then get_type y else TYPE_none ) else (error "type error questionmark"; TYPE_none)

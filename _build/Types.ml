@@ -23,3 +23,11 @@ let rec equalType t1 t2 =
    match t1, t2 with
    | TYPE_array (et1, sz1), TYPE_array (et2, sz2) -> equalType et1 et2
    | _                                            -> t1 = t2
+let rec print_type x= match x with 
+| TYPE_array _ -> Printf.printf "This is array\n";()
+| TYPE_double -> Printf.printf "This is dobule\n";()
+| TYPE_char -> Printf.printf "This is char\n";()
+| TYPE_int -> Printf.printf "This is int\n";()
+| TYPE_bool -> Printf.printf "This is bool\n";()
+| TYPE_pointer x1-> Printf.printf "This is a pointer of \n"; print_type x1;()
+| TYPE_none -> Printf.printf "This is none type \n"

@@ -12,4 +12,4 @@ type typ = TYPE_none        (* no type (should not be used)       *)
 	 | TYPE_pointer of typ
 val sizeOfType : typ -> int
 val equalType : typ -> typ -> bool
-
+val print_type : typ -> unit
