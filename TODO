@@ -12,7 +12,8 @@ Parser:
 -create hashtable for keywords (T_Id(id), T_Keyw(id))
 
 Semantic analysis:
-Implement
+-fix warnings
+-clean Makefile
 
 Code Generation:
-Implement
+-Implement
