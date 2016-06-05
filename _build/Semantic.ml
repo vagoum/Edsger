@@ -16,17 +16,16 @@ let has_return = ref false
 
 let is_main() = try ignore (lookupEntry (id_make "main") LOOKUP_CURRENT_SCOPE true )with Not_found-> error "incorect program";;
 
+let get_entry_k entry = match entry.entry_info with
+|ENTRY_function x -> x
 
-let cast_allow x y = true;; (*cast*)
-
-
-let get_entry_type enry = match enry.entry_info with
+ let  get_entry_type enry = match enry.entry_info with
 |ENTRY_variable x -> x.variable_type
 |ENTRY_function x -> x.function_result
 |ENTRY_parameter x -> x.parameter_type
 |ENTRY_temporary x -> x.temporary_type
 (*this is more like a type checker*)
-let rec get_type expr = match expr with
+let rec  get_type expr = match expr with
         | Eid x ->  get_entry_type (lookupEntry (id_make x) LOOKUP_ALL_SCOPES true) (*add some warning message*)
         |Ebool _ -> TYPE_bool
         |Echar _ -> TYPE_char
@@ -63,9 +62,18 @@ let rec get_type expr = match expr with
         | EQuestT (x,y,z)-> if (get_type x = TYPE_bool) then (if equalType (get_type y) (get_type z) then get_type y else TYPE_none ) else (error "type error questionmark"; TYPE_none)
         | ENew (x,_) -> x
         | EDel _ -> TYPE_none
+        | EArray (x,y) -> if ((get_type y) = TYPE_int) then expr_array x else TYPE_none
         | _ -> TYPE_none 
 
+and  cast_allow x y = match (x,  y) with 
+| (TYPE_double ,TYPE_int)| (TYPE_int,TYPE_double) -> true
+| (y1,y2) ->if equalType y1 y2 then true else false
+| (_,_) -> false  (*cast*)
 
+and  expr_array x = match get_type x with
+| TYPE_pointer x1 -> x1
+| TYPE_array (x1,x2) ->x1
+| _ -> error "not a memory"; TYPE_none
 let rec check ast =
   match ast with
   | None      -> raise (Terminate "AST is empty")
@@ -97,5 +105,10 @@ and check_stmt enrty tree=
   | Sreturn (Some expr) ->has_return:=true; 
   | Sreturn None -> has_return:=true;
   | _ -> ();
-and check_expr  e=  ();
+and check_expr  e=  ();;
 
+
+
+let check_function_call e params =
+        let param_list =get_entry_k e in   
+        if (List.length param_list.function_paramlist )=( List.length params) then List.iter2 (fun x y -> if (equalType ((get_entry_type x)) (get_type y)) then () else error "function incorect" ) param_list.function_paramlist params else error "function is incorect" ;;

@@ -196,8 +196,8 @@ expression1: T_Id {Eid $1}
         |T_Const_Int {Eint $1}
         |T_Const_Real {Ereal $1}
         |T_Const_String {Estring $1}
-        |T_Id  T_Lparen expression_list? T_Rparen %prec T_Rparen {Eid $1} (* FIX THIS insert check for parametreces*)
-        |expression T_Lbracket oScope expression cScope T_Rbracket {ENull} (* Fix this*)
+        |T_Id  T_Lparen expression_list? T_Rparen %prec T_Rparen { let k = if is_some $3 then get_some1 $3 else [] in check_function_call (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true) k ;Eid $1} 
+        |expression T_Lbracket expression  T_Rbracket {EArray ($1,$3)} 
         |T_Amp expression {EAmber $2}
         |T_Mul expression {EPointer $2}
         |T_Add expression {EUnAdd $2}
