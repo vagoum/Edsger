@@ -187,7 +187,7 @@ statement: T_Semicolon {SExpr None}
         | expression T_Semicolon {SExpr (Some $1)}
         | T_Lbrace oScope statement* cScope  T_Rbrace {SNewblock $3}
         | T_If  T_Lparen expression T_Rparen statement %prec NonElse {Sif ($3,$5,None)}
-        | T_If  T_Lparen expression T_Rparen statement T_Else statement {Sif ($3,$5,Some $6)}
+        | T_If  T_Lparen expression T_Rparen statement T_Else statement {Sif ($3,$5,Some $7)}
         | test4? T_For  T_Lparen expression_list? T_Semicolon expression_list? T_Semicolon expression_list? T_Rparen inLoop statement outLoop {Sfor ($1,$4,$6,$8,$11)}
         |T_Cont  T_Id? T_Semicolon {if !nested_loops =0 then (error "No continue in Loop"; SCont $2) else SCont $2}
         |T_Break T_Id? T_Semicolon {if !nested_loops = 0 then (error "No break in loop" ; SBreak $2)  else SBreak $2}
