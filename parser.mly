@@ -85,29 +85,37 @@
 
 %token T_Eof
 
-
+%token Incr_dcr_postfix
+%token Incr_dcr_prefix
+%token Adress_etc
+%token Cast_
+%token Special_Quest
+%token Fuction_Call
+%token Array_place
+%token NonElse
 %start program
 %type<unit> program
 
 
 
 
+%nonassoc NonElse
+%nonassoc T_Else
 
-
-%nonassoc T_Colon
-
+%left T_Colon
 %right T_Eq T_PlusEq T_Minus_eq T_Dot_eq T_Div_eq T_Mod_eq 
-%nonassoc T_Quest
+%nonassoc Special_Quest
 %left T_Or
 %left T_And 
 %nonassoc T_Gr T_Le T_Leq T_Geq T_Equal T_Neq
 %left T_Add T_Sub
 %left T_Mul T_Mod T_Div
-%left T_Del 
-%left T_New 
-%left T_Amp 
-%nonassoc T_Incr T_Decr 
-%nonassoc T_Lbracket T_Rbracket  T_Lparen T_Rparen
+%nonassoc Cast_
+%nonassoc Incr_dcr_prefix
+%nonassoc T_New  T_Del
+%nonassoc T_Amp Adress_etc
+%nonassoc Incr_dcr_postfix 
+%nonassoc Array_place Fuction_Call
 
 
 %%
@@ -178,13 +186,13 @@ function_def: function_declation1 T_Lbrace oScope  declation* statement* cScope 
 statement: T_Semicolon {SExpr None}
         | expression T_Semicolon {SExpr (Some $1)}
         | T_Lbrace oScope statement* cScope  T_Rbrace {SNewblock $3}
-        | T_If  T_Lparen expression T_Rparen statement test3? {Sif ($3,$5,$6)}
+        | T_If  T_Lparen expression T_Rparen statement %prec NonElse {Sif ($3,$5,None)}
+        | T_If  T_Lparen expression T_Rparen statement T_Else statement {Sif ($3,$5,Some $6)}
         | test4? T_For  T_Lparen expression_list? T_Semicolon expression_list? T_Semicolon expression_list? T_Rparen inLoop statement outLoop {Sfor ($1,$4,$6,$8,$11)}
         |T_Cont  T_Id? T_Semicolon {if !nested_loops =0 then (error "No continue in Loop"; SCont $2) else SCont $2}
         |T_Break T_Id? T_Semicolon {if !nested_loops = 0 then (error "No break in loop" ; SBreak $2)  else SBreak $2}
         |T_Return expression? T_Semicolon {Sreturn $2};
 
-test3: T_Else statement{$2};
 test4: T_Id T_Colon {$1};
 expression: expression1 {ignore(get_type $1);$1}
 expression1: T_Id {Eid $1}
@@ -196,13 +204,13 @@ expression1: T_Id {Eid $1}
         |T_Const_Int {Eint $1}
         |T_Const_Real {Ereal $1}
         |T_Const_String {Estring $1}
-        |T_Id  T_Lparen expression_list? T_Rparen %prec T_Rparen { let k = if is_some $3 then get_some1 $3 else [] in check_function_call (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true) k ;Eid $1} 
-        |expression T_Lbracket expression  T_Rbracket {EArray ($1,$3)} 
+        |T_Id  T_Lparen expression_list? T_Rparen %prec Fuction_Call { let k = if is_some $3 then get_some1 $3 else [] in check_function_call (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true) k ;Eid $1} 
+        |expression array_expresion {EArray ($1,$2)} 
         |T_Amp expression {EAmber $2}
-        |T_Mul expression {EPointer $2}
-        |T_Add expression {EUnAdd $2}
-        |T_Sub expression {EUnMinus $2}
-        |T_Not expression {Enot $2}
+        |T_Mul expression %prec Adress_etc{EPointer $2}
+        |T_Add expression %prec Adress_etc{EUnAdd $2}
+        |T_Sub expression %prec Adress_etc{EUnMinus $2}
+        |T_Not expression %prec Adress_etc{Enot $2}
         |expression T_Mul expression {Emult ($1,$3)}
         |expression T_Div expression {Ediv ($1,$3)}
         |expression T_Mod expression {Emod ($1,$3)}
@@ -217,22 +225,22 @@ expression1: T_Id {Eid $1}
         |expression T_And expression {Eand ($1,$3)}
         |expression T_Or expression {Eor ($1,$3)}
         |expression T_Comma expression {Ecomma ($1,$3)}
-        |T_Incr expression {EPlusPlus ($2,PRE)}
-        |T_Decr expression {EMinusMinus ($2,PRE)}
-        |expression T_Incr {EPlusPlus ($1,AFTER)}
-        |expression T_Decr {EMinusMinus ($1,AFTER)}
+        |T_Incr expression %prec Incr_dcr_postfix{EPlusPlus ($2,PRE)}
+        |T_Decr expression %prec Incr_dcr_postfix{EMinusMinus ($2,PRE)}
+        |expression T_Incr %prec Incr_dcr_prefix{EPlusPlus ($1,AFTER)}
+        |expression T_Decr %prec Incr_dcr_prefix{EMinusMinus ($1,AFTER)}
         |expression T_Eq expression {EAssignEq ($1,$3)}
         |expression T_PlusEq expression {EPlusEq ($1,$3)}
         |expression T_Minus_eq expression {EMinusEq ($1,$3)}
         |expression T_Dot_eq expression {EDotEq ($1,$3)}
         |expression T_Div_eq expression {EDivEq ($1,$3)}
         |expression T_Mod_eq expression {EModEq ($1,$3)}
-        |T_Lparen type_i T_Rparen expression {ECast ($2,$4)}
-        |expression T_Quest expression T_Colon expression {EQuestT ($1,$3,$5)}
+        |T_Lparen type_i T_Rparen expression %prec Cast_ {ECast ($2,$4)}
+        |expression T_Quest expression T_Colon expression %prec Special_Quest {EQuestT ($1,$3,$5)}
         |T_New type_i  test8? {ENew ($2,$3)}
         |T_Del expression {EDel $2};
 test8:  T_Lbracket oScope expression cScope T_Rbracket {$3};
-
+array_expresion: T_Lbracket expression T_Rbracket %prec Array_place {if (get_type $2)=TYPE_int then () else error "Not an int on array";$2}
 expression_list: expression test9* {check_expr $1;[$1] @ $2};
 test9: T_Comma expression {check_expr $2 ;$2};
 
