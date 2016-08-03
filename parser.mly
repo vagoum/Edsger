@@ -115,7 +115,7 @@
 %nonassoc T_New  T_Del
 %nonassoc T_Amp Adress_etc
 %nonassoc Incr_dcr_postfix 
-%nonassoc Array_place Fuction_Call
+%nonassoc Array_place Fuction_Call T_Lparen 
 
 
 %%
@@ -194,8 +194,12 @@ statement: T_Semicolon {SExpr None}
         |T_Return expression? T_Semicolon {Sreturn $2};
 
 test4: T_Id T_Colon {$1};
+fuction_call:T_Id  T_Lparen expression_list? T_Rparen %prec Fuction_Call { let k = if is_some $3 then get_some1 $3 else [] in check_function_call (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true) k ;Eid $1} 
 expression: expression1 {ignore(get_type $1);$1}
-expression1: T_Id {Eid $1}
+expression1: 
+         fuction_call {$1}
+        |T_Id {Eid $1}
+        |expression array_expresion {EArray ($1,$2)} 
         | T_Lparen expression T_Rparen  {$2}
         |T_True {Ebool true}
         |T_False {Ebool false}
@@ -204,8 +208,6 @@ expression1: T_Id {Eid $1}
         |T_Const_Int {Eint $1}
         |T_Const_Real {Ereal $1}
         |T_Const_String {Estring $1}
-        |T_Id  T_Lparen expression_list? T_Rparen %prec Fuction_Call { let k = if is_some $3 then get_some1 $3 else [] in check_function_call (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true) k ;Eid $1} 
-        |expression array_expresion {EArray ($1,$2)} 
         |T_Amp expression {EAmber $2}
         |T_Mul expression %prec Adress_etc{EPointer $2}
         |T_Add expression %prec Adress_etc{EUnAdd $2}
