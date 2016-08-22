@@ -2,7 +2,7 @@
 
    void main ()
    {
-      int limit, number, counter;
+      int  limit, number, counter;
 
 	bool prime (int n)
 	{
