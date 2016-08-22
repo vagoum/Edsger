@@ -139,7 +139,7 @@ declation: function_def {FunDef $1};
         | fuction_declation {FunDecl $1}
 
         variable_declation: type_i declator_plus {List.map (fun x -> 
-                let typeA = if is_some (get_second2(x)) then TYPE_array ($1,0) else $1 in (* later 0-> lenth,doesnt needed for semantics yet*)
+                let typeA = if is_some (get_second2(x)) then (ignore(check_array_len (get_second2(x))); TYPE_array ($1,0) ) else $1 in (* later 0-> lenth,doesnt needed for semantics yet*)
                 newVariable (id_make (get_first2 x)) typeA true) $2};
 
 declator_plus: declator T_Semicolon {[$1]}

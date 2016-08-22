@@ -107,7 +107,9 @@ and check_stmt enrty tree=
   | _ -> ();
 and check_expr  e=  ();;
 
-
+let check_array_len a = match a with
+| Some x -> if (get_type x ) = TYPE_int then () else error ("Array size must be int");
+| _ -> error("Array size must be int");;
 
 let check_function_call e params =
         let param_list =get_entry_k e in   
