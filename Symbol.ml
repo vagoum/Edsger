@@ -57,6 +57,7 @@ and entry_info = ENTRY_none
 
 and entry = {
   entry_id    : Identifier.id;
+  entry_name  : String;
   entry_scope : scope;
   entry_info  : entry_info
 }
@@ -122,6 +123,7 @@ let newEntry id inf err =
     end;
     let e = {
       entry_id = id;
+      entry_name = id_name id;
       entry_scope = !currentScope;
       entry_info = inf
     } in

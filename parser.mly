@@ -7,6 +7,7 @@
         open Semantic
         open Identifier
         open Option
+        open Lamda_lift
 
 
         let get_first (x,_,_) =x ;;
