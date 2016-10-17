@@ -189,13 +189,13 @@ statement: T_Semicolon {SExpr None}
         | T_Lbrace oScope statement* cScope  T_Rbrace {SNewblock $3}
         | T_If  T_Lparen expression T_Rparen statement %prec NonElse {Sif ($3,$5,None)}
         | T_If  T_Lparen expression T_Rparen statement T_Else statement {Sif ($3,$5,Some $7)}
-        | test4? T_For  T_Lparen expression_list? T_Semicolon expression_list? T_Semicolon expression_list? T_Rparen inLoop statement outLoop {Sfor ($1,$4,$6,$8,$11)}
+        | test4? T_For  T_Lparen expression? T_Semicolon expression? T_Semicolon expression? T_Rparen inLoop statement outLoop {Sfor ($1,$4,$6,$8,$11)}
         |T_Cont  T_Id? T_Semicolon {if !nested_loops =0 then (error "No continue in Loop"; SCont $2) else SCont $2}
         |T_Break T_Id? T_Semicolon {if !nested_loops = 0 then (error "No break in loop" ; SBreak $2)  else SBreak $2}
         |T_Return expression? T_Semicolon {Sreturn $2};
 
 test4: T_Id T_Colon {$1};
-fuction_call:T_Id  T_Lparen expression_list? T_Rparen %prec Fuction_Call { let k = if is_some $3 then get_some1 $3 else [] in check_function_call (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true) k ;Eid $1} 
+fuction_call:T_Id  T_Lparen expression_list? T_Rparen %prec Fuction_Call { let k = if is_some $3 then get_some1 $3 else [] in check_function_call (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true) k ;ECall ($1,$3)} 
 expression: expression1 {ignore(get_type $1);$1}
 expression1: 
          fuction_call {$1}
@@ -240,7 +240,7 @@ expression1:
         |expression T_Mod_eq expression {EModEq ($1,$3)}
         |T_Lparen type_i T_Rparen expression %prec Cast_ {ECast ($2,$4)}
         |expression T_Quest expression T_Colon expression %prec Special_Quest {EQuestT ($1,$3,$5)}
-        |T_New type_i  test8? {ENew ($2,$3)}
+        |T_New type_i  test8? {if Option.is_some $3 then ENew ($2,(Option.get $3)) else ENew ($2,Eint(1))}
         |T_Del expression {EDel $2};
 test8:  T_Lbracket oScope expression cScope T_Rbracket {$3};
 array_expresion: T_Lbracket expression T_Rbracket %prec Array_place {if (get_type $2)=TYPE_int then () else error "Not an int on array";$2}

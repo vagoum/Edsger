@@ -54,14 +54,20 @@ and entry_info = ENTRY_none
                | ENTRY_function of function_info
                | ENTRY_parameter of parameter_info
                | ENTRY_temporary of temporary_info
-
 and entry = {
   entry_id    : Identifier.id;
-  entry_name  : String;
+  entry_name  : string;
   entry_scope : scope;
   entry_info  : entry_info
 }
 
+let get_parameter_f a = match a with
+        ENTRY_parameter(b) -> b
+        
+and get_fuction_f a = match a with
+        ENTRY_function(a) -> a
+and get_variable_f a = match a with
+        ENTRY_variable(a) -> a
 type lookup_type = LOOKUP_CURRENT_SCOPE | LOOKUP_ALL_SCOPES
 
 let start_positive_offset = 8
@@ -76,6 +82,7 @@ let the_outer_scope = {
 
 let no_entry id = {
   entry_id = id;
+  entry_name = "a";
   entry_scope = the_outer_scope;
   entry_info = ENTRY_none
 }

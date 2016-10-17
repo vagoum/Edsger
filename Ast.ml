@@ -16,7 +16,7 @@ and ast_param = Param of string*typ
 
 and ast_stmt = SExpr of ast_expr option
              | SNewblock of ast_stmt list
-             | Sfor of string option *ast_expr list option* ast_expr list option* ast_expr list option* ast_stmt
+             | Sfor of string option *ast_expr option* ast_expr  option* ast_expr  option* ast_stmt
              | Sif of ast_expr * ast_stmt * ast_stmt option
              | Sreturn of ast_expr option
              | SBreak of string option
@@ -56,7 +56,7 @@ and ast_expr = Eint of int
              | EDivEq of ast_expr*ast_expr 
              | EDotEq of ast_expr*ast_expr 
              | EModEq of ast_expr*ast_expr 
-             | ENew of typ*ast_expr option
+             | ENew of typ*ast_expr 
              | EDel of ast_expr
              | ECast of typ*ast_expr 
              | EQuestT of ast_expr* ast_expr * ast_expr 
