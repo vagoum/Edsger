@@ -1,0 +1,268 @@
+### Starting build.
+# Target: Main.ml.depends, tags: { bin_annot, debug, extension:ml, file:Main.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules Main.ml > Main.ml.depends # cached
+# Target: Ast.ml.depends, tags: { bin_annot, debug, extension:ml, file:Ast.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules Ast.ml > Ast.ml.depends # cached
+# Target: Symbol.ml.depends, tags: { bin_annot, debug, extension:ml, file:Symbol.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules Symbol.ml > Symbol.ml.depends # cached
+# Target: Error.ml.depends, tags: { bin_annot, debug, extension:ml, file:Error.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules Error.ml > Error.ml.depends # cached
+# Target: Error.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Error.cmo, file:Error.ml, implem, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Error.cmo Error.ml # cached
+# Target: Identifier.ml.depends, tags: { bin_annot, debug, extension:ml, file:Identifier.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules Identifier.ml > Identifier.ml.depends # cached
+# Target: Hashcons.ml.depends, tags: { bin_annot, debug, extension:ml, file:Hashcons.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules Hashcons.ml > Hashcons.ml.depends # cached
+# Target: Hashcons.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Hashcons.cmo, file:Hashcons.ml, implem, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Hashcons.cmo Hashcons.ml # cached
+# Target: Identifier.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Identifier.cmo, file:Identifier.ml, implem, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Identifier.cmo Identifier.ml # cached
+# Target: Types.ml.depends, tags: { bin_annot, debug, extension:ml, file:Types.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules Types.ml > Types.ml.depends # cached
+# Target: Types.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Types.cmo, file:Types.ml, implem, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Types.cmo Types.ml # cached
+# Target: Symbol.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Symbol.cmo, file:Symbol.ml, implem, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Symbol.cmo Symbol.ml # cached
+# Target: Ast.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Ast.cmo, file:Ast.ml, implem, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Ast.cmo Ast.ml # cached
+# Target: Codegen.ml.depends, tags: { bin_annot, debug, extension:ml, file:Codegen.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules Codegen.ml > Codegen.ml.depends
+# Target: Option.ml.depends, tags: { bin_annot, debug, extension:ml, file:Option.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules Option.ml > Option.ml.depends # cached
+# Target: Option.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Option.cmo, file:Option.ml, implem, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Option.cmo Option.ml # cached
+# Target: Semantic.ml.depends, tags: { bin_annot, debug, extension:ml, file:Semantic.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules Semantic.ml > Semantic.ml.depends # cached
+# Target: Semantic.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Semantic.cmo, file:Semantic.ml, implem, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Semantic.cmo Semantic.ml # cached
+# Target: lexer.mll, tags: { bin_annot, debug, extension:mll, file:lexer.mll, lexer, ocaml, ocamllex, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+/usr/bin/ocamllex -q lexer.mll
+# Target: lexer.ml.depends, tags: { bin_annot, debug, extension:ml, file:lexer.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules lexer.ml > lexer.ml.depends # cached
+# Target: parser.mly.depends, tags: { bin_annot, debug, extension:mly, file:parser.mly, infer, menhir_ocamldep, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' parser.mly > parser.mly.depends
++ menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' parser.mly > parser.mly.depends
+File "parser.mly", line 135, characters 0-5:
+Warning: symbol inFun is unreachable from any of the start symbol(s).
+File "parser.mly", line 136, characters 0-6:
+Warning: symbol outFun is unreachable from any of the start symbol(s).
+File "parser.mly", line 132, characters 0-6:
+Warning: symbol test64 is unreachable from any of the start symbol(s).
+# Target: lamda_lift.ml.depends, tags: { bin_annot, debug, extension:ml, file:lamda_lift.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules lamda_lift.ml > lamda_lift.ml.depends # cached
+# Target: lamda_lift.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:lamda_lift.cmo, file:lamda_lift.ml, implem, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o lamda_lift.cmo lamda_lift.ml # cached
+# Target: parser.mly, tags: { bin_annot, byte, compile, debug, extension:ml, extension:mly, file:parser.ml, file:parser.mly, infer, menhir, ocaml, package(core), package(llvm), package(llvm.analysis), parser, ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+menhir --ocamlc 'ocamlfind ocamlc -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx '\''ppx-jane -as-ppx'\''' --infer parser.mly
++ menhir --ocamlc 'ocamlfind ocamlc -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx '\''ppx-jane -as-ppx'\''' --infer parser.mly
+File "parser.mly", line 135, characters 0-5:
+Warning: symbol inFun is unreachable from any of the start symbol(s).
+File "parser.mly", line 136, characters 0-6:
+Warning: symbol outFun is unreachable from any of the start symbol(s).
+File "parser.mly", line 132, characters 0-6:
+Warning: symbol test64 is unreachable from any of the start symbol(s).
+File "parser.mly", line 121, characters 0-9:
+Warning: the precedence level assigned to Array_place is never useful.
+File "parser.mly", line 121, characters 0-9:
+Warning: the precedence level assigned to Fuction_Call is never useful.
+File "parser.mly", line 115, characters 0-9:
+Warning: the precedence level assigned to Incr_dcr_prefix is never useful.
+File "parser.mly", line 106, characters 0-5:
+Warning: the precedence level assigned to T_Colon is never useful.
+File "parser.mly", line 121, characters 0-9:
+Warning: the precedence level assigned to T_Lparen is never useful.
+File "parser.mly", line 116, characters 0-9:
+Warning: the precedence level assigned to T_New is never useful.
+File "parser.mly", line 118, characters 0-6:
+Warning: the precedence level assigned to T_Rbracket is never useful.
+File "parser.mly", line 248, characters 56-67:
+Warning: this %prec declaration is never useful.
+File "parser.mly", line 235, characters 33-48:
+Warning: this %prec declaration is never useful.
+File "parser.mly", line 236, characters 33-48:
+Warning: this %prec declaration is never useful.
+File "parser.mly", line 200, characters 60-72:
+Warning: this %prec declaration is never useful.
+Warning: 35 states have shift/reduce conflicts.
+Warning: one state has reduce/reduce conflicts.
+Warning: 169 shift/reduce conflicts were arbitrarily resolved.
+Warning: one reduce/reduce conflict was arbitrarily resolved.
+# Target: parser.mli.depends, tags: { bin_annot, debug, extension:mli, file:parser.mli, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules parser.mli > parser.mli.depends # cached
+# Target: parser.cmi, tags: { bin_annot, byte, compile, debug, extension:mli, file:parser.mli, interf, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o parser.cmi parser.mli # cached
+# Target: lexer.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:lexer.cmo, file:lexer.ml, implem, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o lexer.cmo lexer.ml # cached
+# Target: Codegen.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Codegen.cmo, file:Codegen.ml, implem, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Codegen.cmo Codegen.ml
++ ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Codegen.cmo Codegen.ml
+File "Codegen.ml", line 26, characters 24-407:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(TYPE_none|TYPE_byte)
+File "Codegen.ml", line 35, characters 28-330:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(TYPE_none|TYPE_byte|TYPE_array (_, _)|TYPE_proc|TYPE_pointer _)
+File "Codegen.ml", line 120, characters 49-230:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(TYPE_none|TYPE_byte|TYPE_array (_, _)|TYPE_proc|TYPE_bool|TYPE_char|
+TYPE_void|TYPE_pointer _)
+File "Codegen.ml", line 108, characters 32-3469:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(Eneq (_, _)|EQuestT (_, _, _)|Eapp (_, _))
+File "Codegen.ml", line 186, characters 27-795:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(Comma|Neq)
+File "Codegen.ml", line 200, characters 29-686:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(And|Or|Comma|Neq)
+File "Codegen.ml", line 231, characters 18-63:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+At_start _
+File "Codegen.ml", line 236, characters 61-77:
+Warning 5: this function application is partial,
+maybe some arguments are missing.
+File "Codegen.ml", line 239, characters 61-77:
+Warning 5: this function application is partial,
+maybe some arguments are missing.
+File "Codegen.ml", line 223, characters 34-1223:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(VarDecl _|FunDecl _)
+File "Codegen.ml", line 243, characters 22-132:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(FunDecl _|FunDef _)
+File "Codegen.ml", line 246, characters 34-198:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(FunDecl _|FunDef _)
+File "Codegen.ml", line 251, characters 31-617:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(Eint _|Ereal _|Echar _|Estring _|Ebool _|ENull|EUnAdd _|EUnMinus _|
+Eplus (_, _)|Eminus (_, _)|Ediv (_, _)|Emult (_, _)|Emod (_, _)|Eand (_, _)|
+Eor (_, _)|Ecomma (_, _)|Elt (_, _)|Elte (_, _)|Egt (_, _)|Egte (_, _)|
+Eeq (_, _)|Eneq (_, _)|Enot _|EPlusPlus (_, _)|EMinusMinus (_, _)|
+EAssignEq (_, _)|EPlusEq (_, _)|EMinusEq (_, _)|EDivEq (_, _)|EDotEq (_, _)|
+EModEq (_, _)|ENew (_, _)|EDel _|ECast (_, _)|EQuestT (_, _, _)|Eapp (_, _)|
+ECall (_, _))
+File "Codegen.ml", line 261, characters 39-583:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(TYPE_none|TYPE_byte|TYPE_proc)
+File "Codegen.ml", line 148, characters 16-17:
+Warning 27: unused variable a.
+File "Codegen.ml", line 227, characters 12-18:
+Warning 26: unused variable params.
+# Target: Main.cmo, tags: { bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Main.cmo, file:Main.ml, implem, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Main.cmo Main.ml # cached
+# Target: Error.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Error.cmx, file:Error.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Error.cmx Error.ml # cached
+# Target: Hashcons.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Hashcons.cmx, file:Hashcons.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Hashcons.cmx Hashcons.ml # cached
+# Target: Identifier.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Identifier.cmx, file:Identifier.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Identifier.cmx Identifier.ml # cached
+# Target: Types.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Types.cmx, file:Types.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Types.cmx Types.ml # cached
+# Target: Symbol.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Symbol.cmx, file:Symbol.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Symbol.cmx Symbol.ml # cached
+# Target: Ast.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Ast.cmx, file:Ast.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Ast.cmx Ast.ml # cached
+# Target: Option.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Option.cmx, file:Option.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Option.cmx Option.ml # cached
+# Target: Semantic.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Semantic.cmx, file:Semantic.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Semantic.cmx Semantic.ml # cached
+# Target: parser.ml.depends, tags: { bin_annot, debug, extension:ml, file:parser.ml, ocaml, ocamldep, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamldep -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -modules parser.ml > parser.ml.depends
+# Target: lamda_lift.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:lamda_lift.cmx, file:lamda_lift.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o lamda_lift.cmx lamda_lift.ml # cached
+# Target: parser.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:parser.cmx, file:parser.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o parser.cmx parser.ml
++ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o parser.cmx parser.ml
+File "parser.ml", line 5346, characters 109-110:
+Warning 27: unused variable y.
+# Target: Codegen.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Codegen.cmx, file:Codegen.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Codegen.cmx Codegen.ml
++ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Codegen.cmx Codegen.ml
+File "Codegen.ml", line 26, characters 24-407:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(TYPE_none|TYPE_byte)
+File "Codegen.ml", line 35, characters 28-330:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(TYPE_none|TYPE_byte|TYPE_array (_, _)|TYPE_proc|TYPE_pointer _)
+File "Codegen.ml", line 120, characters 49-230:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(TYPE_none|TYPE_byte|TYPE_array (_, _)|TYPE_proc|TYPE_bool|TYPE_char|
+TYPE_void|TYPE_pointer _)
+File "Codegen.ml", line 108, characters 32-3469:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(Eneq (_, _)|EQuestT (_, _, _)|Eapp (_, _))
+File "Codegen.ml", line 186, characters 27-795:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(Comma|Neq)
+File "Codegen.ml", line 200, characters 29-686:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(And|Or|Comma|Neq)
+File "Codegen.ml", line 231, characters 18-63:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+At_start _
+File "Codegen.ml", line 236, characters 61-77:
+Warning 5: this function application is partial,
+maybe some arguments are missing.
+File "Codegen.ml", line 239, characters 61-77:
+Warning 5: this function application is partial,
+maybe some arguments are missing.
+File "Codegen.ml", line 223, characters 34-1223:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(VarDecl _|FunDecl _)
+File "Codegen.ml", line 243, characters 22-132:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(FunDecl _|FunDef _)
+File "Codegen.ml", line 246, characters 34-198:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(FunDecl _|FunDef _)
+File "Codegen.ml", line 251, characters 31-617:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(Eint _|Ereal _|Echar _|Estring _|Ebool _|ENull|EUnAdd _|EUnMinus _|
+Eplus (_, _)|Eminus (_, _)|Ediv (_, _)|Emult (_, _)|Emod (_, _)|Eand (_, _)|
+Eor (_, _)|Ecomma (_, _)|Elt (_, _)|Elte (_, _)|Egt (_, _)|Egte (_, _)|
+Eeq (_, _)|Eneq (_, _)|Enot _|EPlusPlus (_, _)|EMinusMinus (_, _)|
+EAssignEq (_, _)|EPlusEq (_, _)|EMinusEq (_, _)|EDivEq (_, _)|EDotEq (_, _)|
+EModEq (_, _)|ENew (_, _)|EDel _|ECast (_, _)|EQuestT (_, _, _)|Eapp (_, _)|
+ECall (_, _))
+File "Codegen.ml", line 261, characters 39-583:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(TYPE_none|TYPE_byte|TYPE_proc)
+File "Codegen.ml", line 148, characters 16-17:
+Warning 27: unused variable a.
+File "Codegen.ml", line 227, characters 12-18:
+Warning 26: unused variable params.
+# Target: lexer.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:lexer.cmx, file:lexer.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o lexer.cmx lexer.ml
++ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o lexer.cmx lexer.ml
+File "lexer.mll", line 25, characters 28-36:
+Warning 26: unused variable includes.
+# Target: Main.cmx, tags: { bin_annot, compile, debug, extension:cmx, extension:ml, file:Main.cmx, file:Main.ml, implem, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), quiet, short_paths, thread }
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Main.cmx Main.ml
+# Target: Main.native, tags: { bin_annot, debug, dont_link_with, extension:native, file:Main.native, link, native, ocaml, package(core), package(llvm), package(llvm.analysis), ppx(ppx-jane -as-ppx), program, quiet, short_paths, thread }
+ocamlfind ocamlopt -linkpkg -g -thread -package llvm.analysis -package llvm -package core Error.cmx Hashcons.cmx Identifier.cmx Types.cmx Symbol.cmx Ast.cmx Option.cmx Semantic.cmx Codegen.cmx lamda_lift.cmx parser.cmx lexer.cmx Main.cmx -o Main.native
+# Compilation successful.

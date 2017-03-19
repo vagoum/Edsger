@@ -1,5 +1,5 @@
 all:
-	corebuild -use-menhir -tag thread -use-ocamlfind -pkg core Main.native
+	corebuild -cflag -g -byte-plugin -use-menhir -tag thread -byte-plugin  -use-ocamlfind -pkgs core,llvm,llvm.analysis Main.native 
 
 clean:
 	corebuild -clean

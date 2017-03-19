@@ -1,0 +1,184 @@
+corebuild -use-menhir -tag thread -use-ocamlfind -pkg core main.native 
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules main.ml > main.ml.depends
+/usr/bin/ocamllex -q lexer.mll
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules lexer.ml > lexer.ml.depends
+menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' parser.mly > parser.mly.depends
++ menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' parser.mly > parser.mly.depends
+File "parser.mly", line 130, characters 0-5:
+Warning: symbol inFun is unreachable from any of the start symbol(s).
+File "parser.mly", line 131, characters 0-6:
+Warning: symbol outFun is unreachable from any of the start symbol(s).
+File "parser.mly", line 127, characters 0-6:
+Warning: symbol test64 is unreachable from any of the start symbol(s).
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Ast.ml > Ast.ml.depends
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Symbol.mli > Symbol.mli.depends
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Identifier.mli > Identifier.mli.depends
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Types.mli > Types.mli.depends
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Identifier.cmi Identifier.mli
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Types.cmi Types.mli
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Symbol.cmi Symbol.mli
++ ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Symbol.cmi Symbol.mli
+File "Symbol.mli", line 37, characters 46-73:
+Warning 50: unattached documentation comment (ignored)
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Error.mli > Error.mli.depends
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Option.ml > Option.ml.depends
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Error.cmi Error.mli
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Semantic.ml > Semantic.ml.depends
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Ast.cmo Ast.ml
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Option.cmo Option.ml
++ ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Option.cmo Option.ml
+File "Option.ml", line 7, characters 7-8:
+Warning 27: unused variable e.
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Semantic.cmo Semantic.ml
++ ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Semantic.cmo Semantic.ml
+File "Semantic.ml", line 19, characters 24-74:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(ENTRY_none|ENTRY_variable _|ENTRY_parameter _|ENTRY_temporary _)
+File "Semantic.ml", line 22, characters 28-208:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+ENTRY_none
+File "Semantic.ml", line 59, characters 17-18:
+Warning 27: unused variable x.
+File "Semantic.ml", line 46, characters 10-11:
+Warning 11: this match case is unused.
+File "Semantic.ml", line 71, characters 2-7:
+Warning 11: this match case is unused.
+File "Semantic.ml", line 75, characters 17-19:
+Warning 27: unused variable x2.
+File "Semantic.ml", line 88, characters 19-24:
+Warning 27: unused variable param.
+File "Semantic.ml", line 94, characters 12-14:
+Warning 27: unused variable e1.
+File "Semantic.ml", line 95, characters 12-14:
+Warning 27: unused variable e2.
+File "Semantic.ml", line 100, characters 9-13:
+Warning 27: unused variable expr.
+File "Semantic.ml", line 105, characters 18-22:
+Warning 27: unused variable expr.
+File "Semantic.ml", line 108, characters 16-17:
+Warning 27: unused variable e.
+menhir --ocamlc 'ocamlfind ocamlc -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx '\''ppx-jane -as-ppx'\''' --infer parser.mly
++ menhir --ocamlc 'ocamlfind ocamlc -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx '\''ppx-jane -as-ppx'\''' --infer parser.mly
+File "parser.mly", line 130, characters 0-5:
+Warning: symbol inFun is unreachable from any of the start symbol(s).
+File "parser.mly", line 131, characters 0-6:
+Warning: symbol outFun is unreachable from any of the start symbol(s).
+File "parser.mly", line 127, characters 0-6:
+Warning: symbol test64 is unreachable from any of the start symbol(s).
+File "parser.mly", line 116, characters 0-9:
+Warning: the precedence level assigned to Array_place is never useful.
+File "parser.mly", line 116, characters 0-9:
+Warning: the precedence level assigned to Fuction_Call is never useful.
+File "parser.mly", line 112, characters 0-9:
+Warning: the precedence level assigned to Incr_dcr_prefix is never useful.
+File "parser.mly", line 103, characters 0-5:
+Warning: the precedence level assigned to T_Colon is never useful.
+File "parser.mly", line 113, characters 0-9:
+Warning: the precedence level assigned to T_New is never useful.
+File "parser.mly", line 241, characters 56-67:
+Warning: this %prec declaration is never useful.
+File "parser.mly", line 205, characters 56-68:
+Warning: this %prec declaration is never useful.
+File "parser.mly", line 228, characters 33-48:
+Warning: this %prec declaration is never useful.
+File "parser.mly", line 229, characters 33-48:
+Warning: this %prec declaration is never useful.
+Warning: 36 states have shift/reduce conflicts.
+Warning: one state has reduce/reduce conflicts.
+Warning: 199 shift/reduce conflicts were arbitrarily resolved.
+Warning: 2 reduce/reduce conflicts were arbitrarily resolved.
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules parser.mli > parser.mli.depends
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o parser.cmi parser.mli
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o lexer.cmo lexer.ml
++ ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o lexer.cmo lexer.ml
+File "lexer.mll", line 25, characters 28-36:
+Warning 26: unused variable includes.
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o main.cmo main.ml
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules parser.ml > parser.ml.depends
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Symbol.ml > Symbol.ml.depends
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Error.ml > Error.ml.depends
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Identifier.ml > Identifier.ml.depends
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Hashcons.ml > Hashcons.ml.depends
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Hashcons.mli > Hashcons.mli.depends
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Hashcons.cmi Hashcons.mli
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Hashcons.cmx Hashcons.ml
++ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Hashcons.cmx Hashcons.ml
+File "Hashcons.ml", line 26, characters 19-31:
+Warning 3: deprecated: Array.create
+Use Array.make instead.
+ocamlfind ocamldep -package core -ppx 'ppx-jane -as-ppx' -modules Types.ml > Types.ml.depends
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Error.cmx Error.ml
++ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Error.cmx Error.ml
+File "Error.ml", line 58, characters 11-14:
+Warning 27: unused variable buf.
+File "Error.ml", line 58, characters 15-18:
+Warning 27: unused variable pos.
+File "Error.ml", line 58, characters 19-22:
+Warning 27: unused variable len.
+File "Error.ml", line 65, characters 11-14:
+Warning 27: unused variable ppf.
+File "Error.ml", line 73, characters 11-14:
+Warning 27: unused variable ppf.
+File "Error.ml", line 81, characters 13-16:
+Warning 27: unused variable ppf.
+File "Error.ml", line 94, characters 15-18:
+Warning 27: unused variable ppf.
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Identifier.cmx Identifier.ml
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Types.cmx Types.ml
++ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Types.cmx Types.ml
+File "Types.ml", line 26, characters 22-416:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(TYPE_byte|TYPE_proc|TYPE_void)
+File "Types.ml", line 24, characters 22-25:
+Warning 27: unused variable sz1.
+File "Types.ml", line 24, characters 45-48:
+Warning 27: unused variable sz2.
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Symbol.cmx Symbol.ml
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Ast.cmx Ast.ml
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Option.cmx Option.ml
++ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Option.cmx Option.ml
+File "Option.ml", line 7, characters 7-8:
+Warning 27: unused variable e.
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Semantic.cmx Semantic.ml
++ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o Semantic.cmx Semantic.ml
+File "Semantic.ml", line 19, characters 24-74:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+(ENTRY_none|ENTRY_variable _|ENTRY_parameter _|ENTRY_temporary _)
+File "Semantic.ml", line 22, characters 28-208:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+ENTRY_none
+File "Semantic.ml", line 59, characters 17-18:
+Warning 27: unused variable x.
+File "Semantic.ml", line 46, characters 10-11:
+Warning 11: this match case is unused.
+File "Semantic.ml", line 71, characters 2-7:
+Warning 11: this match case is unused.
+File "Semantic.ml", line 75, characters 17-19:
+Warning 27: unused variable x2.
+File "Semantic.ml", line 88, characters 19-24:
+Warning 27: unused variable param.
+File "Semantic.ml", line 94, characters 12-14:
+Warning 27: unused variable e1.
+File "Semantic.ml", line 95, characters 12-14:
+Warning 27: unused variable e2.
+File "Semantic.ml", line 100, characters 9-13:
+Warning 27: unused variable expr.
+File "Semantic.ml", line 105, characters 18-22:
+Warning 27: unused variable expr.
+File "Semantic.ml", line 108, characters 16-17:
+Warning 27: unused variable e.
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o parser.cmx parser.ml
++ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o parser.cmx parser.ml
+File "parser.ml", line 5353, characters 109-110:
+Warning 27: unused variable y.
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o lexer.cmx lexer.ml
++ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o lexer.cmx lexer.ml
+File "lexer.mll", line 25, characters 28-36:
+Warning 26: unused variable includes.
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -bin-annot -short-paths -thread -package core -ppx 'ppx-jane -as-ppx' -o main.cmx main.ml
+ocamlfind ocamlopt -linkpkg -g -thread -package core Error.cmx Hashcons.cmx Identifier.cmx Types.cmx Symbol.cmx Ast.cmx Option.cmx Semantic.cmx parser.cmx lexer.cmx main.cmx -o main.native
