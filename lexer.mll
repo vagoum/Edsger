@@ -9,6 +9,24 @@ let incr_linenum lexbuf =
           { pos with pos_bol = lexbuf.lex_curr_pos;
                pos_lnum = pos.pos_lnum + 1;
           }
+let trans_esc c =
+        let _ = print_char (c) in match c with
+|'n'->'\n'
+|'r' ->'\r'
+|'t' -> '\t'
+|'a'-> '\007'
+|'\"'->'\"'
+|'\\'->'\\'
+| '0'->'\000'
+let rec trans_ecs s = 
+        if(String.contains s '\\') then  let esc_i = String.index s  '\\' in let before =String.sub s 0 esc_i in
+        let after =esc_i +2 in
+        let after_s=String.sub s after ((String.length s) - after) in
+        let repl= trans_esc (s.[esc_i+1]) in String.concat "" [before; String.make 1 repl ; trans_ecs after_s];
+        else
+                s
+
+
 }
 
 let digit = ['0'-'9']
@@ -17,13 +35,16 @@ let white = [' ' '\t' '\r']
 let newline = ['\n']
 let hex = ['a'-'f' 'A'-'F' '0'-'9']
 let id = ['a'-'z' 'A'-'Z' '0'-'9' '_']
+let back_slash= '\\'
 let escape = '\\' ['\\' ''' '"' 'n' 'r' 't']
 (* the meat of the lexer *)
+let string_chars =([^ '"'] | escape)*
 rule lexer = parse
 
 (* add file inclusion support *)
-  | "#" ([^ '\n'])* "\n" as includes          {incr_linenum lexbuf; lexer lexbuf}
-
+  | "#" ([^ '\n'])* "\n" (*as includes*)          {incr_linenum lexbuf; lexer lexbuf}
+  |"//" {linecomment lexbuf}
+  | "/*"  {blockcomment lexbuf} 
 (* Keywords *)
   | "bool"     {T_Bool}
   | "break"    {T_Break}
@@ -54,11 +75,11 @@ rule lexer = parse
   | digit+ '.' digit+ as real {T_Const_Real(float_of_string real)}
 
 (* constant chars *)
-  | "'" ([^ '\'' '\"'  '\\' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" |  "\\\'" | "\\\"" | "\\x ['0'-'7'] hex")) "'"  as cchar {T_Const_Char(cchar)}
+ (* | "'" ([^ '\'' '\"'  '\\' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" |  "\\\'" | "\\\"" | "\\x ['0'-'7'] hex")) "'"  as cchar {T_Const_Char(cchar)}
 
 (* strings *)
   | '"' ([^ '\'' '\"'  '\\' '\n' ] | ( "\\n" | "\\t" | "\\r" | "\\0" | "\\\\" | "\\\'" | "\\\"" | "\\x ['0'-'7'] hex"))* '"' as str { T_Const_String(str) }
-
+*)
 (* Symbolic Operators *)
   | "="     {T_Eq}
   | "=="    {T_Equal}
@@ -99,13 +120,21 @@ rule lexer = parse
   | white+         { lexer lexbuf }
   | newline+ { incr_linenum lexbuf ; lexer lexbuf}
 
-  | "//" [^ '\n']* "\n" { incr_linenum lexbuf ; lexer lexbuf}
-  | "/*" (_)* "*/*"     { comments  lexbuf }
+  | '"' (string_chars as content) '"' { T_Const_String (trans_ecs content) }
+  | '\'' back_slash (_ as esc_char) '\''  { T_Const_Char (trans_esc (esc_char)) }
+  | '\'' (_ as char_match) '\'' { T_Const_Char(char_match) }
+ (* | "//" [^ '\n']* "\n" { incr_linenum lexbuf ; lexer lexbuf}
+  | "/*" (_)* "*/*"     { comments  lexbuf }*)
 
   | _ as c              { printf "ERROR (%c), \n" c ; lexer lexbuf }
 
   | eof                 { T_Eof }
-
+and linecomment = parse
+| ['\r' '\n'] {lexer lexbuf}
+| _ {linecomment lexbuf }
+and blockcomment= parse
+| "*/" {lexer lexbuf}
+| _ {blockcomment lexbuf}
 and comments =  parse
   | "*/" { lexer lexbuf }
   | "\n" { incr_linenum lexbuf; lexer lexbuf }
