@@ -7,12 +7,14 @@
     exit 1*)
 open Ast
 open Llvm
-let main = 
+open Format
+let main =
 let lexbuf = Lexing.from_channel stdin in
 try
         (Parser.program Lexer.lexer lexbuf);
-    let a=    Codegen.codegen_main !ast_tree
-    in print_module ("a.ll") a 
+ (*      let _ = print_teliko !ast_tree in*)
+    let a=    Codegen.codegen_main !ast_tree 
+    in print_module ("a2.ll") a 
 with
 | Failure msg -> print_endline ("Failure in " ^ msg)
 | Parser.Error -> print_endline "Parse error"

@@ -22,6 +22,8 @@ let rec sizeOfType t =
 let rec equalType t1 t2 =
    match t1, t2 with
    | TYPE_array (et1, sz1), TYPE_array (et2, sz2) -> equalType et1 et2
+   | (TYPE_pointer a),TYPE_array (b,_) -> equalType a b
+   | TYPE_array (b,_),TYPE_pointer a -> equalType a b
    | _                                            -> t1 = t2
 let rec print_type x= match x with 
 | TYPE_array _ -> Printf.printf "This is array\n";()

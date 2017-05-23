@@ -9,8 +9,13 @@ module H = Hashtbl.Make (
     let hash = Hashtbl.hash
   end
 )
-
-type pass_mode = PASS_BY_VALUE | PASS_BY_REFERENCE
+module H2 =Hashtbl.Make(
+struct 
+        type t = int
+        let equal = (==)
+        let hash = Hashtbl.hash
+end)
+type pass_mode = PASS_BY_VALUE | PASS_BY_REFERENCE |PASS_PREV
 
 type param_status =
   | PARDEF_COMPLETE
@@ -33,6 +38,7 @@ and function_info = {
   mutable function_isForward : bool;
   mutable function_paramlist : entry list;
   mutable function_redeflist : entry list;
+  mutable function_prev : entry list;
   mutable function_result    : Types.typ;
   mutable function_pstatus   : param_status;
   mutable function_initquad  : int
@@ -67,7 +73,11 @@ let get_parameter_f a = match a with
 and get_fuction_f a = match a with
         ENTRY_function(a) -> a
 and get_variable_f a = match a with
-        ENTRY_variable(a) -> a
+        |ENTRY_variable(a) -> a
+and get_var_par_type a = match a with
+        | ENTRY_variable (a)-> a.variable_type
+        | ENTRY_parameter (a) -> a.parameter_type
+and check_same_function id func = List.exists (fun x-> x.entry_id = id) func.function_paramlist
 type lookup_type = LOOKUP_CURRENT_SCOPE | LOOKUP_ALL_SCOPES
 
 let start_positive_offset = 8
@@ -92,7 +102,7 @@ let quadNext = ref 1
 let tempNumber = ref 1
 
 let tab = ref (H.create 0)
-
+let curr_func = ref (H2.create 0)
 let initSymbolTable size =
    tab := H.create size;
    currentScope := the_outer_scope
@@ -115,9 +125,17 @@ let closeScope () =
       currentScope := scp
   | None ->
       error "cannot close the outer scope!"
+let closeScope2() =
+        let _ = H2.remove !curr_func 0 in
+        closeScope();;
 
 exception Failure_NewEntry of entry
-
+let isGlobal id = 
+        try
+                let e= H.find !tab id in
+                        if e.entry_scope.sco_nesting = 1 then true
+                        else false
+        with Not_found -> false ;;
 let newEntry id inf err =
   try
     if err then begin
@@ -139,9 +157,9 @@ let newEntry id inf err =
     e
   with Failure_NewEntry e ->
     error "duplicate identifier %a" pretty_id id;
-    e
+    e;;
 
-let lookupEntry id how err =
+let rec lookupEntry id how err =
   let scc = !currentScope in
   let lookup () =
     match how with
@@ -157,6 +175,26 @@ let lookupEntry id how err =
     try
       lookup ()
     with Not_found ->
+            match how with
+                | LOOKUP_CURRENT_SCOPE ->
+            if (isGlobal id) then H.find !tab id else 
+                    if (check_same_function id (get_fuction_f (H2.find !curr_func 0))) then H.find !tab id else
+                    let e1= lookupEntry id LOOKUP_ALL_SCOPES err
+                    in
+			 let inf_p = {
+                                 parameter_type = (get_var_par_type e1.entry_info);
+            parameter_offset = 0;
+            parameter_mode = PASS_BY_REFERENCE;
+          	}in
+                    let inf =get_fuction_f (H2.find !curr_func 0) in
+                    (*let _ = e2.function_pstatus <-PARDEF_DEFINE in*)
+		let e = newEntry id (ENTRY_parameter inf_p) err in
+          inf.function_prev<- e :: inf.function_prev;
+          e
+                    (*let tmp2 = newParameter id (get_variable_f e1).variable_type (PASS_PREV) (H.find !curr_func 0) false in
+                    let _ = endFunctionHeader (H.find !curr_func 0) e2.fuction_result in
+                    tmp2*)
+                | LOOKUP_ALL_SCOPES ->
       error "unknown identifier %a (first occurrence)"
         pretty_id id;
       (* put it in, so we don't see more errors *)
@@ -191,11 +229,15 @@ let newFunction id err =
       function_isForward = false;
       function_paramlist = [];
       function_redeflist = [];
+      function_prev =[];
       function_result = TYPE_none;
       function_pstatus = PARDEF_DEFINE;
       function_initquad = 0
     } in
-    newEntry id (ENTRY_function inf) false
+    let tmp =newEntry id (ENTRY_function inf) false
+    in 
+    H2.add !curr_func 0 tmp.entry_info;
+    tmp
 
 let newParameter id typ mode f err =
   match f.entry_info with

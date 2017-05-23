@@ -40,7 +40,7 @@
 %token <string> T_Id
 %token <int> T_Const_Int
 %token <float> T_Const_Real
-%token <string> T_Const_Char
+%token <char> T_Const_Char
 %token <string> T_Const_String
 
 (*Operators tokens*)
@@ -94,6 +94,7 @@
 %token Fuction_Call
 %token Array_place
 %token NonElse
+%token SComma
 %start program
 %type<unit> program
 
@@ -103,7 +104,9 @@
 %nonassoc NonElse
 %nonassoc T_Else
 
-%left T_Colon
+
+%left T_Comma
+%nonassoc Scomma
 %right T_Eq T_PlusEq T_Minus_eq T_Dot_eq T_Div_eq T_Mod_eq 
 %nonassoc Special_Quest
 %left T_Or
@@ -132,6 +135,7 @@ initialization: {ignore(initSymbolTable 256); ignore (openScope ());}
 test64: {error "test";}
 oScope :  {ignore(openScope();)}
 cScope :  {ignore(closeScope();)}
+cScope2 :  {ignore(closeScope2();)}
 inFun : {ignore(infun := !infun +1)}
 outFun : {ignore(infun := !infun -1)}
 inLoop : {ignore(nested_loops := !nested_loops +1)}
@@ -142,7 +146,7 @@ declation: function_def {FunDef $1};
         | fuction_declation {FunDecl $1}
 
         variable_declation: type_i declator_plus {List.map (fun x -> 
-                let typeA = if is_some (get_second2(x)) then (ignore(check_array_len (get_second2(x))); TYPE_array ($1,0) ) else $1 in (* later 0-> lenth,doesnt needed for semantics yet*)
+                let typeA = if is_some (get_second2(x)) then (ignore(check_array_len (get_second2(x))); TYPE_array ($1,evaluate_constant (get (get_second2(x)))) ) else $1 in (* later 0-> lenth,doesnt needed for semantics yet*)
                 newVariable (id_make (get_first2 x)) typeA true) $2};
 
 declator_plus: declator T_Semicolon {[$1]}
@@ -181,7 +185,7 @@ test2: T_Comma parameter {$2};
 
 parameter: T_Byref? type_i T_Id {if is_some $1 then (PASS_BY_REFERENCE,$2,$3) else (PASS_BY_VALUE ,$2,$3)};
 
-function_def: function_declation1 T_Lbrace oScope  declation* statement* cScope T_Rbrace cScope{
+function_def: function_declation1 T_Lbrace oScope  declation* statement* cScope T_Rbrace cScope2{
         
         
         ($1,$4,$5)};
@@ -197,7 +201,11 @@ statement: T_Semicolon {SExpr None}
         |T_Return expression? T_Semicolon {Sreturn $2};
 
 test4: T_Id T_Colon {$1};
-fuction_call:T_Id  T_Lparen expression_list? T_Rparen %prec Fuction_Call { let k = if is_some $3 then get_some1 $3 else [] in check_function_call (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true) k ;ECall ($1,$3)} 
+fuction_call:T_Id  T_Lparen expression_list7? T_Rparen %prec Fuction_Call { let k = if is_some $3 then get_some1 $3 else [] in 
+(match (check_name_lib $1) with 
+| true ->()
+|false -> ignore(check_function_call (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true) k) 
+);let y2 = {ls = $3} in ECall ($1,y2)} 
 expression: expression1 {ignore(get_type $1);$1}
 expression1: 
          fuction_call {$1}
@@ -207,7 +215,7 @@ expression1:
         |T_True {Ebool true}
         |T_False {Ebool false}
         |T_Null {ENull}
-        |T_Const_Char {Estring $1}
+        |T_Const_Char {Echar $1}
         |T_Const_Int {Eint $1}
         |T_Const_Real {Ereal $1}
         |T_Const_String {Estring $1}
@@ -246,8 +254,55 @@ expression1:
         |T_Del expression {EDel $2};
 test8:  T_Lbracket oScope expression cScope T_Rbracket {$3};
 array_expresion: T_Lbracket expression T_Rbracket %prec Array_place {if (get_type $2)=TYPE_int then () else error "Not an int on array";$2}
-expression_list: expression test9* {check_expr $1;[$1] @ $2};
-test9: T_Comma expression {check_expr $2 ;$2};
+expression_list: expression test9*  {check_expr $1;[$1] @ $2};
+test9: T_Comma expression %prec SComma{check_expr $2 ;$2};
 
+expression_list7: expression7 test97* {check_expr $1;[$1] @ $2};
+test97: T_Comma expression7 {check_expr $2 ;$2};
 constant_expression:expression {$1};
 
+
+expression7: 
+         fuction_call {$1}
+        |T_Id {Eid $1}
+        |expression7 array_expresion {EArray ($1,$2)} 
+        | T_Lparen expression T_Rparen  {$2}
+        |T_True {Ebool true}
+        |T_False {Ebool false}
+        |T_Null {ENull}
+        |T_Const_Char {Echar $1}
+        |T_Const_Int {Eint $1}
+        |T_Const_Real {Ereal $1}
+        |T_Const_String {Estring $1}
+        |T_Amp expression7 {EAmber $2}
+        |T_Mul expression7 %prec Adress_etc{EPointer $2}
+        |T_Add expression7 %prec Adress_etc{EUnAdd $2}
+        |T_Sub expression7 %prec Adress_etc{EUnMinus $2}
+        |T_Not expression7 %prec Adress_etc{Enot $2}
+        |expression7 T_Mul expression7 {Emult ($1,$3)}
+        |expression7 T_Div expression7 {Ediv ($1,$3)}
+        |expression7 T_Mod expression7 {Emod ($1,$3)}
+        |expression7 T_Add expression7 {Eplus ($1,$3)}
+        |expression7 T_Sub expression7 {Eminus ($1,$3)}
+        |expression7 T_Le expression7 {Elt ($1,$3)}
+        |expression7 T_Leq expression7 {Elte ($1,$3)}
+        |expression7 T_Gr expression7 {Egt ($1,$3)}
+        |expression7 T_Geq expression7 {Egte ($1,$3)}
+        |expression7 T_Equal  expression7 {Eeq ($1,$3)}
+        |expression7 T_Neq expression7 {Eneq ($1,$3)}
+        |expression7 T_And expression7 {Eand ($1,$3)}
+        |expression7 T_Or expression7 {Eor ($1,$3)}
+        |T_Incr expression7 %prec Incr_dcr_postfix{EPlusPlus ($2,PRE)}
+        |T_Decr expression7 %prec Incr_dcr_postfix{EMinusMinus ($2,PRE)}
+        |expression7 T_Incr %prec Incr_dcr_prefix{EPlusPlus ($1,AFTER)}
+        |expression7 T_Decr %prec Incr_dcr_prefix{EMinusMinus ($1,AFTER)}
+        |expression7 T_Eq expression7 {EAssignEq ($1,$3)}
+        |expression7 T_PlusEq expression7 {EPlusEq ($1,$3)}
+        |expression7 T_Minus_eq expression7 {EMinusEq ($1,$3)}
+        |expression7 T_Dot_eq expression7 {EDotEq ($1,$3)}
+        |expression7 T_Div_eq expression7 {EDivEq ($1,$3)}
+        |expression7 T_Mod_eq expression7 {EModEq ($1,$3)}
+        |T_Lparen type_i T_Rparen expression %prec Cast_ {ECast ($2,$4)}
+        |expression7 T_Quest expression7 T_Colon expression7 %prec Special_Quest {EQuestT ($1,$3,$5)}
+        |T_New type_i  test8? {if Option.is_some $3 then ENew ($2,(Option.get $3)) else ENew ($2,Eint(1))}
+        |T_Del expression7 {EDel $2};

@@ -135,6 +135,7 @@ initialization: {ignore(initSymbolTable 256); ignore (openScope ());}
 test64: {error "test";}
 oScope :  {ignore(openScope();)}
 cScope :  {ignore(closeScope();)}
+cScope2 :  {ignore(closeScope2();)}
 inFun : {ignore(infun := !infun +1)}
 outFun : {ignore(infun := !infun -1)}
 inLoop : {ignore(nested_loops := !nested_loops +1)}
@@ -184,7 +185,7 @@ test2: T_Comma parameter {$2};
 
 parameter: T_Byref? type_i T_Id {if is_some $1 then (PASS_BY_REFERENCE,$2,$3) else (PASS_BY_VALUE ,$2,$3)};
 
-function_def: function_declation1 T_Lbrace oScope  declation* statement* cScope T_Rbrace cScope{
+function_def: function_declation1 T_Lbrace oScope  declation* statement* cScope T_Rbrace cScope2{
         
         
         ($1,$4,$5)};
@@ -204,7 +205,7 @@ fuction_call:T_Id  T_Lparen expression_list7? T_Rparen %prec Fuction_Call { let 
 (match (check_name_lib $1) with 
 | true ->()
 |false -> ignore(check_function_call (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true) k) 
-);ECall ($1,$3)} 
+);let y2 = {ls = $3} in ECall ($1,y2)} 
 expression: expression1 {ignore(get_type $1);$1}
 expression1: 
          fuction_call {$1}

@@ -163,7 +163,7 @@ and  codegen_expr expr builder=
         |ENew (a,b) -> codegen_array_create a b builder
         |EDel a -> build_free (build_load ( (get_indetifier a builder)) "tmp" builder) builder
         |ECast (a,b)-> codegen_cast a b builder
-        |ECall (a,b) -> codegen_fuction_call a b builder
+        |ECall (a,b) -> codegen_fuction_call a b.ls builder
         |EArray (a,b) -> codegen_array_access a b builder
         |EQuestT (a,b,c) -> codegen_quest a b c builder
 
