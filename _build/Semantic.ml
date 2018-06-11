@@ -26,7 +26,7 @@ let get_entry_k entry = match entry.entry_info with
 |ENTRY_temporary x -> x.temporary_type
 (*this is more like a type checker*)
 let rec  get_type expr = match expr with
-        | Eid x ->  get_entry_type (lookupEntry (id_make x) LOOKUP_CURRENT_SCOPE true) (*add some warning message*)
+        | Eid x ->  get_entry_type (lookupEntry (id_make x) LOOKUP_ALL_SCOPES true) (*add some warning message*)
         |Ebool _ -> TYPE_bool
         |Echar _ -> TYPE_char
         |Eint _ -> TYPE_int
@@ -97,8 +97,8 @@ and check_fun_def def  =
 
 and check_stmt enrty tree =
   match tree with
-  | SExpr (e) ->let _ = (may (check_expr2 enrty) e) in ();
-  | Sif (expr, stmt, maybe_stmt)   -> check_expr2 enrty expr ;
+  | SExpr (e) ->let _ = (may (check_expr) e) in ();
+  | Sif (expr, stmt, maybe_stmt)   -> 
                                       check_stmt enrty stmt;
                                       (match maybe_stmt with
                                        | None -> ()
@@ -106,19 +106,6 @@ and check_stmt enrty tree =
   | Sreturn (Some expr) ->has_return:=true; 
   | Sreturn None -> has_return:=true;
   | _ -> ();
-and check_expr2  enrty e=  match e with
-        | ECall (x,y) ->let _ = print_string ("aa") in  let j =match (y.ls) with 
-                | Some (l) -> l
-                | _ -> []
-        in
-        let ls =( get_fuction_f enrty.entry_info).function_prev in
-               y.ls<- Some((List.map (fun k1 ->Eid (k1.entry_name)) ls) @j);
-               (get_fuction_f enrty.entry_info).function_paramlist <- ls @ (get_fuction_f enrty.entry_info).function_paramlist;
-               ()
-            |EPointer a | EUnAdd a | EUnMinus a | Enot a |EArray (_,a) |ECast (_,a)-> check_expr2 enrty a
-            | Emult (a, b) | Ediv (a, b)  | Emod (a, b) | Eplus (a, b) | Eminus (a, b) | Elt (a ,b) | Elte (a, b) | Egt (a, b) | Egte ( a, b) | Eeq (a, b) | Eneq (a, b) | Eand (a, b) | Eor (a ,b) | Ecomma (a, b) | EAssignEq (a, b) | EPlusEq (a, b) | EMinusEq (a, b) | EDotEq (a, b) | EDivEq (a ,b) | EModEq (a ,b) -> check_expr2 enrty a ; check_expr2 enrty b ;
-            | EQuestT (a,b,c) -> check_expr2 enrty a ; check_expr2 enrty b; check_expr2 enrty c;
-            |_ -> ();
 and check_expr e = ()
 and check_array_len a = match a with
 | Some x -> if (get_type x ) = TYPE_int then () else error ("Array size must be int");

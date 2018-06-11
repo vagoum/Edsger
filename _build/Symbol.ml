@@ -38,7 +38,6 @@ and function_info = {
   mutable function_isForward : bool;
   mutable function_paramlist : entry list;
   mutable function_redeflist : entry list;
-  mutable function_prev : entry list;
   mutable function_result    : Types.typ;
   mutable function_pstatus   : param_status;
   mutable function_initquad  : int
@@ -102,7 +101,6 @@ let quadNext = ref 1
 let tempNumber = ref 1
 
 let tab = ref (H.create 0)
-let curr_func = ref (H2.create 0)
 let initSymbolTable size =
    tab := H.create size;
    currentScope := the_outer_scope
@@ -126,7 +124,6 @@ let closeScope () =
   | None ->
       error "cannot close the outer scope!"
 let closeScope2() =
-        let _ = H2.remove !curr_func 0 in
         closeScope();;
 
 exception Failure_NewEntry of entry
@@ -159,7 +156,7 @@ let newEntry id inf err =
     error "duplicate identifier %a" pretty_id id;
     e;;
 
-let rec lookupEntry id how err =
+let lookupEntry id how err =
   let scc = !currentScope in
   let lookup () =
     match how with
@@ -175,26 +172,6 @@ let rec lookupEntry id how err =
     try
       lookup ()
     with Not_found ->
-            match how with
-                | LOOKUP_CURRENT_SCOPE ->
-            if (isGlobal id) then H.find !tab id else 
-                    if (check_same_function id (get_fuction_f (H2.find !curr_func 0))) then H.find !tab id else
-                    let e1= lookupEntry id LOOKUP_ALL_SCOPES err
-                    in
-			 let inf_p = {
-                                 parameter_type = (get_var_par_type e1.entry_info);
-            parameter_offset = 0;
-            parameter_mode = PASS_BY_REFERENCE;
-          	}in
-                    let inf =get_fuction_f (H2.find !curr_func 0) in
-                    (*let _ = e2.function_pstatus <-PARDEF_DEFINE in*)
-		let e = newEntry id (ENTRY_parameter inf_p) err in
-          inf.function_prev<- e :: inf.function_prev;
-          e
-                    (*let tmp2 = newParameter id (get_variable_f e1).variable_type (PASS_PREV) (H.find !curr_func 0) false in
-                    let _ = endFunctionHeader (H.find !curr_func 0) e2.fuction_result in
-                    tmp2*)
-                | LOOKUP_ALL_SCOPES ->
       error "unknown identifier %a (first occurrence)"
         pretty_id id;
       (* put it in, so we don't see more errors *)
@@ -229,15 +206,11 @@ let newFunction id err =
       function_isForward = false;
       function_paramlist = [];
       function_redeflist = [];
-      function_prev =[];
       function_result = TYPE_none;
       function_pstatus = PARDEF_DEFINE;
       function_initquad = 0
     } in
-    let tmp =newEntry id (ENTRY_function inf) false
-    in 
-    H2.add !curr_func 0 tmp.entry_info;
-    tmp
+    newEntry id (ENTRY_function inf) false;;
 
 let newParameter id typ mode f err =
   match f.entry_info with

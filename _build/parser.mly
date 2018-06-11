@@ -205,7 +205,7 @@ fuction_call:T_Id  T_Lparen expression_list7? T_Rparen %prec Fuction_Call { let 
 (match (check_name_lib $1) with 
 | true ->()
 |false -> ignore(check_function_call (lookupEntry (id_make $1) LOOKUP_ALL_SCOPES true) k) 
-);let y2 = {ls = $3} in ECall ($1,y2)} 
+); ECall ($1,$3)} 
 expression: expression1 {ignore(get_type $1);$1}
 expression1: 
          fuction_call {$1}

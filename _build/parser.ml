@@ -1596,7 +1596,7 @@ and _menhir_goto_option_expression_list7_ : _menhir_env -> 'ttv_tail -> _menhir_
 (match (check_name_lib _1) with 
 | true ->()
 |false -> ignore(check_function_call (lookupEntry (id_make _1) LOOKUP_ALL_SCOPES true) k) 
-);let y2 = {ls = _3} in ECall (_1,y2)) in
+); ECall (_1,_3)) in
         (match _menhir_s with
         | MenhirState233 | MenhirState240 | MenhirState272 | MenhirState244 | MenhirState256 | MenhirState260 | MenhirState262 | MenhirState264 | MenhirState267 | MenhirState242 | MenhirState235 | MenhirState33 | MenhirState35 | MenhirState37 | MenhirState41 | MenhirState42 | MenhirState43 | MenhirState203 | MenhirState44 | MenhirState56 | MenhirState123 | MenhirState58 | MenhirState59 | MenhirState64 | MenhirState117 | MenhirState115 | MenhirState113 | MenhirState111 | MenhirState109 | MenhirState107 | MenhirState105 | MenhirState103 | MenhirState101 | MenhirState99 | MenhirState97 | MenhirState95 | MenhirState93 | MenhirState91 | MenhirState89 | MenhirState84 | MenhirState82 | MenhirState80 | MenhirState78 | MenhirState75 | MenhirState73 | MenhirState71 | MenhirState69 | MenhirState65 ->
             let _menhir_stack = Obj.magic _menhir_stack in

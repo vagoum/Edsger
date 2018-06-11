@@ -65,11 +65,10 @@ and ast_expr = Eint of int
              | ECast of typ*ast_expr 
              | EQuestT of ast_expr* ast_expr * ast_expr 
              | Eapp of string * ast_expr list
-             | ECall of string *called
+             | ECall of string *ast_expr list option
              | EArray of ast_expr * ast_expr 
      and prec = PRE
                 | AFTER
-        and called = {mutable ls: ast_expr list option}
 ;;
 let ast_tree : ast_program ref = ref [];;
 (*
@@ -242,7 +241,7 @@ fprintf out "Id %s" n;
         | Estring n -> fprintf out "String %s" n
         | ECall (s, e) ->
    fprintf out ("Function_call (%s, ") s;
-   (match e with
+   (match e.ls with
         |None -> ()
         |Some e ->
    print_expressions out e;
