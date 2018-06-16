@@ -104,7 +104,6 @@ let tab = ref (H.create 0)
 let initSymbolTable size =
    tab := H.create size;
    currentScope := the_outer_scope
-
 let openScope () =
   let sco = {
     sco_parent = Some !currentScope;

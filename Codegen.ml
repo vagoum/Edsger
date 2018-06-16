@@ -27,130 +27,7 @@ module SS = Set.Make(String)
         let builder =builder_at (instr_begin (entry_block func)) in
         build_alloca (var_type ) var_name builder*)
 
-type env_t = Global of (string list) | Nested of (string list * env_t);;
-let env = ref (Global []);;
 
-let rec update_env n env =match env with
-        |Global (ls) -> Global (n::ls)
-        |Nested(a,b)->Nested(n::a,b);;
-let update_env_list ls en =
-
-               
-(*Environment Interface*)
-
-and clear_env env_list = List.iter (Hashtbl.remove named_values) env_list
-            
-and get_env_of_called env args params =
-  let argscnt = List.length args in
-  let paramscnt = Array.length params in
-  let cnt = paramscnt - argscnt in
-  let rec walk env =
-    let l = List.length (env_to_list env) in
-    if (l=cnt) then env else
-      match env with
-      | Global([])-> Global([])
-      | Global(h::t)-> walk (Global(t))
-      | Nested ([],e) -> walk e
-      | Nested ((h::t),e) -> walk (Nested (t,e))
-  in walk env 
-          
-and update_env name env=
-  let name_env = name in(* String.concat  "_" [name;"env"] in *)
-  let name_to_env = match env with Global(_) -> name | _ -> name_env in
-  match env with
-  | Global (names) -> Global(name_to_env::names)
-  | Nested (names,e) -> Nested (name_to_env::names,e)
-
-                               
-and update_env_with_params params en =
-  let names = get_param_names params
-  in List.iter (fun x-> env:=update_env x en) names
-
-               
-and env_to_set env =
-  let rec walk env acc =
-    match env with
-    | Global (names) -> let set_to_add = SS.of_list names in SS.union set_to_add acc (*a global value may be shadowed*)
-    | Nested (names,env) -> let set_to_add = SS.of_list names in
-                            
-                            let new_acc = SS.union set_to_add acc in
-                            walk env new_acc
-  in walk env SS.empty
-
-          
-and difference_with_env env params =
-  let param_set = SS.of_list (get_param_names params) in
-  let env_set = env_to_set env in
-  SS.elements (SS.diff env_set param_set )
-
-and get_env_params_types env global_decs =
-  let has_name_in_dec name dec =
-    match dec with
-    |Ast.Simple_declarator(n) -> (name = n)
-    |Ast.Complex_declarator (n,_) -> (name = n)
-  in
-  let has_name_in_var_dec name element =
-    match element with
-    |Ast.Variable_dec(ty,decl) -> (try ignore(List.find (has_name_in_dec name) decl); true
-                                   with Not_found -> false)
-    |_ -> raise Not_found
-
-  in
-  let find_type_from_global name gl =
-    let dec = List.find (has_name_in_var_dec name) gl (* with Not_found -> Ast.Variable_dec(TYPE_none,[]) *)
-    in match dec with
-       | Ast.Variable_dec(ty,l) -> (let wanted = List.find (has_name_in_dec name) l in
-                                    let ty = findLltype ty in
-                                    match wanted with
-                                    |Ast.Simple_declarator _ -> pointer_type ty
-                                    |Ast.Complex_declarator _ -> pointer_type (pointer_type ty))
-       | _ -> Printf.printf "unexpected type"; int_type
-  in
-  let find_type name =
-    try
-      let v =
-        try Hashtbl.find named_values name
-        with Not_found -> raise Not_found
-      in (type_of v)
-    with Not_found ->  find_type_from_global name global_decs
-  in 
-  List.map find_type env
-
-           
-
-and env_to_list env =
-  SS.elements (env_to_set env)
-              
-and print_env_pars env =
-  let l = env_to_list env in
-  let _  = match env with Nested _ -> Printf.printf "Nested:\n" | Global _ -> Printf.printf "Global:\n" in
-  List.iter (fun x -> Printf.printf "List:%s\n" x) l
-            
-and remove_env env =
-  match env with
-  | Global (names) -> Global([])
-  | Nested (names,env) -> env
-
-and env_to_id_list env =
-  let env_list = env_to_list env in
-  List.map (fun x -> Id(x)) env_list 
-           
-(*Probably we don't need this*)
-and get_args_diff_env args env=
-  let args_set = SS.of_list args in
-  let env_set = env_to_set env in
-  let new_env_set = SS.diff env_set args_set in
-  SS.elements new_env_set
-
-and get_param_names params =
-  let get_param_name p =
-    match p with
-    | Ast.By_val_param(_,name) -> name
-    | Ast.By_ref_param(_,name) -> name
-  in List.map get_param_name params
-              
-
-(*End of environment interface*)
 
 
 
@@ -190,16 +67,6 @@ let default_val_type smth = match smth with
 
 
 module M = Map.Make (String)
-type envir = Float string list | Nest (string list *envir) ;; 
-let env = ref (Float []);;
-let delete_stage = function 
-        | Float _ = Float []
-        | Nest (_,a)->a;;
-let update  name env= match env with
-        |Float a -> Float (name::a) 
-        |Nest (a,b) -> Nest (name::a,b);;
-let list_update ls=
-        List.iter (fun x-> env:= (update x !env) ) ls;;
 
 
 
@@ -395,7 +262,6 @@ and  codegen_array_access e1 e2 builder =
 and  codegen_local name t expr builder =
         let ltype = ltype_of_type t in
         (*let malloc = build_malloc ltype name builder in*)
-        env:= update name !env;
         match t with
         |TYPE_array(a,b) -> let malloc = build_alloca (ltype_of_array t) name builder in
         let _ = Hashtbl.add named_values name malloc in        
@@ -468,7 +334,6 @@ and  codegen_binary e1 e2 expr  builder=
 
 
         and make_function func1 = match func1 with FunDef (func,b,c) -> 
-                env:=Nest([],!env);
         let name = func.entry_name in
         let f = (if (Option.is_some (lookup_function name the_module) ) then  Option.get (lookup_function name the_module) else codegen_func func )in
         let builder = builder_at_end context (entry_block f) in

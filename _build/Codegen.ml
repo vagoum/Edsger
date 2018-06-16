@@ -22,9 +22,24 @@ let get_jump_break s= Hashtbl.find jump_inst_break s;;
 let get_jump_cont s= Hashtbl.find jump_inst_cont s;;
 let cont_stack= Stack.create();;
 let break_stack = Stack.create();;
+module SS = Set.Make(String)
 (*let create_entry_block_alloca func var_name = 
         let builder =builder_at (instr_begin (entry_block func)) in
         build_alloca (var_type ) var_name builder*)
+
+
+
+
+
+
+let last_id = ref (-1)
+let fresh () = incr last_id; !last_id
+
+let gentmp s =
+  let id = fresh () in
+  Printf.sprintf "__%s_%i" s id
+
+
 let assign_1 = ref false;;       
 let rec ltype_of_type = function
         | TYPE_int ->  i32_type context 
@@ -49,6 +64,12 @@ let default_val_type smth = match smth with
         | TYPE_char -> const_int (ltype_of_type smth) 0
         | TYPE_double -> const_float (ltype_of_type smth) 0.0
         | TYPE_void -> const_int (ltype_of_type smth) 0;;
+
+
+module M = Map.Make (String)
+
+
+
 let rec codegen_stmt stmt builder= 
         match stmt with 
         SExpr (Some a) ->  codegen_expr a builder

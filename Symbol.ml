@@ -26,7 +26,6 @@ type scope = {
   sco_parent : scope option;
   sco_nesting : int;
   mutable sco_entries : entry list;
-  mutable sco_out_entries : entry list;
   mutable sco_negofs : int
 }
 
@@ -105,7 +104,6 @@ let tab = ref (H.create 0)
 let initSymbolTable size =
    tab := H.create size;
    currentScope := the_outer_scope
-let my_lambdas = ref (H.create 0)
 let openScope () =
   let sco = {
     sco_parent = Some !currentScope;
