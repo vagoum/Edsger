@@ -15,7 +15,7 @@ try
  (*      let _ = print_teliko !ast_tree in*)
         let _ = print_string("Codegen_start\n") in
     let a=    Codegen.codegen_main !ast_tree 
-    in print_module ("a2.ll") a 
+    in print_module ("llvm_code.ll") a 
 with
 | Failure msg -> print_endline ("Failure in " ^ msg)
 | Parser.Error -> print_endline "Parse error"
