@@ -16,21 +16,115 @@ let jump_inst_break:(string , llbasicblock) Hashtbl.t =Hashtbl.create 10
 let jump_inst_cont:(string , llbasicblock) Hashtbl.t =Hashtbl.create 10
 type binary_ops = Plus|Minus|Div|Mult|Mod|And|Or|Comma|Lt|Lte|Eq|Neq|Gt|Gte|Enq
 let find_variable s= Hashtbl.find named_values s;;
-let get_function s= Hashtbl.find functions s;;
+let get_function s= print_string s; Hashtbl.find functions s;;
 let get_function_type s= Hashtbl.find functions_types s;;
 let get_jump_break s= Hashtbl.find jump_inst_break s;;
 let get_jump_cont s= Hashtbl.find jump_inst_cont s;;
 let cont_stack= Stack.create();;
 let break_stack = Stack.create();;
+let fun_bbs:(llbasicblock list ref)= ref [];;
 module SS = Set.Make(String)
 (*let create_entry_block_alloca func var_name = 
         let builder =builder_at (instr_begin (entry_block func)) in
         build_alloca (var_type ) var_name builder*)
+let fun_names : string list ref = ref []
+type environment = Global of (string list)| Nested of (string list * environment)
+let env:environment ref = ref (Global ([]))
+(*Environment Interface*)
+let rec update_env_without_hashtbl name env =
+  match env with
+  | Global (names) -> Global(name::names)
+  | Nested (names,e) -> Nested (name::names,e)
 
+and clear_env env_list = List.iter (Hashtbl.remove named_values) env_list
+            
+and get_env_of_called env args params =
+  let argscnt = List.length args in
+  let paramscnt = Array.length params in
+  let cnt = paramscnt - argscnt in
+  let rec walk env =
+    let l = List.length (env_to_list env) in
+    if (l=cnt) then env else
+      match env with
+      | Global([])-> Global([])
+      | Global(h::t)-> walk (Global(t))
+      | Nested ([],e) -> walk e
+      | Nested ((h::t),e) -> walk (Nested (t,e))
+  in walk env 
+          
+and update_env name env=
+  let name_env = name in
+  let name_to_env = match env with Global(_) -> name | _ -> name_env in
+  match env with
+  | Global (names) -> Global(name_to_env::names)
+  | Nested (names,e) -> Nested (name_to_env::names,e)
 
+                               
+and update_env_with_params params en =
+  let names = get_param_names params
+  in List.iter (fun x-> env:=update_env x en) names
 
+               
+and env_to_set env =
+  let rec walk env acc =
+    match env with
+    | Global (names) -> let set_to_add = SS.of_list names in SS.union set_to_add acc 
+    | Nested (names,env) -> let set_to_add = SS.of_list names in
+                            
+                            let new_acc = SS.union set_to_add acc in
+                            walk env new_acc
+  in walk env SS.empty
 
+          
+and difference_with_env env params =
+  let param_set = SS.of_list (get_param_names params) in
+  let env_set = env_to_set env in
+  SS.elements (SS.diff env_set param_set )
 
+and get_env_params_types env =
+  let find_type name =
+      let v =
+        try Hashtbl.find named_values name
+        with Not_found -> raise Not_found
+      in (type_of v)
+  in List.map find_type env
+
+          
+
+and env_to_list env =
+  SS.elements (env_to_set env)
+              
+            
+and remove_env env =
+  match env with
+  | Global (names) -> Global([])
+  | Nested (names,env) -> env
+
+and env_to_id_list env =
+  let env_list = env_to_list env in
+  List.map (fun x -> Eid(x)) env_list 
+           
+
+and get_param_names params =
+  let get_param_name p =p.entry_name
+  in List.map get_param_name params
+              
+
+(*End of environment interface*)
+                                                     
+
+let rec find_function fun_name fun_name_list =
+  match fun_name_list with
+  | [] -> ( match lookup_function fun_name the_module with
+            | Some calle -> calle
+          (*  | None -> raise (Type_error "unknown function refernced"))*))
+            
+  | x::rest -> ( let to_found = String.concat "_" (fun_name::fun_name_list) in
+                 match lookup_function to_found the_module with
+                 |Some callee -> callee
+                 | None -> find_function fun_name (List.tl fun_name_list))
+
+                 
 
 let last_id = ref (-1)
 let fresh () = incr last_id; !last_id
@@ -240,15 +334,21 @@ and  codegen_assign e1 e2 builder=
         let y = myderef e2 builder in 
         let _ =build_store y lval builder in
         y
-and  codegen_fuction_call fuction  params builder =
-        let params= if Option.is_some params then Option.get params else []
+and  codegen_fuction_call fuction  params2 builder =
+	let callee = find_function fuction (!fun_names) in
+        let params = params callee in
+	let env_of_called = get_env_of_called !env (if Option.is_some params2 then (Option.get params2)else []) params in
+        let env_args = env_to_id_list (env_of_called) in
+        let params= if Option.is_some params2 then ((Option.get params2)@env_args) else env_args 
         in
-        let parametres =List.map type_of (Array.to_list (Llvm.params  (get_function fuction))) in
+        let parametres =List.map type_of (Array.to_list (Llvm.params  ( callee))) in
         let actual_params = List.mapi (fun i ->fun x-> let y = codegen_expr x builder in if((need_def x) && (not ((type_of y) = (List.nth parametres  i ) ))) then build_load y "tmp" builder else y ) params in
         let actual_params = List.map2 (fun x-> fun y-> build_bitcast x (y) "cast" builder) actual_params parametres in
-        if((String.sub (string_of_lltype (type_of (get_function fuction))) 0 5 ) = "void ") then
-         (*let _ = print_string(string_of_lltype (return_type (type_of(get_function fuction )) )); print_string("\n") in*)  build_call (get_function fuction) (Array.of_list actual_params) "" builder
-        else build_call (get_function fuction) (Array.of_list actual_params) "t" builder
+        if((String.sub (string_of_lltype (type_of (callee))) 0 5 ) = "void ") then
+         (*let _ = print_string(string_of_lltype (return_type (type_of(get_function fuction )) )); print_string("\n") in*)  build_call (callee) (Array.of_list actual_params) "" builder
+        else build_call (callee) (Array.of_list actual_params) "t" builder
+
+
 and  codegen_array_access e1 e2 builder = 
         let lvaluee = (get_indetifier  e1 builder)  in 
         let rval =   (codegen_expr e2 builder) in
@@ -260,11 +360,13 @@ and  codegen_array_access e1 e2 builder =
         in build_load deref "array" builder*)
        build_gep (build_load lvaluee "tmp" builder) rval "accs" builder
 and  codegen_local name t expr builder =
+       (env := update_env name (!env));
+                      
         let ltype = ltype_of_type t in
         (*let malloc = build_malloc ltype name builder in*)
         match t with
         |TYPE_array(a,b) -> let malloc = build_alloca (ltype_of_array t) name builder in
-        let _ = Hashtbl.add named_values name malloc in        
+        let _ = Hashtbl.add named_values name malloc in  
         let arr = build_array_malloc ltype (codegen_expr (Eint b) builder) "mallocttmp" builder in let arr = build_bitcast arr (ltype_of_array t) "tmp" builder  in let _ = build_store arr malloc builder in malloc
         | _ ->(
         let malloc = build_alloca ltype name builder in
@@ -313,14 +415,27 @@ and  codegen_binary e1 e2 expr  builder=
         (*let _ =print_string(string_of_lltype (type_of e1n)) in*)
             if (( (type_of e1n) <> (ltype_of_type TYPE_double ) ) && ((type_of e2n) <> (ltype_of_type TYPE_double))) then int_fun expr else float_fun expr 
     and codegen_id id deref builder =match deref with
-        |true ->let v= try Hashtbl.find named_values id with |Not_found -> raise (Error "uknown variable name") in build_load v id builder
-        |false ->let v= try Hashtbl.find named_values id with |Not_found -> raise (Error "uknown variable name") in v
+        |true ->let v=  try Hashtbl.find named_values id with |Not_found -> raise (Error "uknown variable name") in build_load v id builder
+        |false ->let v=  try Hashtbl.find named_values id with |Not_found -> raise (Error "uknown variable name") in v
    (* and codegen_arg_alloca func args =
             Array.iteri (fun i ai-> let name =args.(i) in 
             let alloca = create_entry_block_alloca:*)
-            
+    and temp_var name =
+	 let inf_p = {
+            parameter_type = TYPE_none;
+            parameter_offset = 0;
+            parameter_mode = PASS_BY_REFERENCE
+          } in     
+	let e = {
+      		entry_id = Identifier.id_make (name);
+      		entry_name = name;
+     		entry_scope = !currentScope;
+      		entry_info = (ENTRY_parameter inf_p)
+    } in  
+	e
+
     and codegen_func func =
-        let name = func.entry_name in
+        let name = String.concat "_" (func.entry_name::!fun_names)  in
         if (Hashtbl.mem functions name) then Hashtbl.find functions name else (
         let parametres = List.map (fun x-> let y = ltype_of_type (get_parameter_f x.entry_info).parameter_type
         in 
@@ -331,34 +446,74 @@ and  codegen_binary e1 e2 expr  builder=
         let fuction_type = function_type (ltype_of_type (get_fuction_f func.entry_info).function_result) (Array.of_list parametres) in
         let b=  define_function name fuction_type the_module in
         let _ = Hashtbl.add functions name b in b)
-
+        and param_type x = (fun y-> let z = ltype_of_type (get_parameter_f y.entry_info).parameter_type in match ((get_parameter_f y.entry_info).parameter_mode ) with
+        | PASS_BY_REFERENCE -> pointer_type z
+        | _ -> z) x
 
         and make_function func1 = match func1 with FunDef (func,b,c) -> 
-        let name = func.entry_name in
-        let f = (if (Option.is_some (lookup_function name the_module) ) then  Option.get (lookup_function name the_module) else codegen_func func )in
-        let builder = builder_at_end context (entry_block f) in
-        let params = Array.iteri ( fun i el -> let n = List.nth (get_fuction_f func.entry_info).function_paramlist i in let (n,(typea,by_ref)) = (n.entry_name,match n.entry_info with 
+        let name = func.entry_name  in
+	let fn_name = String.concat "_" (name::!fun_names) in
+	let parameters = (get_fuction_f func.entry_info).function_paramlist in
+	let parameters_old =  (get_fuction_f func.entry_info).function_paramlist in
+     	env:= Nested([],!env);
+     	let env_params = difference_with_env !env parameters in 
+     	update_env_with_params parameters !env; (*Should create side effect*)
+     (* let _ = print_env_pars !env in *)
+     	let env_params_types =get_env_params_types env_params  in
+     (* let _ = print_hashtbl named_values in *)
+        let llenv = Array.of_list env_params_types in
+     	let llpars = Array.of_list (List.map param_type parameters) in
+     	let llpars = if(name = "main") then llpars else  Array.append llpars llenv in
+     	let env_params_to_passed = List.map (temp_var) env_params in
+     	let parameters = if(name = "main") then parameters else parameters@env_params_to_passed in
+	fun_names := name :: !fun_names ;
+        let fun_typ= ltype_of_type (get_fuction_f func.entry_info).function_result in
+        let ft =function_type fun_typ llpars in
+        let f = (if (Option.is_some (lookup_function fn_name the_module) ) then let v=( Option.get (lookup_function fn_name the_module)) in (delete_function v; declare_function fn_name ft the_module  ) else ( declare_function fn_name ft the_module (*codegen_func func*)) )in
+        (*let builder = builder_at_end context (entry_block f) in*)
+        let bbs =append_block context "smth" f in
+        fun_bbs := bbs :: !fun_bbs;
+        position_at_end bbs builder ;
+        let params2 = Array.iteri ( fun i el -> let n = List.nth parameters i in let (n,(typea,by_ref)) = (n.entry_name,match n.entry_info with 
         |ENTRY_parameter asd-> (asd.parameter_type,asd.parameter_mode)) in 
-        set_value_name n el;
-        match by_ref with
-        | PASS_BY_REFERENCE -> ignore(Hashtbl.add named_values n el)
+        (match by_ref with
+        | PASS_BY_REFERENCE -> set_value_name n el;ignore(Hashtbl.add named_values n el)
         | _ ->
-        (let g = (build_alloca (ltype_of_type typea)  n builder) in (*let el = build_pointercast el (ltype_of_type typea) "cast" builder in *)Hashtbl.add named_values n g; ignore(build_store el g builder)) ) (params f) 
+                        (set_value_name n el;let g = (build_alloca (ltype_of_type typea)  n builder) in (*let el = build_pointercast el (ltype_of_type typea) "cast" builder in *)  ignore(build_store el g builder) ; ignore(Hashtbl.add named_values n g))) ) (params f) 
         in
         (*check*) let _ =List.map (fun x-> codegen_decl x builder) b in
+        let bb =List.hd !fun_bbs in
+        position_at_end bb builder;
         let _  = List.map (fun x->codegen_stmt x builder) c in
+        fun_bbs := List.tl !fun_bbs;
+        let next_bb =try List.hd !fun_bbs 
+                     with Failure ("hd") -> bb in
         let last= match block_end f with After (block) -> block in
         let return= ltype_of_type (get_fuction_f func.entry_info).function_result (*return_type (type_of f)*) in
         let _ =(match (instr_end last) with
-                After(ins)-> if ((instr_opcode ins) = Opcode.Ret) then ()
+                |After(ins)-> if ((instr_opcode ins) = Opcode.Ret) then ()
         else 
-                if return =(ltype_of_type TYPE_void )  then ignore (build_ret_void builder) else 
-                        ignore(build_ret (default_val_type TYPE_int) builder)
+                if (return = (ltype_of_type TYPE_void) )  then ignore (build_ret_void builder) else 
+                          ignore(build_ret (default_val_type TYPE_int) builder)
          |At_start(_) ->
-                if return =(ltype_of_type TYPE_void )  then ignore (build_ret_void builder) else 
-                        ignore(build_ret (default_val_type TYPE_int) builder) ;) in
+                         if (return= (ltype_of_type TYPE_void) )  then( ignore (build_ret_void builder) )else 
+                                  ignore(build_ret (default_val_type TYPE_int) builder) ;) in
         let _ =ignore(  delete_from_hash b); in
-                      ignore(  delete_from_hash_par func);
+		      fun_names := List.tl !fun_names;
+                      let _ = Array.iteri (fun i a -> 
+                        let n = (List.nth parameters i) in
+                        if(i>=(List.length parameters_old)) then () else(
+                                let (n,(typea,by_ref))= (n.entry_name, match n.entry_info with
+                                | ENTRY_parameter asd -> (asd.parameter_type,asd.parameter_mode)) in
+                               match by_ref with
+                               |PASS_BY_REFERENCE ->Hashtbl.remove named_values n
+                                | _ -> Hashtbl.remove named_values n)) (params f) in
+ 		      clear_env env_params;
+                      position_at_end next_bb builder;
+                      ignore(env := remove_env !env); (* Go higher in env*)
+                      (*ignore(  delete_from_hash_par func);*)
+	
+
   and delete_from_hash b = List.iter (fun x-> 
                       match x with
                       | VarDecl(y) ->(List.iter (fun a->ignore( Hashtbl.remove named_values a.entry_name) ; ignore( if (Hashtbl.mem named_values a.entry_name) then set_value_name a.entry_name (Hashtbl.find named_values a.entry_name) else ()) )  y )

@@ -13,11 +13,11 @@ let lexbuf = Lexing.from_channel stdin in
 try
         (Parser.program Lexer.lexer lexbuf);
  (*      let _ = print_teliko !ast_tree in*)
-        let _ = print_string("Codegen_start\n") in
-    let a=    Codegen.codegen_main !ast_tree 
-    in print_module ("a2.ll") a 
+        print_string("Codegen_start\n");
+         let a=    Codegen.codegen_main !ast_tree 
+    in print_module ("llvm_code.ll") a 
 with
-| Failure msg -> print_endline ("Failure in " ^ msg)
+| Failure msg -> print_endline ("Failure in a" ^ msg)
 | Parser.Error -> print_endline "Parse error"
 | End_of_file ->
  print_endline "Parse error: unexpected end of string"

@@ -26,7 +26,7 @@ type scope = {
   sco_parent : scope option;
   sco_nesting : int;
   mutable sco_entries : entry list;
-  mutable sco_negofs : int
+  mutable sco_negofs : int;
 }
 
 and variable_info = {

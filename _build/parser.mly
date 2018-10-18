@@ -7,7 +7,6 @@
         open Semantic
         open Identifier
         open Option
-        open Lamda_lift
 
 
         let get_first (x,_,_) =x ;;
@@ -106,7 +105,6 @@
 
 
 %left T_Comma
-%nonassoc Scomma
 %right T_Eq T_PlusEq T_Minus_eq T_Dot_eq T_Div_eq T_Mod_eq 
 %nonassoc Special_Quest
 %left T_Or
@@ -132,7 +130,6 @@ initialization: {ignore(initSymbolTable 256); ignore (openScope ());}
 (*declation_plus: declation {}
         | declation_plus {}
 *)
-test64: {error "test";}
 oScope :  {ignore(openScope();)}
 cScope :  {ignore(closeScope();)}
 cScope2 :  {ignore(closeScope2();)}
@@ -254,8 +251,6 @@ expression1:
         |T_Del expression {EDel $2};
 test8:  T_Lbracket oScope expression cScope T_Rbracket {$3};
 array_expresion: T_Lbracket expression T_Rbracket %prec Array_place {if (get_type $2)=TYPE_int then () else error "Not an int on array";$2}
-expression_list: expression test9*  {check_expr $1;[$1] @ $2};
-test9: T_Comma expression %prec SComma{check_expr $2 ;$2};
 
 expression_list7: expression7 test97* {check_expr $1;[$1] @ $2};
 test97: T_Comma expression7 {check_expr $2 ;$2};
