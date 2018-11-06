@@ -8,12 +8,13 @@
 open Ast
 open Llvm
 open Format
+open Symbol
 let main =
 let lexbuf = Lexing.from_channel stdin in
 try
+        (initSymbolTable 256);
         (Parser.program Lexer.lexer lexbuf);
  (*      let _ = print_teliko !ast_tree in*)
-        print_string("Codegen_start\n");
          let a=    Codegen.codegen_main !ast_tree 
     in print_module ("llvm_code.ll") a 
 with

@@ -3,6 +3,9 @@ open Lexing
 open Parser
 open Printf
 
+module SS= Set.Make(String)
+let files=SS.empty
+
 let incr_linenum lexbuf =
   let pos = lexbuf.lex_curr_p in
   lexbuf.lex_curr_p <-
@@ -10,7 +13,7 @@ let incr_linenum lexbuf =
                pos_lnum = pos.pos_lnum + 1;
           }
 let trans_esc c =
-        let _ = print_char (c) in match c with
+        (*let _ = print_char (c) in*) match c with
 |'n'->'\n'
 |'r' ->'\r'
 |'t' -> '\t'
@@ -42,7 +45,12 @@ let string_chars =([^ '"'] | escape)*
 rule lexer = parse
 
 (* add file inclusion support *)
-  | "#" ([^ '\n'])* "\n" (*as includes*)          {incr_linenum lexbuf; lexer lexbuf}
+ (* | "#" ([^ '\n'])* "\n" (*as includes*)          {incr_linenum lexbuf; lexer lexbuf}*)
+  |"#include \"" id* ".h\"" as incl_name {
+let len=(String.length incl_name)-11 in
+let file = String.sub incl_name 10 len in
+if (not (SS.mem file files)) then  (let _ = SS.add file files in let lexbuf2= Lexing.from_channel (open_in file) in let _ = Parser.program lexer lexbuf2  in lexer lexbuf) else (lexer lexbuf)
+  }
   |"//" {linecomment lexbuf}
   | "/*"  {blockcomment lexbuf} 
 (* Keywords *)

@@ -33,8 +33,9 @@ let rec  get_type expr = match expr with
         |Ereal _ -> TYPE_double
         |Estring x ->TYPE_array(TYPE_char,String.length x)
         |ENull -> TYPE_none
-        |EAmber x -> get_type x
-        |EPointer x | EUnAdd x | EUnMinus x |Enot x-> get_type x
+        |EAmber x -> TYPE_pointer (get_type x)
+        |EPointer x -> TYPE_pointer (get_type x)
+        | EUnAdd x | EUnMinus x |Enot x-> get_type x
         | Emult (x,y) | Ediv (x,y) |Eplus (x,y) | Eminus (x,y) -> (match (get_type x,get_type y) with | (TYPE_pointer x1,TYPE_int) -> TYPE_pointer x1
         | (TYPE_int,x1) -> x1
         | (x1,TYPE_int) ->x1
@@ -51,22 +52,24 @@ let rec  get_type expr = match expr with
         ) 
         |Emod (x,y) |EModEq (x,y)-> (match (get_type x,get_type y) with 
                 | (TYPE_int,TYPE_int) ->  TYPE_int 
-                | _ -> Types.print_type (get_type x);Types.print_type (get_type y);error "Mod needs integer and integer" ; TYPE_none
+                | _ -> (*Types.print_type (get_type x);Types.print_type (get_type y);*)error "Mod needs integer and integer" ; TYPE_none
         )
         | Elt (x,y) | Elte (x,y) | Egt (x,y) | Egte (x,y) | Eeq (x,y) | Eneq (x,y) -> (match (get_type x,get_type y) with 
         | (TYPE_int,TYPE_int) | (TYPE_int,TYPE_double) | (TYPE_double,TYPE_int) | (TYPE_double ,TYPE_double) | (TYPE_bool ,TYPE_bool)  -> TYPE_bool
-        | (TYPE_array (x,_), TYPE_array (y,_) ) | (TYPE_pointer x,TYPE_pointer y)-> if equalType x y then TYPE_bool else TYPE_none  
+        | (TYPE_array (x,_), TYPE_array (y,_) ) | (TYPE_pointer x,TYPE_pointer y)-> if equalType x y then TYPE_bool else (error "from c1" ;TYPE_none)  
         | _ ->error "sigkrisi xriazete arithmous";TYPE_none)
         | Eand (x,y) | Eor (x,y) -> (match (get_type x,get_type y) with
         | (TYPE_bool ,TYPE_bool) ->TYPE_bool 
         | _ -> print_type (get_type x); print_type (get_type y);error "type missimatch on boolean action" ; TYPE_none )
         |Ecomma (x,y) -> get_type y
-        |EPlusPlus (x,_) | EMinusMinus (x,_) -> if (get_type x) = TYPE_int then TYPE_int else (error "++ -- needs integer"; TYPE_none) 
+        |EPlusPlus (x,_) | EMinusMinus (x,_) -> if (get_type x) = TYPE_int then TYPE_int else (match (get_type x) with 
+       |TYPE_pointer a -> TYPE_pointer a
+            |_->  (error "++ -- needs integer"; TYPE_none) )
         | ECast (x,y) -> if cast_allow x (get_type y) then x else get_type y
-        | EQuestT (x,y,z)-> if (get_type x = TYPE_bool) then (if equalType (get_type y) (get_type z) then get_type y else TYPE_none ) else (error "type error questionmark"; TYPE_none)
+        | EQuestT (x,y,z)-> if (get_type x = TYPE_bool) then (if equalType (get_type y) (get_type z) then get_type y else (error "question type1"; TYPE_none )) else (print_string ("aaa\n");  print_type (get_type x);error "type error questionmark"; TYPE_none)
         | ENew (x,_) -> x
         | EDel _ -> TYPE_none
-        | EArray (x,y) -> if ((get_type y) = TYPE_int) then expr_array x else TYPE_none
+        | EArray (x,y) -> if ((get_type y) = TYPE_int) then TYPE_pointer (expr_array x) else( error "type error array call" ; TYPE_none)
         | ECall (x,_) -> if (check_name_lib x) then get_name_lib x else (get_entry_k (lookupEntry (id_make x) LOOKUP_ALL_SCOPES true)).function_result
         | _ -> TYPE_none 
 

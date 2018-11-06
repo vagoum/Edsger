@@ -1,4 +1,4 @@
-
+#include "stdio.h"
 void bsort (int * x, int n)
 {
 	int i;

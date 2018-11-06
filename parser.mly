@@ -106,6 +106,8 @@
 
 %left T_Comma
 %right T_Eq T_PlusEq T_Minus_eq T_Dot_eq T_Div_eq T_Mod_eq 
+%nonassoc T_Colon 
+%nonassoc T_Quest
 %nonassoc Special_Quest
 %left T_Or
 %left T_And 
@@ -116,17 +118,17 @@
 %nonassoc Incr_dcr_prefix
 %nonassoc T_New  T_Del
 %nonassoc T_Amp Adress_etc
+%nonassoc Incr_dcr_postfix 
 %right T_Rbracket
 %left T_Lbracket
-%nonassoc Incr_dcr_postfix 
 %nonassoc Array_place Fuction_Call T_Lparen 
 
 
 %%
 
-program: initialization declation+ T_Eof { ignore(is_main()); ast_tree := $2;check (Some $2);}
+program: initialization declation+ T_Eof { (*ignore(is_main());*) ast_tree := ($2@(!ast_tree));check (Some $2);}
 
-initialization: {ignore(initSymbolTable 256); ignore (openScope ());}
+initialization: {(*ignore(initSymbolTable 256);*) ignore (openScope ());}
 (*declation_plus: declation {}
         | declation_plus {}
 *)
@@ -164,25 +166,39 @@ test: T_Lbracket constant_expression T_Rbracket {$2};
 fuction_declation:  function_declation1  T_Semicolon cScope {$1};
 function_declation1 : 
         type_i T_Id T_Lparen parameter_list? T_Rparen{
-        let e= newFunction (id_make $2) true in  
+        let e= newFunction (id_make $2) false in 
+	let _ = forwardFunction e in 
         let _ = openScope() in
                 may (List.iter (fun x-> ignore(newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $4 ;  
                 endFunctionHeader e $1 ; 
                 e}
         |  T_Void T_Id T_Lparen parameter_list? T_Rparen{
-        let e= newFunction (id_make $2) true in 
+        let e= newFunction (id_make $2) false in 
+	let _ = forwardFunction e in 
         let _ = openScope() in
                  may (List.iter (fun x-> ignore (newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $4 ;  
                  endFunctionHeader e TYPE_none; 
                  e }
-
+function_declation2 : 
+        type_i T_Id T_Lparen parameter_list? T_Rparen{
+        let e= newFunction (id_make $2) false in  
+        let _ = openScope() in
+                may (List.iter (fun x-> ignore(newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $4 ;  
+                endFunctionHeader e $1 ; 
+                e}
+        |  T_Void T_Id T_Lparen parameter_list? T_Rparen{
+        let e= newFunction (id_make $2) false in 
+        let _ = openScope() in
+                 may (List.iter (fun x-> ignore (newParameter (id_make (get_third x)) (get_second x) (get_first x) e true  ))) $4 ;  
+                 endFunctionHeader e TYPE_none; 
+                 e }
 
         parameter_list: parameter test2* {[$1] @$2};
 test2: T_Comma parameter {$2};
 
 parameter: T_Byref? type_i T_Id {if is_some $1 then (PASS_BY_REFERENCE,$2,$3) else (PASS_BY_VALUE ,$2,$3)};
 
-function_def: function_declation1 T_Lbrace oScope  declation* statement* cScope T_Rbrace cScope2{
+function_def: function_declation2 T_Lbrace oScope  declation* statement* cScope T_Rbrace cScope2{
         
         
         ($1,$4,$5)};
@@ -246,7 +262,7 @@ expression1:
         |expression T_Div_eq expression {EDivEq ($1,$3)}
         |expression T_Mod_eq expression {EModEq ($1,$3)}
         |T_Lparen type_i T_Rparen expression %prec Cast_ {ECast ($2,$4)}
-        |expression T_Quest expression T_Colon expression %prec Special_Quest {EQuestT ($1,$3,$5)}
+        |expression T_Quest expression T_Colon expression  {EQuestT ($1,$3,$5)}
         |T_New type_i  test8? {if Option.is_some $3 then ENew ($2,(Option.get $3)) else ENew ($2,Eint(1))}
         |T_Del expression {EDel $2};
 test8:  T_Lbracket oScope expression cScope T_Rbracket {$3};
@@ -298,6 +314,6 @@ expression7:
         |expression7 T_Div_eq expression7 {EDivEq ($1,$3)}
         |expression7 T_Mod_eq expression7 {EModEq ($1,$3)}
         |T_Lparen type_i T_Rparen expression %prec Cast_ {ECast ($2,$4)}
-        |expression7 T_Quest expression7 T_Colon expression7 %prec Special_Quest {EQuestT ($1,$3,$5)}
+        |expression7 T_Quest expression7 T_Colon expression7 {EQuestT ($1,$3,$5)}
         |T_New type_i  test8? {if Option.is_some $3 then ENew ($2,(Option.get $3)) else ENew ($2,Eint(1))}
         |T_Del expression7 {EDel $2};

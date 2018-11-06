@@ -4,6 +4,7 @@ open Types
 open  Semantic 
 open Symbol
 open Format
+open Str
 exception Error of string
 
 let context = global_context ()
@@ -16,13 +17,14 @@ let jump_inst_break:(string , llbasicblock) Hashtbl.t =Hashtbl.create 10
 let jump_inst_cont:(string , llbasicblock) Hashtbl.t =Hashtbl.create 10
 type binary_ops = Plus|Minus|Div|Mult|Mod|And|Or|Comma|Lt|Lte|Eq|Neq|Gt|Gte|Enq
 let find_variable s= Hashtbl.find named_values s;;
-let get_function s= print_string s; Hashtbl.find functions s;;
+let get_function s=(* print_string s;*) Hashtbl.find functions s;;
 let get_function_type s= Hashtbl.find functions_types s;;
 let get_jump_break s= Hashtbl.find jump_inst_break s;;
 let get_jump_cont s= Hashtbl.find jump_inst_cont s;;
 let cont_stack= Stack.create();;
 let break_stack = Stack.create();;
 let fun_bbs:(llbasicblock list ref)= ref [];;
+let global_decls:(Ast.ast_decl list ref) =ref [];;
 module SS = Set.Make(String)
 (*let create_entry_block_alloca func var_name = 
         let builder =builder_at (instr_begin (entry_block func)) in
@@ -51,7 +53,20 @@ and get_env_of_called env args params =
       | Nested ([],e) -> walk e
       | Nested ((h::t),e) -> walk (Nested (t,e))
   in walk env 
-          
+and print_env env2 =
+        let rec walk env = match env with
+        | Global([]) -> ()
+        | Global(h::t) -> print_string(h);print_string("\n"); walk(Global(t))
+        | Nested ([],e)->print_string("Uper_level");print_string("\n"); walk(e)       
+        | Nested ((h::t),e)->print_string(h);print_string("\n"); walk(Nested (t,e)) 
+        in walk env2  
+and count_env env2 =
+        let rec walk env = match env with
+        | Global([]) -> 0
+        | Global(h::t) -> 1+ walk(Global(t))
+        | Nested ([],e)-> 0       
+        | Nested ((h::t),e)->1+ walk(Nested (t,e)) 
+        in walk env2  
 and update_env name env=
   let name_env = name in
   let name_to_env = match env with Global(_) -> name | _ -> name_env in
@@ -85,10 +100,45 @@ and get_env_params_types env =
   let find_type name =
       let v =
         try Hashtbl.find named_values name
-        with Not_found -> raise Not_found
+        with Not_found -> print_string(name); raise Not_found
       in (type_of v)
   in List.map find_type env
+(*
+and get_env_params_types env global_decs =
+  let has_name_in_dec name dec =
+    match dec with
+    |Ast.Simple_declarator(n) -> (name = n)
+    |Ast.Complex_declarator (n,_) -> (name = n)
+  in
+  let has_name_in_var_dec name element =
+    match element with
+    |Ast.Variable_dec(ty,decl) -> (try ignore(List.find (has_name_in_dec name) decl); true
+                                   with Not_found -> false)
+    |_ -> raise Not_found
 
+  in
+  let find_type_from_global name gl =
+    (* Printf.printf "Searching for %s\n" name; *)
+    (* Printf.printf "Global length: %d\n" (List.length gl); *)
+    let dec = List.find (has_name_in_var_dec name) gl (* with Not_found -> Ast.Variable_dec(TYPE_none,[]) *)
+    in match dec with
+       | Ast.Variable_dec(ty,l) -> (let wanted = List.find (has_name_in_dec name) l in
+                                    let ty = findLltype ty in
+                                    match wanted with
+                                    |Ast.Simple_declarator _ -> pointer_type ty
+                                    |Ast.Complex_declarator _ -> pointer_type (pointer_type ty))
+       | _ -> Printf.printf "unexpected type"; int_type
+  in
+  let find_type name =
+    try
+      let v =
+        try Hashtbl.find named_values name
+        with Not_found -> raise Not_found
+      in (type_of v)
+    with Not_found ->  find_type_from_global name global_decs
+  in 
+  List.map find_type env
+*)
           
 
 and env_to_list env =
@@ -103,7 +153,6 @@ and remove_env env =
 and env_to_id_list env =
   let env_list = env_to_list env in
   List.map (fun x -> Eid(x)) env_list 
-           
 
 and get_param_names params =
   let get_param_name p =p.entry_name
@@ -150,7 +199,7 @@ let rec ltype_of_array =function
 let rec need_def = function
         | Eid _ -> true
         | EArray _ ->true
-        |(* Eplus (e1,_) | Ediv (e1,_) | Eminus (e1,_) | Emod (e1,_) | Emod (e1,_) | Emult (e1,_) | Eand (e1,_) | Eor (e1,_) | *)(*| EUnAdd e1 |EUnMinus e1 *) EPlusPlus (e1,_) | EMinusMinus (e1,_)  -> need_def e1
+        |(* Eplus (e1,_) | Ediv (e1,_) | Eminus (e1,_) | Emod (e1,_) | Emod (e1,_) | Emult (e1,_) | Eand (e1,_) | Eor (e1,_) | *)(*| EUnAdd e1 |EUnMinus e1 *) EPlusPlus (e1,_) | EMinusMinus (e1,_)  -> false
         |  _->false;;
 let default_val_type smth = match smth with 
         | TYPE_int ->  const_int (ltype_of_type smth) 0
@@ -267,7 +316,7 @@ and  codegen_expr expr builder=
         |Eeq (a,b) -> codegen_binary a b Eq builder 
         |Eneq (a,b) -> codegen_binary a b Enq builder 
         |Enot a -> let lval = codegen_expr a builder in build_not lval "nottmp" builder 
-        |EPlusPlus (a,b)-> let newval =codegen_assign a (Eplus(a,Eint (1))) builder in if b=PRE then  newval else codegen_expr (Eminus(a,Eint (1))) builder
+        |EPlusPlus (a,b)-> let newval =codegen_assign a (Eplus(a,Eint (1))) builder in if b=PRE then (codegen_expr (Eplus(a,Eint (0))) builder) else codegen_expr (Eminus(a,Eint (1))) builder
         |EMinusMinus (a,b)->  let newval  =codegen_assign a (Eminus (a,Eint(1))) builder in if b=PRE then newval else codegen_expr (Eplus(a,Eint(1))) builder
         |EAssignEq (a,b)-> codegen_assign a b builder 
         |EPlusEq (a,b) -> codegen_assign a (Eplus(a,b)) builder
@@ -316,12 +365,40 @@ and codegen_quest a b c builder =
 and codegen_cast a b builder =
         let e = myderef b builder in
         let t = type_of e in
-        if (t = (ltype_of_type TYPE_int)) then if (a = TYPE_double) then build_sitofp e (ltype_of_type a) "cast" builder else if((a= TYPE_bool) || (a= TYPE_char)) then build_trunc e (ltype_of_type a) "cast" builder else(build_sext_or_bitcast e (ltype_of_type a) "case" builder)  else
-                if (t=(ltype_of_type TYPE_double))  then  if (a= TYPE_int ) then  build_fptosi e (ltype_of_type a) "cast" builder else             (  build_trunc_or_bitcast e (ltype_of_type a) "cast" builder) else   build_zext_or_bitcast e (ltype_of_type a) "cast" builder (*else build_zext_or_bitcast e (ltype_of_type a) "cast" builder*)
-        
+        let ctype = ltype_of_type a in
+        let typen = string_of_lltype t in
+        if (contains typen "x86_fp80") then build_fptosi e ctype "castftp" builder 
+        else
+                if (contains typen "i32") then match a with
+                |TYPE_double -> build_sitofp e ctype "ok" builder
+                | _ -> build_trunc_or_bitcast e ctype "ok2" builder
+              else
+                if (contains typen "i16") then match  a with
+                |TYPE_double -> build_sitofp e ctype "ftops" builder 
+                | _ -> build_trunc_or_bitcast e ctype "ftopstr" builder
+         else
+                 if (contains typen "i8") then match a with
+                 |TYPE_int -> build_sext_or_bitcast e ctype "okk" builder
+                 |TYPE_double ->build_sitofp e ctype "doublee" builder
+                 |_->build_trunc_or_bitcast e ctype "pf" builder
+                 else
+                         match a with 
+                         |TYPE_double -> build_sitofp e ctype "doubleagain" builder
+                         | _ ->build_sext_or_bitcast e ctype "last" builder
+and  contains s1 s2 =
+ 	 let re = Str.regexp_string s2
+  	in
+  	try ignore (Str.search_forward re s1 0); true
+ 	 with Not_found -> false
+        (*if (t = (ltype_of_type TYPE_int)) then
+                if (a = TYPE_double) then build_sitofp e (ltype_of_type a) "cast" builder 
+                        else if((a= TYPE_bool) || (a= TYPE_char)) then build_trunc e (ltype_of_type a) "cast" builder else(build_sext_or_bitcast e (ltype_of_type a) "case" builder)  else
+                if (t=(ltype_of_type TYPE_double))  then  if (a= TYPE_int ) then  build_fptosi e (ltype_of_type a) "cast" builder else    
+                    (  build_trunc_or_bitcast e (ltype_of_type a) "cast" builder) else   build_sext_or_bitcast e (ltype_of_type a) "cast" builder (*else build_zext_or_bitcast e (ltype_of_type a) "cast" builder*)
+        *)
 
 and codegen_array_create e1 e2 builder =
-        let size_t = codegen_expr e2 builder in
+        let size_t = myderef e2 builder in
         let t = ltype_of_type e1 in
         let arra = build_array_malloc  t size_t "tmp" builder in
          build_pointercast arra (pointer_type t) "tmp" builder 
@@ -337,8 +414,14 @@ and  codegen_assign e1 e2 builder=
 and  codegen_fuction_call fuction  params2 builder =
 	let callee = find_function fuction (!fun_names) in
         let params = params callee in
+        let _ =print_string (fuction) in(*
+        let _ = print_env !env in*)
 	let env_of_called = get_env_of_called !env (if Option.is_some params2 then (Option.get params2)else []) params in
+        let _ = print_string (string_of_int (count_env !env)) in
         let env_args = env_to_id_list (env_of_called) in
+      (*  let _ = print_string fuction in
+        let _ = print_string ("\n") in
+        let _ =List.iter (fun x-> match x with | Eid(a)-> print_string (a);print_string("\n")) env_args in*)
         let params= if Option.is_some params2 then ((Option.get params2)@env_args) else env_args 
         in
         let parametres =List.map type_of (Array.to_list (Llvm.params  ( callee))) in
@@ -351,8 +434,8 @@ and  codegen_fuction_call fuction  params2 builder =
 
 and  codegen_array_access e1 e2 builder = 
         let lvaluee = (get_indetifier  e1 builder)  in 
-        let rval =   (codegen_expr e2 builder) in
-        let rval = if(need_def e2) then [|build_load (rval) "tmp" builder|] else [|rval|] in
+        let rval =[| myderef e2 builder|] in (*  (codegen_expr e2 builder) in
+        let rval = (if(need_def e2) then [|build_load (rval) "tmp" builder|] else [|rval|] in*)
        (* let deref =build_gep (
         match (*get_type e1*) (type_of lvaluee)  with 
        (* TYPE_pointer _ -> build_load lvaluee "tmp" builder*)
@@ -377,7 +460,7 @@ and  codegen_local name t expr builder =
 and  codegen_binary e1 e2 expr  builder= 
         let e1n = codegen_expr e1 builder in
         let e2n = codegen_expr e2  builder in
-        let e1n = if(need_def e1) then build_load e1n "tmp" builder else e1n in
+        let e1n = if( (need_def e1)) then build_load e1n "tmp" builder else e1n in
         let e2n = if(need_def e2) then build_load e2n "tmp" builder else e2n in
         let int_fun expr = match expr with
                 Plus -> build_add e1n e2n "addtmp" builder 
@@ -396,21 +479,21 @@ and  codegen_binary e1 e2 expr  builder=
                 |Comma -> e2n
         in
         let float_fun expr =
-                let e2n = build_sitofp e2n (ltype_of_type TYPE_double) "cast" builder in
+                let e2nk = build_sitofp e2n (ltype_of_type TYPE_double) "cast" builder in
                 let e1n = build_sitofp e1n (ltype_of_type TYPE_double) "cast" builder in
                 match expr with
-                Plus -> build_fadd e1n e2n "addtmp" builder 
-                |Minus ->build_fsub e1n e2n "subtmp" builder
-                |Div ->build_fdiv e1n e2n "divtmp" builder
-                |Mult ->build_fmul e1n e2n "multmp" builder
-                |Mod -> build_frem e1n e2n "sremtmp" builder
-                |Lt ->build_fcmp Fcmp.Ult e1n e2n "lttmp" builder
-                |Lte ->build_fcmp Fcmp.Ole e1n e2n "ltetmp" builder
-                |Gt -> build_fcmp Fcmp.Ogt e1n e2n "gttmp" builder
-                |Gte -> build_fcmp Fcmp.Oge e1n e2n "gtetmp" builder
-                |Eq -> build_fcmp Fcmp.Oeq e1n e2n "equaltmp" builder
-                |Enq -> build_fcmp Fcmp.One e1n e2n "equaltmp" builder
-                |Comma -> e2n
+                Plus -> build_fadd e1n e2nk "addtmp" builder 
+                |Minus ->build_fsub e1n e2nk "subtmp" builder
+                |Div ->build_fdiv e1n e2nk "divtmp" builder
+                |Mult ->build_fmul e1n e2nk "multmp" builder
+                |Mod -> build_frem e1n e2nk "sremtmp" builder
+                |Lt ->build_fcmp Fcmp.Ult e1n e2nk "lttmp" builder
+                |Lte ->build_fcmp Fcmp.Ole e1n e2nk "ltetmp" builder
+                |Gt -> build_fcmp Fcmp.Ogt e1n e2nk "gttmp" builder
+                |Gte -> build_fcmp Fcmp.Oge e1n e2nk "gtetmp" builder
+                |Eq -> build_fcmp Fcmp.Oeq e1n e2nk "equaltmp" builder
+                |Enq -> build_fcmp Fcmp.One e1n e2nk "equaltmp" builder
+                |Comma ->e2n
         in
         (*let _ =print_string(string_of_lltype (type_of e1n)) in*)
             if (( (type_of e1n) <> (ltype_of_type TYPE_double ) ) && ((type_of e2n) <> (ltype_of_type TYPE_double))) then int_fun expr else float_fun expr 
@@ -444,7 +527,7 @@ and  codegen_binary e1 e2 expr  builder=
         | _ -> y
         ) ((get_fuction_f func.entry_info).function_paramlist) in
         let fuction_type = function_type (ltype_of_type (get_fuction_f func.entry_info).function_result) (Array.of_list parametres) in
-        let b=  define_function name fuction_type the_module in
+        let b=  declare_function name fuction_type the_module in
         let _ = Hashtbl.add functions name b in b)
         and param_type x = (fun y-> let z = ltype_of_type (get_parameter_f y.entry_info).parameter_type in match ((get_parameter_f y.entry_info).parameter_mode ) with
         | PASS_BY_REFERENCE -> pointer_type z
@@ -481,7 +564,8 @@ and  codegen_binary e1 e2 expr  builder=
         | _ ->
                         (set_value_name n el;let g = (build_alloca (ltype_of_type typea)  n builder) in (*let el = build_pointercast el (ltype_of_type typea) "cast" builder in *)  ignore(build_store el g builder) ; ignore(Hashtbl.add named_values n g))) ) (params f) 
         in
-        (*check*) let _ =List.map (fun x-> codegen_decl x builder) b in
+        (*let _ = if (name="main") then List.iter (fun x-> ignore(codegen_decl x builder)) !global_decls else ()  in*)
+        (*check*) let _ =List.map (fun x-> codegen_decl  x builder) (sort_d b) in
         let bb =List.hd !fun_bbs in
         position_at_end bb builder;
         let _  = List.map (fun x->codegen_stmt x builder) c in
@@ -539,7 +623,10 @@ and getAdreess expr builder =  match expr with
  let dereference = build_gep tmp_val  [|(*default_val_type TYPE_int;*)index|] "arrayval" builder in dereference 
 
 
- and codegen_global a = let intitial = match (get_variable_f a.entry_info).variable_type with
+ and codegen_global a = 
+         let name = a.entry_name in
+      (*   let _ = (env :=update_env name (!env)) in*)
+         let intitial = match (get_variable_f a.entry_info).variable_type with
          |TYPE_int -> const_int (ltype_of_type TYPE_int) 0 
          | TYPE_double ->const_float (ltype_of_type TYPE_double) 0.0
          | TYPE_bool -> const_int (ltype_of_type TYPE_bool ) 0 
@@ -547,7 +634,41 @@ and getAdreess expr builder =  match expr with
          |TYPE_void ->const_int (ltype_of_type TYPE_void) 0
          |TYPE_pointer a->const_pointer_null (ltype_of_type (TYPE_pointer a))
          | TYPE_array (a,b) ->const_array (ltype_of_type a) (Array.make b (default_val_type (a))) 
- in define_global a.entry_name intitial the_module
+ in 
+ Hashtbl.add named_values name (define_global a.entry_name intitial the_module)
+ and cs_sort type1 type2 = match type1 with
+        |VarDecl _ -> ( match type2 with 
+                        |VarDecl _-> 0
+                        | _ -> -1)
+        | _ -> (match type2 with
+                |VarDecl _ -> 1
+                |_-> 0)
+        and sort_d decls = let j=decls_a (List.stable_sort cs_sort decls)in
+        (*let _ = ssf j in*)
+        j
+        and ssf a = List.iter (print_nameso) a
+        and decls_a ls = 
+                let (ls1,ls2)= List.partition (fun x-> match x with 
+                |VarDecl _ -> true
+                |_ -> false) ls in
+                let (def,decs)= List.partition (fun x -> match x with
+                |FunDef _ -> true
+                | _ -> false) ls2 in
+                let deds = List.map (fun x-> match x with 
+                |FunDecl(a)  ->  List.find (sort_find_fun a.entry_name) def  ) decs in
+                let last = List.filter (fun x-> match x with 
+                | FunDef(a,b,c) ->not (List.exists (sort_find_fun a.entry_name) deds)) def in
+              ls1@deds@last
+        and sort_find_fun name el = (match el with 
+         |FunDef(a,b,c) ->let name2 = a.entry_name  in (name=name2)
+         | _ -> false)
+ and print_nameso l = match l with
+ |VarDecl a -> List.iter ( fun x-> print_string (x.entry_name)) a
+ |FunDef (a,b,c)-> print_string (a.entry_name)
+ |FunDecl(a) -> print_string (a.entry_name)
+
+      
+        
  let codegen_lib () = 
                 let _ = Hashtbl.add functions ("writeString")  (declare_function "writeString" (function_type (ltype_of_type TYPE_void) [|ltype_of_type(TYPE_pointer TYPE_char)|]) the_module ) in 
                 let _ = Hashtbl.add functions ("writeInteger")  (declare_function "writeInteger" (function_type (ltype_of_type TYPE_void) [|ltype_of_type(TYPE_int)|]) the_module ) in 
@@ -579,8 +700,10 @@ and getAdreess expr builder =  match expr with
                 let _ = Hashtbl.add functions ("strcat")  (declare_function "strcat" (function_type (ltype_of_type TYPE_void) [|ltype_of_type (TYPE_pointer TYPE_char) ; ltype_of_type (TYPE_pointer TYPE_char)|]) the_module ) in 
                 ();;
 let codegen_main main = 
-        let _ = codegen_lib() in
-        let _ =List.map (fun x-> match x with VarDecl(a) ->ignore(List.map codegen_global a) | _ ->()) main in
+     (*   let _ = codegen_lib() in*)
+        let _ = is_main() in 
+     (*   let _ =List.map (fun x-> match x with VarDecl(a) -> (global_decls := (x)::(!global_decls) ; List.iter (fun x-> ignore((env := update_env (x.entry_name) (!env)))) a) (* ignore(List.map codegen_global a)*) | _ ->()) main in*)
+ 	let _ =List.map (fun x-> match x with VarDecl(a) -> ignore((List.map (fun y-> codegen_global y) a) ) | _ ->()) main in
         let _ = List.map (fun x-> match x with FunDecl(a) -> ignore(codegen_func a
         )|_->()) main in
         let _ = List.map (fun x-> match x with FunDef(a,b,c) -> ignore(codegen_func a);ignore(make_function (FunDef(a,b,c))) | _ ->()) main in
