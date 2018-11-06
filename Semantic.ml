@@ -52,11 +52,16 @@ let rec  get_type expr = match expr with
         ) 
         |Emod (x,y) |EModEq (x,y)-> (match (get_type x,get_type y) with 
                 | (TYPE_int,TYPE_int) ->  TYPE_int 
+                | (TYPE_pointer (TYPE_int),TYPE_int) -> TYPE_int 
+                | (TYPE_int ,TYPE_pointer (TYPE_int)) -> TYPE_int 
+                | (TYPE_pointer (TYPE_int) ,TYPE_pointer (TYPE_int)) -> TYPE_int 
                 | _ -> (*Types.print_type (get_type x);Types.print_type (get_type y);*)error "Mod needs integer and integer" ; TYPE_none
         )
         | Elt (x,y) | Elte (x,y) | Egt (x,y) | Egte (x,y) | Eeq (x,y) | Eneq (x,y) -> (match (get_type x,get_type y) with 
         | (TYPE_int,TYPE_int) | (TYPE_int,TYPE_double) | (TYPE_double,TYPE_int) | (TYPE_double ,TYPE_double) | (TYPE_bool ,TYPE_bool)  -> TYPE_bool
         | (TYPE_array (x,_), TYPE_array (y,_) ) | (TYPE_pointer x,TYPE_pointer y)-> if equalType x y then TYPE_bool else (error "from c1" ;TYPE_none)  
+        | (TYPE_array (x,_), y) | (TYPE_pointer x,y)-> if equalType x y then TYPE_bool else (error "from c1" ;TYPE_none)  
+        | (y,TYPE_array (x,_)) | (y,TYPE_pointer x)-> if equalType x y then TYPE_bool else (error "from c1" ;TYPE_none)  
         | _ ->error "sigkrisi xriazete arithmous";TYPE_none)
         | Eand (x,y) | Eor (x,y) -> (match (get_type x,get_type y) with
         | (TYPE_bool ,TYPE_bool) ->TYPE_bool 
@@ -75,6 +80,9 @@ let rec  get_type expr = match expr with
 
 and  cast_allow x y = match (x,  y) with 
 | (TYPE_double ,TYPE_int)| (TYPE_int,TYPE_double) -> true
+| (TYPE_bool ,_) -> true
+| (TYPE_char ,TYPE_int) -> true
+| (TYPE_int,TYPE_char ) -> true
 | (y1,y2) ->if equalType y1 y2 then true else false
 | (_,_) -> false  (*cast*)
 

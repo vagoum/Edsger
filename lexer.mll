@@ -4,7 +4,7 @@ open Parser
 open Printf
 
 module SS= Set.Make(String)
-let files=SS.empty
+let files= ref SS.empty
 
 let incr_linenum lexbuf =
   let pos = lexbuf.lex_curr_p in
@@ -49,7 +49,7 @@ rule lexer = parse
   |"#include \"" id* ".h\"" as incl_name {
 let len=(String.length incl_name)-11 in
 let file = String.sub incl_name 10 len in
-if (not (SS.mem file files)) then  (let _ = SS.add file files in let lexbuf2= Lexing.from_channel (open_in file) in let _ = Parser.program lexer lexbuf2  in lexer lexbuf) else (lexer lexbuf)
+if (not (SS.mem file !files)) then  (let _ = (files :=(SS.add file !files)) in let lexbuf2= Lexing.from_channel (open_in file) in let _ = Parser.program lexer lexbuf2  in lexer lexbuf) else (lexer lexbuf)
   }
   |"//" {linecomment lexbuf}
   | "/*"  {blockcomment lexbuf} 

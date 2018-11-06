@@ -1,4 +1,4 @@
-//#include "stdio.h"
+#include "stdio.h"
 void writeBoolean(bool c);
 void writeString(char * xx);
 void main () {

@@ -1,9 +1,9 @@
-//#include "stdio.h"
+#include "stdio.h"
 void writeString(char * xx);
 void main()
 {
 	char c[3];
-	c[0] = "ABCD"[0];
+
 	c[1] = '\n';
 	c[2] = '\0';
 	writeString(c);

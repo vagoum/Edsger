@@ -12,6 +12,7 @@ let the_module = create_module context "My cmp "
 let builder = builder context
 let named_values:(string, llvalue) Hashtbl.t =Hashtbl.create 10
 let functions:(string, llvalue) Hashtbl.t =Hashtbl.create 10
+let functions_params:(string, Ast.ast_expr list) Hashtbl.t =Hashtbl.create 10
 let functions_types:(string, typ) Hashtbl.t =Hashtbl.create 10
 let jump_inst_break:(string , llbasicblock) Hashtbl.t =Hashtbl.create 10
 let jump_inst_cont:(string , llbasicblock) Hashtbl.t =Hashtbl.create 10
@@ -26,13 +27,9 @@ let break_stack = Stack.create();;
 let fun_bbs:(llbasicblock list ref)= ref [];;
 let global_decls:(Ast.ast_decl list ref) =ref [];;
 module SS = Set.Make(String)
-(*let create_entry_block_alloca func var_name = 
-        let builder =builder_at (instr_begin (entry_block func)) in
-        build_alloca (var_type ) var_name builder*)
 let fun_names : string list ref = ref []
 type environment = Global of (string list)| Nested of (string list * environment)
 let env:environment ref = ref (Global ([]))
-(*Environment Interface*)
 let rec update_env_without_hashtbl name env =
   match env with
   | Global (names) -> Global(name::names)
@@ -75,17 +72,12 @@ and update_env name env=
   | Nested (names,e) -> Nested (name_to_env::names,e)
 
                                
-and update_env_with_params params en =
-  let names = get_param_names params
-  in List.iter (fun x-> env:=update_env x en) names
-
-               
+and update_env_with_params params en = List.iter (fun x-> env:=update_env x en) (get_param_names params)
 and env_to_set env =
   let rec walk env acc =
     match env with
     | Global (names) -> let set_to_add = SS.of_list names in SS.union set_to_add acc 
     | Nested (names,env) -> let set_to_add = SS.of_list names in
-                            
                             let new_acc = SS.union set_to_add acc in
                             walk env new_acc
   in walk env SS.empty
@@ -103,46 +95,8 @@ and get_env_params_types env =
         with Not_found -> print_string(name); raise Not_found
       in (type_of v)
   in List.map find_type env
-(*
-and get_env_params_types env global_decs =
-  let has_name_in_dec name dec =
-    match dec with
-    |Ast.Simple_declarator(n) -> (name = n)
-    |Ast.Complex_declarator (n,_) -> (name = n)
-  in
-  let has_name_in_var_dec name element =
-    match element with
-    |Ast.Variable_dec(ty,decl) -> (try ignore(List.find (has_name_in_dec name) decl); true
-                                   with Not_found -> false)
-    |_ -> raise Not_found
 
-  in
-  let find_type_from_global name gl =
-    (* Printf.printf "Searching for %s\n" name; *)
-    (* Printf.printf "Global length: %d\n" (List.length gl); *)
-    let dec = List.find (has_name_in_var_dec name) gl (* with Not_found -> Ast.Variable_dec(TYPE_none,[]) *)
-    in match dec with
-       | Ast.Variable_dec(ty,l) -> (let wanted = List.find (has_name_in_dec name) l in
-                                    let ty = findLltype ty in
-                                    match wanted with
-                                    |Ast.Simple_declarator _ -> pointer_type ty
-                                    |Ast.Complex_declarator _ -> pointer_type (pointer_type ty))
-       | _ -> Printf.printf "unexpected type"; int_type
-  in
-  let find_type name =
-    try
-      let v =
-        try Hashtbl.find named_values name
-        with Not_found -> raise Not_found
-      in (type_of v)
-    with Not_found ->  find_type_from_global name global_decs
-  in 
-  List.map find_type env
-*)
-          
-
-and env_to_list env =
-  SS.elements (env_to_set env)
+and env_to_list env = SS.elements (env_to_set env)
               
             
 and remove_env env =
@@ -172,8 +126,6 @@ let rec find_function fun_name fun_name_list =
                  match lookup_function to_found the_module with
                  |Some callee -> callee
                  | None -> find_function fun_name (List.tl fun_name_list))
-
-                 
 
 let last_id = ref (-1)
 let fresh () = incr last_id; !last_id
@@ -210,8 +162,6 @@ let default_val_type smth = match smth with
 
 
 module M = Map.Make (String)
-
-
 
 let rec codegen_stmt stmt builder= 
         match stmt with 
@@ -294,7 +244,8 @@ and  codegen_expr expr builder=
         |Ebool a -> const_int (ltype_of_type TYPE_bool) (if a then 1 else 0)
         |ENull ->  build_add (default_val_type TYPE_int) (default_val_type TYPE_int) "tmp" builder
         |EAmber a ->  (get_indetifier a builder) (* to see it again*)
-        |EPointer a-> let tmp =   (get_indetifier a builder) (*to see*) in let load_ = build_load tmp "tmp" builder in let pointerr=build_gep load_ [|(default_val_type TYPE_int)|] "tmp" builder in build_load pointerr "dereference" builder 
+        (*|EPointer a-> let tmp =   (get_indetifier a builder) (*to see*) in let load_ = build_load tmp "tmp" builder in let pointerr=build_gep load_ [|(default_val_type TYPE_int)|] "tmp" builder in build_load pointerr "dereference" builder 
+      *)|EPointer a-> let tmp =   (myderef a builder) (*to see*) in let load_ = build_load tmp "tmp" builder in load_
         |EUnAdd a-> codegen_expr (EUnMinus (EUnMinus a)) builder
         |EUnMinus a -> let lval = myderef a builder in let type_is = type_of lval
                                 in let type_m m= if m = (ltype_of_type TYPE_int)  then
@@ -338,11 +289,11 @@ and codegen_quest a b c builder =
         let the_function =block_parent start_bb in
         let then_bb =append_block context "then" the_function in
         position_at_end then_bb builder;
-        let then_val =codegen_expr b builder in
+        let then_val =myderef b builder in
         let new_then_bb =insertion_block builder in
         let else_bb = append_block context "else" the_function in
         position_at_end else_bb builder;
-        let else_val =  codegen_expr c builder in
+        let else_val =  myderef c builder in
         let new_else_bb =insertion_block builder in
         let merge_bb= append_block context "ifcond" the_function in
         position_at_end merge_bb builder;
@@ -384,7 +335,7 @@ and codegen_cast a b builder =
                  else
                          match a with 
                          |TYPE_double -> build_sitofp e ctype "doubleagain" builder
-                         | _ ->build_sext_or_bitcast e ctype "last" builder
+                         | _ ->build_zext_or_bitcast e ctype "last" builder
 and  contains s1 s2 =
  	 let re = Str.regexp_string s2
   	in
@@ -414,11 +365,11 @@ and  codegen_assign e1 e2 builder=
 and  codegen_fuction_call fuction  params2 builder =
 	let callee = find_function fuction (!fun_names) in
         let params = params callee in
-        let _ =print_string (fuction) in(*
-        let _ = print_env !env in*)
 	let env_of_called = get_env_of_called !env (if Option.is_some params2 then (Option.get params2)else []) params in
-        let _ = print_string (string_of_int (count_env !env)) in
         let env_args = env_to_id_list (env_of_called) in
+        let env_args = try  Hashtbl.find functions_params fuction 
+        with Not_found -> [] 
+        in
       (*  let _ = print_string fuction in
         let _ = print_string ("\n") in
         let _ =List.iter (fun x-> match x with | Eid(a)-> print_string (a);print_string("\n")) env_args in*)
@@ -495,6 +446,10 @@ and  codegen_binary e1 e2 expr  builder=
                 |Enq -> build_fcmp Fcmp.One e1n e2nk "equaltmp" builder
                 |Comma ->e2n
         in
+        let pointer_fun e1 e2  expr = match expr with
+        Plus -> codegen_array_access e1 e2 builder 
+                | Minus -> codegen_array_access e1 (EUnMinus(e2)) builder in
+        if (contains (string_of_lltype (type_of e1n)) "*") then pointer_fun e1 e2 expr  else 
         (*let _ =print_string(string_of_lltype (type_of e1n)) in*)
             if (( (type_of e1n) <> (ltype_of_type TYPE_double ) ) && ((type_of e2n) <> (ltype_of_type TYPE_double))) then int_fun expr else float_fun expr 
     and codegen_id id deref builder =match deref with
@@ -542,6 +497,7 @@ and  codegen_binary e1 e2 expr  builder=
      	let env_params = difference_with_env !env parameters in 
      	update_env_with_params parameters !env; (*Should create side effect*)
      (* let _ = print_env_pars !env in *)
+        let _ = Hashtbl.add functions_params name (List.map (fun x-> Eid(x)) env_params) in
      	let env_params_types =get_env_params_types env_params  in
      (* let _ = print_hashtbl named_values in *)
         let llenv = Array.of_list env_params_types in
@@ -616,8 +572,7 @@ and getAdreess expr builder =  match expr with
  Eid(x) ->  findinHash x
  |EAmber (x)->  let y =  (get_indetifier x builder) in
         let dereference = build_struct_gep y 0 "tmp" builder in build_load dereference "tmp" builder
- |EPointer (x)-> let y =  (get_indetifier x builder) in let load_ = build_load y "temp" builder in
-        let dereference = build_struct_gep load_ 0 "tmp" builder in dereference 
+ |EPointer (x)-> let y =  (get_indetifier x builder) in let load_ = build_load y "temp" builder in load_
  |EArray(x,y) -> let index = codegen_expr y builder in let index =  if(need_def y) then build_load index "tmp" builder else index in
          let tmp_val =  build_load (get_indetifier x builder) "tmp" builder in
  let dereference = build_gep tmp_val  [|(*default_val_type TYPE_int;*)index|] "arrayval" builder in dereference 
@@ -625,7 +580,6 @@ and getAdreess expr builder =  match expr with
 
  and codegen_global a = 
          let name = a.entry_name in
-      (*   let _ = (env :=update_env name (!env)) in*)
          let intitial = match (get_variable_f a.entry_info).variable_type with
          |TYPE_int -> const_int (ltype_of_type TYPE_int) 0 
          | TYPE_double ->const_float (ltype_of_type TYPE_double) 0.0
@@ -702,7 +656,7 @@ and getAdreess expr builder =  match expr with
 let codegen_main main = 
      (*   let _ = codegen_lib() in*)
         let _ = is_main() in 
-     (*   let _ =List.map (fun x-> match x with VarDecl(a) -> (global_decls := (x)::(!global_decls) ; List.iter (fun x-> ignore((env := update_env (x.entry_name) (!env)))) a) (* ignore(List.map codegen_global a)*) | _ ->()) main in*)
+
  	let _ =List.map (fun x-> match x with VarDecl(a) -> ignore((List.map (fun y-> codegen_global y) a) ) | _ ->()) main in
         let _ = List.map (fun x-> match x with FunDecl(a) -> ignore(codegen_func a
         )|_->()) main in

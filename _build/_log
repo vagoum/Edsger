@@ -52,60 +52,64 @@ ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-anno
 # Target: Codegen.cmo, tags: { package(core), package(llvm), package(llvm.analysis), package(ppx_deriving.std), package(str), ppx(ppx-jane -as-ppx), bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Codegen.cmo, file:Codegen.ml, implem, ocaml, quiet, short_paths, thread, traverse }
 ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package ppx_deriving.std -package str -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Codegen.cmo Codegen.ml
 + ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package ppx_deriving.std -package str -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Codegen.cmo Codegen.ml
-File "Codegen.ml", line 167, characters 10-168:
+File "Codegen.ml", line 121, characters 10-168:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 None
-File "Codegen.ml", line 187, characters 24-512:
+File "Codegen.ml", line 139, characters 24-512:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 TYPE_byte
-File "Codegen.ml", line 197, characters 24-91:
+File "Codegen.ml", line 149, characters 24-91:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 (TYPE_none|TYPE_int|TYPE_byte|TYPE_proc|TYPE_bool|TYPE_char|TYPE_double|
 TYPE_void|TYPE_pointer _)
-File "Codegen.ml", line 197, characters 8-22:
+File "Codegen.ml", line 149, characters 8-22:
 Warning 39: unused rec flag.
-File "Codegen.ml", line 199, characters 8-16:
+File "Codegen.ml", line 151, characters 8-16:
 Warning 39: unused rec flag.
-File "Codegen.ml", line 204, characters 28-330:
+File "Codegen.ml", line 156, characters 28-330:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 (TYPE_none|TYPE_byte|TYPE_proc|TYPE_array (_, _)|TYPE_pointer _)
-File "Codegen.ml", line 288, characters 7-3181:
+File "Codegen.ml", line 238, characters 7-3301:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 Eapp (_, _)
-File "Codegen.ml", line 465, characters 27-895:
+File "Codegen.ml", line 416, characters 27-895:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 Neq
-File "Codegen.ml", line 484, characters 16-784:
+File "Codegen.ml", line 435, characters 16-784:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 (And|Or|Neq)
-File "Codegen.ml", line 560, characters 120-215:
+File "Codegen.ml", line 449, characters 38-179:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a case that is not matched:
+(Div|Mult|Mod|And|Or|Comma|Lt|Lte|Eq|Neq|Gt|Gte|Enq)
+File "Codegen.ml", line 516, characters 120-215:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 ENTRY_none
-File "Codegen.ml", line 574, characters 34-40:
+File "Codegen.ml", line 530, characters 34-40:
 Warning 52: Code should not depend on the actual values of
 this constructor's arguments. They are only for information
 and may change in future versions. (See manual section 8.5)
-File "Codegen.ml", line 575, characters 18-63:
+File "Codegen.ml", line 531, characters 18-63:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 At_start _
-File "Codegen.ml", line 590, characters 71-191:
+File "Codegen.ml", line 546, characters 71-191:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 ENTRY_none
-File "Codegen.ml", line 536, characters 34-4295:
+File "Codegen.ml", line 491, characters 34-4387:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 VarDecl _
-File "Codegen.ml", line 615, characters 31-732:
+File "Codegen.ml", line 571, characters 31-657:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 (ENull|Eint _|Ereal _|Echar _|Estring _|Ebool _|EUnAdd _|EUnMinus _|
@@ -115,68 +119,70 @@ Eeq (_, _)|Eneq (_, _)|Enot _|EPlusPlus (_, _)|EMinusMinus (_, _)|
 EAssignEq (_, _)|EPlusEq (_, _)|EMinusEq (_, _)|EDivEq (_, _)|EDotEq (_, _)|
 EModEq (_, _)|ENew (_, _)|EDel _|ECast (_, _)|EQuestT (_, _, _)|Eapp (_, _)|
 ECall (_, _))
-File "Codegen.ml", line 629, characters 24-568:
+File "Codegen.ml", line 583, characters 24-568:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 (TYPE_none|TYPE_byte|TYPE_proc)
-File "Codegen.ml", line 657, characters 45-134:
+File "Codegen.ml", line 611, characters 45-134:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 VarDecl _
-File "Codegen.ml", line 659, characters 48-147:
+File "Codegen.ml", line 613, characters 48-147:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 VarDecl _
-File "Codegen.ml", line 52, characters 15-16:
+File "Codegen.ml", line 49, characters 15-16:
 Warning 27: unused variable h.
-File "Codegen.ml", line 54, characters 17-18:
+File "Codegen.ml", line 51, characters 17-18:
 Warning 27: unused variable h.
-File "Codegen.ml", line 66, characters 17-18:
+File "Codegen.ml", line 63, characters 17-18:
 Warning 27: unused variable h.
-File "Codegen.ml", line 67, characters 21-22:
+File "Codegen.ml", line 64, characters 21-22:
 Warning 27: unused variable e.
-File "Codegen.ml", line 68, characters 19-20:
+File "Codegen.ml", line 65, characters 19-20:
 Warning 27: unused variable h.
-File "Codegen.ml", line 150, characters 11-18:
+File "Codegen.ml", line 104, characters 11-18:
 Warning 27: unused variable names.
-File "Codegen.ml", line 151, characters 12-17:
+File "Codegen.ml", line 105, characters 12-17:
 Warning 27: unused variable names.
-File "Codegen.ml", line 171, characters 4-5:
+File "Codegen.ml", line 125, characters 4-5:
 Warning 27: unused variable x.
-File "Codegen.ml", line 171, characters 7-11:
+File "Codegen.ml", line 125, characters 7-11:
 Warning 27: unused variable rest.
-File "Codegen.ml", line 198, characters 23-24:
+File "Codegen.ml", line 150, characters 23-24:
 Warning 27: unused variable b.
-File "Codegen.ml", line 202, characters 170-172:
+File "Codegen.ml", line 154, characters 170-172:
 Warning 27: unused variable e1.
-File "Codegen.ml", line 227, characters 12-20:
+File "Codegen.ml", line 177, characters 12-20:
 Warning 26: unused variable then_val.
-File "Codegen.ml", line 231, characters 12-20:
+File "Codegen.ml", line 181, characters 12-20:
 Warning 26: unused variable else_val.
-File "Codegen.ml", line 319, characters 31-37:
+File "Codegen.ml", line 270, characters 31-37:
 Warning 26: unused variable newval.
-File "Codegen.ml", line 451, characters 20-21:
+File "Codegen.ml", line 369, characters 12-20:
+Warning 26: unused variable env_args.
+File "Codegen.ml", line 402, characters 20-21:
 Warning 27: unused variable a.
-File "Codegen.ml", line 560, characters 12-19:
+File "Codegen.ml", line 516, characters 12-19:
 Warning 26: unused variable params2.
-File "Codegen.ml", line 587, characters 49-50:
+File "Codegen.ml", line 543, characters 49-50:
 Warning 27: unused variable a.
-File "Codegen.ml", line 590, characters 40-45:
+File "Codegen.ml", line 546, characters 40-45:
 Warning 27: unused variable typea.
-File "Codegen.ml", line 660, characters 27-28:
+File "Codegen.ml", line 614, characters 27-28:
 Warning 27: unused variable b.
-File "Codegen.ml", line 660, characters 29-30:
+File "Codegen.ml", line 614, characters 29-30:
 Warning 27: unused variable c.
-File "Codegen.ml", line 663, characters 19-20:
+File "Codegen.ml", line 617, characters 19-20:
 Warning 27: unused variable b.
-File "Codegen.ml", line 663, characters 21-22:
+File "Codegen.ml", line 617, characters 21-22:
 Warning 27: unused variable c.
-File "Codegen.ml", line 667, characters 12-13:
+File "Codegen.ml", line 621, characters 12-13:
 Warning 27: unused variable b.
-File "Codegen.ml", line 667, characters 14-15:
+File "Codegen.ml", line 621, characters 14-15:
 Warning 27: unused variable c.
 # Target: Main.cmo, tags: { package(core), package(llvm), package(llvm.analysis), package(ppx_deriving.std), package(str), ppx(ppx-jane -as-ppx), bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:Main.cmo, file:Main.ml, implem, ocaml, quiet, short_paths, thread, traverse }
-ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package ppx_deriving.std -package str -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Main.cmo Main.ml # cached
+ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package ppx_deriving.std -package str -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Main.cmo Main.ml
 # Target: Error.cmx, tags: { package(core), package(llvm), package(llvm.analysis), package(ppx_deriving.std), package(str), ppx(ppx-jane -as-ppx), bin_annot, compile, debug, extension:cmx, extension:ml, file:Error.cmx, file:Error.ml, implem, native, ocaml, quiet, short_paths, thread, traverse }
 ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package ppx_deriving.std -package str -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Error.cmx Error.ml # cached
 # Target: Hashcons.cmx, tags: { package(core), package(llvm), package(llvm.analysis), package(ppx_deriving.std), package(str), ppx(ppx-jane -as-ppx), bin_annot, compile, debug, extension:cmx, extension:ml, file:Hashcons.cmx, file:Hashcons.ml, implem, native, ocaml, quiet, short_paths, thread, traverse }
@@ -202,60 +208,64 @@ ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-an
 # Target: Codegen.cmx, tags: { package(core), package(llvm), package(llvm.analysis), package(ppx_deriving.std), package(str), ppx(ppx-jane -as-ppx), bin_annot, compile, debug, extension:cmx, extension:ml, file:Codegen.cmx, file:Codegen.ml, implem, native, ocaml, quiet, short_paths, thread, traverse }
 ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package ppx_deriving.std -package str -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Codegen.cmx Codegen.ml
 + ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package ppx_deriving.std -package str -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Codegen.cmx Codegen.ml
-File "Codegen.ml", line 167, characters 10-168:
+File "Codegen.ml", line 121, characters 10-168:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 None
-File "Codegen.ml", line 187, characters 24-512:
+File "Codegen.ml", line 139, characters 24-512:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 TYPE_byte
-File "Codegen.ml", line 197, characters 24-91:
+File "Codegen.ml", line 149, characters 24-91:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 (TYPE_none|TYPE_int|TYPE_byte|TYPE_proc|TYPE_bool|TYPE_char|TYPE_double|
 TYPE_void|TYPE_pointer _)
-File "Codegen.ml", line 197, characters 8-22:
+File "Codegen.ml", line 149, characters 8-22:
 Warning 39: unused rec flag.
-File "Codegen.ml", line 199, characters 8-16:
+File "Codegen.ml", line 151, characters 8-16:
 Warning 39: unused rec flag.
-File "Codegen.ml", line 204, characters 28-330:
+File "Codegen.ml", line 156, characters 28-330:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 (TYPE_none|TYPE_byte|TYPE_proc|TYPE_array (_, _)|TYPE_pointer _)
-File "Codegen.ml", line 288, characters 7-3181:
+File "Codegen.ml", line 238, characters 7-3301:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 Eapp (_, _)
-File "Codegen.ml", line 465, characters 27-895:
+File "Codegen.ml", line 416, characters 27-895:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 Neq
-File "Codegen.ml", line 484, characters 16-784:
+File "Codegen.ml", line 435, characters 16-784:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 (And|Or|Neq)
-File "Codegen.ml", line 560, characters 120-215:
+File "Codegen.ml", line 449, characters 38-179:
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a case that is not matched:
+(Div|Mult|Mod|And|Or|Comma|Lt|Lte|Eq|Neq|Gt|Gte|Enq)
+File "Codegen.ml", line 516, characters 120-215:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 ENTRY_none
-File "Codegen.ml", line 574, characters 34-40:
+File "Codegen.ml", line 530, characters 34-40:
 Warning 52: Code should not depend on the actual values of
 this constructor's arguments. They are only for information
 and may change in future versions. (See manual section 8.5)
-File "Codegen.ml", line 575, characters 18-63:
+File "Codegen.ml", line 531, characters 18-63:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 At_start _
-File "Codegen.ml", line 590, characters 71-191:
+File "Codegen.ml", line 546, characters 71-191:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 ENTRY_none
-File "Codegen.ml", line 536, characters 34-4295:
+File "Codegen.ml", line 491, characters 34-4387:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 VarDecl _
-File "Codegen.ml", line 615, characters 31-732:
+File "Codegen.ml", line 571, characters 31-657:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 (ENull|Eint _|Ereal _|Echar _|Estring _|Ebool _|EUnAdd _|EUnMinus _|
@@ -265,68 +275,70 @@ Eeq (_, _)|Eneq (_, _)|Enot _|EPlusPlus (_, _)|EMinusMinus (_, _)|
 EAssignEq (_, _)|EPlusEq (_, _)|EMinusEq (_, _)|EDivEq (_, _)|EDotEq (_, _)|
 EModEq (_, _)|ENew (_, _)|EDel _|ECast (_, _)|EQuestT (_, _, _)|Eapp (_, _)|
 ECall (_, _))
-File "Codegen.ml", line 629, characters 24-568:
+File "Codegen.ml", line 583, characters 24-568:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 (TYPE_none|TYPE_byte|TYPE_proc)
-File "Codegen.ml", line 657, characters 45-134:
+File "Codegen.ml", line 611, characters 45-134:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 VarDecl _
-File "Codegen.ml", line 659, characters 48-147:
+File "Codegen.ml", line 613, characters 48-147:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a case that is not matched:
 VarDecl _
-File "Codegen.ml", line 52, characters 15-16:
+File "Codegen.ml", line 49, characters 15-16:
 Warning 27: unused variable h.
-File "Codegen.ml", line 54, characters 17-18:
+File "Codegen.ml", line 51, characters 17-18:
 Warning 27: unused variable h.
-File "Codegen.ml", line 66, characters 17-18:
+File "Codegen.ml", line 63, characters 17-18:
 Warning 27: unused variable h.
-File "Codegen.ml", line 67, characters 21-22:
+File "Codegen.ml", line 64, characters 21-22:
 Warning 27: unused variable e.
-File "Codegen.ml", line 68, characters 19-20:
+File "Codegen.ml", line 65, characters 19-20:
 Warning 27: unused variable h.
-File "Codegen.ml", line 150, characters 11-18:
+File "Codegen.ml", line 104, characters 11-18:
 Warning 27: unused variable names.
-File "Codegen.ml", line 151, characters 12-17:
+File "Codegen.ml", line 105, characters 12-17:
 Warning 27: unused variable names.
-File "Codegen.ml", line 171, characters 4-5:
+File "Codegen.ml", line 125, characters 4-5:
 Warning 27: unused variable x.
-File "Codegen.ml", line 171, characters 7-11:
+File "Codegen.ml", line 125, characters 7-11:
 Warning 27: unused variable rest.
-File "Codegen.ml", line 198, characters 23-24:
+File "Codegen.ml", line 150, characters 23-24:
 Warning 27: unused variable b.
-File "Codegen.ml", line 202, characters 170-172:
+File "Codegen.ml", line 154, characters 170-172:
 Warning 27: unused variable e1.
-File "Codegen.ml", line 227, characters 12-20:
+File "Codegen.ml", line 177, characters 12-20:
 Warning 26: unused variable then_val.
-File "Codegen.ml", line 231, characters 12-20:
+File "Codegen.ml", line 181, characters 12-20:
 Warning 26: unused variable else_val.
-File "Codegen.ml", line 319, characters 31-37:
+File "Codegen.ml", line 270, characters 31-37:
 Warning 26: unused variable newval.
-File "Codegen.ml", line 451, characters 20-21:
+File "Codegen.ml", line 369, characters 12-20:
+Warning 26: unused variable env_args.
+File "Codegen.ml", line 402, characters 20-21:
 Warning 27: unused variable a.
-File "Codegen.ml", line 560, characters 12-19:
+File "Codegen.ml", line 516, characters 12-19:
 Warning 26: unused variable params2.
-File "Codegen.ml", line 587, characters 49-50:
+File "Codegen.ml", line 543, characters 49-50:
 Warning 27: unused variable a.
-File "Codegen.ml", line 590, characters 40-45:
+File "Codegen.ml", line 546, characters 40-45:
 Warning 27: unused variable typea.
-File "Codegen.ml", line 660, characters 27-28:
+File "Codegen.ml", line 614, characters 27-28:
 Warning 27: unused variable b.
-File "Codegen.ml", line 660, characters 29-30:
+File "Codegen.ml", line 614, characters 29-30:
 Warning 27: unused variable c.
-File "Codegen.ml", line 663, characters 19-20:
+File "Codegen.ml", line 617, characters 19-20:
 Warning 27: unused variable b.
-File "Codegen.ml", line 663, characters 21-22:
+File "Codegen.ml", line 617, characters 21-22:
 Warning 27: unused variable c.
-File "Codegen.ml", line 667, characters 12-13:
+File "Codegen.ml", line 621, characters 12-13:
 Warning 27: unused variable b.
-File "Codegen.ml", line 667, characters 14-15:
+File "Codegen.ml", line 621, characters 14-15:
 Warning 27: unused variable c.
 # Target: Main.cmx, tags: { package(core), package(llvm), package(llvm.analysis), package(ppx_deriving.std), package(str), ppx(ppx-jane -as-ppx), bin_annot, compile, debug, extension:cmx, extension:ml, file:Main.cmx, file:Main.ml, implem, native, ocaml, quiet, short_paths, thread, traverse }
-ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package ppx_deriving.std -package str -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Main.cmx Main.ml # cached
+ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -g -bin-annot -short-paths -thread -package ppx_deriving.std -package str -package llvm.analysis -package llvm -package core -ppx 'ppx-jane -as-ppx' -o Main.cmx Main.ml
 # Target: Main.native, tags: { package(core), package(llvm), package(llvm.analysis), package(ppx_deriving.std), package(str), ppx(ppx-jane -as-ppx), bin_annot, debug, dont_link_with, extension:native, file:Main.native, link, native, ocaml, program, quiet, short_paths, thread, traverse }
 ocamlfind ocamlopt -linkpkg -g -thread -package ppx_deriving.std -package str -package llvm.analysis -package llvm -package core Error.cmx Hashcons.cmx Identifier.cmx Types.cmx Symbol.cmx Ast.cmx Option.cmx Semantic.cmx Codegen.cmx parser.cmx lexer.cmx Main.cmx -o Main.native
 # Compilation successful.
